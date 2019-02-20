@@ -1,0 +1,25 @@
+First Rust Microservice
+
+Technologies
+  Rust
+  Rocket
+  Redis
+  Drill
+
+Domain
+  The Microservice is responsible to store KV (like Consul: https://www.consul.io/api/kv.html).
+  The Microservice is RESTful.
+
+  Endpoints
+    /GET "/kv/:key" application/json
+    example: curl http://127.0.0.1:8000/v1/kv/my-key
+    response: 200, {"my-key":"value"}
+    response: 404, {"result": "not found"}
+
+    /PUT  "/kv/:key"  application/json
+    example: curl --request PUT --data @contents http://127.0.0.1:8500/v1/kv/my-key
+    response: 201, {"result": "ok"}
+
+    DELETE "/kv/:key" application/json
+    example: curl --request DELETE http://127.0.0.1:8500/v1/kv/my-key
+    response: 200, {"result": "ok"}

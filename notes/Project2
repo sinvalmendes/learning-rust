@@ -1,0 +1,13 @@
+Second Rust Project
+
+Technologies
+  Rust
+  Git
+
+Domain
+  CLI tool to store ideas/notes (you can use Markdown) in a Git repo.
+  You need to setup a Git repo (Bitbucket or GitHub) and setup in the config file.
+    Nice to have:
+      Pass all the parameters as flags of the command.
+      Select between config files as a flag in the command.
+  Just like eureka: https://github.com/simeg/eureka

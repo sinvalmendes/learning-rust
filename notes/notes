@@ -1,0 +1,182 @@
+These are a bunch of notes and a quick cheat sheet of Rust concepts, mechanics and other interesting stuff.
+
+
+Compile
+  This will generate a binary file called "main":
+    `rustc main.rs`
+
+Execution
+  To execute a simple Rust binary file run:
+    `./main`
+
+Cargo
+  Cargo can create projects with a simple template:
+    `cargo new project`
+  Cargo can build the projects:
+    `cargo build`
+    When the build is finished, you should be able to see the binary under the
+    "target/ directory and also a bunch of other files and directories.
+    When you run build all your dependencies in .toml file are fetched
+  Cargo can run the project:
+    `cargo run`
+    There are a lot of options like --verbose, --quiet, --color
+  Cargo can update your dependencies:
+    `cargo update`
+  Cargo can show documentation of a project!
+    `cargo doc --open`
+    This is very nice, you can also see the documentation of your dependencies!
+    You can see documentation of your builded dependencies
+    `cargo doc -p gcc --open`
+
+  Rust language
+    Pattern Matching
+      match guess.cmp(&secret_number) {
+        Ordering::Less => println!("Too small!"),
+        Ordering::Greater => println!("Too big!"),
+        Ordering::Equal => println!("You win!"),
+      }
+
+      Each case inside the match is called "arm", an arm is like a switch case statement.
+
+    Statically typed (must know all variables types at compile time).
+    Variables and Constants cannot change it's type unless you use a parse function or something like this.
+    Variables can change its value if it matches the type and if it is declared with the "mut" keyword.
+    Constants cannot change value.
+
+    Types
+      Scalar
+        Integer: can have i (signed: means it can be negative) and u (unsigned: means it will always be positive)
+        Floating point: f32 (32 bits) and f64 (64 bits)
+        Boolean: true or false
+        Char: Unicode Scalar Value, which means it can represent a lot more than just ASCII. Accented letters; Chinese, Japanese, and Korean characters; emoji; and zero-width spaces are all valid char values in Rust.
+      Compound
+        Tuples: `let tup: (i32, f64, u8) = (500, 6.4, 1);`
+        Arrays: `let array: [i32;7] = [0,1,2,3,4,5,-1];`
+                `let mut array: [i32;6] = [0,1,2,3,4,5];`
+                `let array = [0,1,2,3,4,5];`
+      Built-in
+        bool:      Booleans
+        char:      Characters
+        i & u:     Intergers
+        f32 & f64: Float
+        []:        Array
+        ():        Tupple
+
+    Ownership
+      It's a unique feature, it's how Rust programs manage their memory usage.
+      The Stack and the Heap
+        In most of programming languages you don't think about Stack and Heap.
+        The Stack uses LIFO: last-in-first-out.
+          You add data pushing-onto-the-stack, and remove data popping-off-the-stack.
+          The Stack is simple and fast because there is always only one place to manipulate: the top.
+          All the data in the stack has a known and fixed size.
+        The Heap is like a bag.
+          Data with unknown size at compile time can be stored on the heap.
+          The Heap has less rules than the Stack, you request an amount of space and store in it, there is no "order" the store or access the data.
+          When you allocate some space on the Heap, the OS finds a spot, marks it as being used and returns its address/pointer to this spot.
+          The Heap is like a big restaurant, you come in and request a table, the staff (OS) finds one and lead you there, if someone is coming they can ask for your table address and go there.
+
+        Heap is slower than the Stack, you have to process the address (follow the pointer) to access data.
+          Contemporary processors are faster if they jump around less in memory. Continuing the analogy, consider a server at a restaurant taking orders from many tables. It’s most efficient to get all the orders at one table before moving on to the next table. Taking an order from table A, then an order from table B, then one from A again, and then one from B again would be a much slower process. By the same token, a processor can do its job better if it works on data that’s close to other data (as it is on the stack) rather than farther away (as it can be on the heap). Allocating a large amount of space on the heap can also take time.
+
+        Heap gives you other types of power that the Stack does not.
+
+      Rules:
+        1. Each value in Rust has a variable that’s called its owner.
+        2. There can only be one owner at a time.
+        3. When the owner goes out of scope, the value will be dropped.
+
+      Variables Scope
+        { // s is out of scope, it does not exists yet
+          let s = "string"; // s is declared from now on it is valid
+          // do stuff with s there is valid
+        } // s is going out of scope, it's no longer valid
+
+      Literals x Types
+        Literals like `let s = "string";`, their value cannot be mutated, you cannot append more text to s value.
+        Literals like s are very efficient, because they are hardcoded after compile and it make them fast.
+        Types like String `let mut s = String::from("hello");` enables the use of String methods and functions do mutate the s value.
+        Types like these are stored in the Heap, to be managed/extended in runtime.
+
+      Move x Shallow Copy x Deep Copy
+
+      Copy Types
+        Here are some of the types that are Copy:
+          All the integer types, such as u32.
+          The Boolean type, bool, with values true and false.
+          All the floating point types, such as f64.
+          The character type, char.
+          Tuples, if they only contain types that are also Copy. For example, (i32, i32) is Copy, but (i32, String) is not.
+
+      Ownership and Functions
+        The mechanics of copy and moving values in functions are similar to variables assignment.
+
+      Borrowing and References
+        To borrow is the idea to give a new reference of a variable in the current scope to another scope.
+          1. `let s = String::from("borrowed");`
+          2. `borrow_s(&s);`
+          In the second line we are using the token & to indicate that the value to be passed to the function is a reference/pointer to s (which is also a pointer to a value ("borrowed") in the Heap).
+          Thus, the borrow_s function will be able to get s value and some behaviours.
+          However, borrow_s function won't be able to mutate s, to do this we need to make s mutable and pass a "mut&" reference
+            1. `let mut s = String::from("borrowed");`
+            2. `borrow_s(&mut s);`
+          Now, borrow_s function can mutate s using the "&mut s" pointer.
+
+    Modules and Namespaces
+      You can use Rust modules in Rust code.
+      The concept of modules in Rust is similar to Python modules, a module is a bunch of functions, structs and resources you can access.
+      The modules has hierarchy to access them.
+      If a file A.rs and B.rs are under the same directory, they can see each other a use the public (pub) resources of the other.
+        |-- A.rs
+        |-- B.rs
+
+        A:
+          mod B
+          fn function() {
+              B.public_function_of_b();
+          }
+
+      If A.rs and B.rs are under different directories, the higher directory can
+      see the other, if the lower directory expose the target module as public (pub)
+      in a file called "mod.rs".
+
+      |-- A.rs
+      |-- module
+      |   |---- B.rs
+      |   |---- mod.rs
+
+        mod.rs:
+          pub mod B;
+
+        A:
+          use module::B;
+          fn function() {
+            B.public_function_of_b();
+          }
+
+    Structs
+      Structs are User data types (or Custom data types). It's a grouping of data that make sense to be together.
+      A User is an example of Struct, and it can have all types of data related to a real User, like username, password, address and so on.
+      struct User {
+          username: String,
+          email: String,
+          sign_in_count: u64,
+          active: bool,
+      }
+
+      To create an instance of the struct User we can do:
+      let user1 = User {
+          email: String::from("someone@example.com"),
+          username: String::from("someusername123"),
+          active: true,
+          sign_in_count: 1,
+      };
+
+      Methods
+        You can add behaviour to data of Structs by using the Method notation.
+
+        impl Struct {
+            fn login(&self) {
+                println!("Login with User's username: {}", self.username);
+            }
+        }
