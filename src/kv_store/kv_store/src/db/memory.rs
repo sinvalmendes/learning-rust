@@ -16,7 +16,7 @@ impl MemoryDB {
         let result = &self.key_values.get(&s);
         match result {
             Some(x) => format!("{}", x),
-            None    => return String::from("key not found!")
+            None    => return String::from("key not found!") // throw err here
         }
 
     }
