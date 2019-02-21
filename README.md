@@ -1,3 +1,3 @@
 # learning-rust
 
-Repo with all my Rust code used to learn.
+Repository with all code, examples and notes I created during the process of learning Rust.
