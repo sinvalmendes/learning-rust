@@ -205,7 +205,10 @@ Cargo
           To acquire data using Mutex, the thread needs to SIGNAL its intensions to access some data, when Mutex is ready to give the thread what it wants
           it sends the LOCK to the thread, which represents the key/microphone/token/permission/777 to do whatever the thread needs to do with that data/memory address.
           After the thread finish its work, it MUST unlock the data/memory by releasing (giving back to Mutex) the LOCK
-
+      
+      Send and Sync (they are Traits)
+        Send is about transfering Ownership of something. Almost every type in Rust implements the Send trait.
+        Sync is about synchronizing the access of threads to some value/memory.
 
 
     Error Handling

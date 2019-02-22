@@ -12,16 +12,19 @@ impl MemoryDB {
         }
     }
 
-    pub fn get_key(&self, s: String) -> String {
-        let result = &self.key_values.get(&s);
+    pub fn get_value(&self, key: String) -> Result<&str, &str> {
+        let result = &self.key_values.get(&key);
         match result {
-            Some(x) => format!("{}", x),
-            None    => return String::from("key not found!") // throw err here
+            Some(x) => Ok(x),
+            None    => Err("Not found!")
         }
-
     }
 
-    pub fn store_kv(&mut self, k:String, v:String) {
-        self.key_values.insert(k, v);
+    pub fn store_kv(&mut self, k:String, v:String) -> Result<String, &str> {
+        let result = self.key_values.insert(k, v);
+        match result {
+            Some(x) => Ok(x),
+            None    => Err("Error!")
+        }
     }
 }

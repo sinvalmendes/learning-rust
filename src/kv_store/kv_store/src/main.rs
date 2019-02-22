@@ -13,23 +13,35 @@ fn index(db: State<RwLock<MemoryDB>>) -> String {
     return format!("{:?}", db.key_values);
 }
 
-#[get("/api/kv/<name>")] // return JSON data
-fn get_key(db: State<RwLock<MemoryDB>>, name: String) -> String {
+#[get("/api/kv/<name>")]
+fn get_value(db: State<RwLock<MemoryDB>>, name: String) -> String {
     let db = db.read().unwrap();
-    let value = db.get_key(name);
-    return format!("Value: {}", value);
+    let result = db.get_value(name);
+    match result {
+        Ok(x)  => {
+            println!("{}", x);
+            return format!("Value: {}", x); // return JSON data
+        },
+        Err(e) => return format!("{}", e) // return JSON data
+    }
 }
 
 #[get("/api/kv/<key>/<value>")] // use POST and JSON data
 fn post_kv(db: State<RwLock<MemoryDB>>, key: String, value: String) -> String {
     let mut db = db.write().unwrap();
-    db.store_kv(key, value);
-    return format!("The KV was stored!");
+    let result = db.store_kv(key, value);
+    match result {
+        Ok(x)  => {
+            println!("{}", x);
+            return format!("The KV was stored!"); // return JSON data
+        },
+        Err(e) => return format!("{}", e) // return JSON data
+    }
 }
 
 fn main() {
     rocket::ignite()
         .manage(RwLock::new(MemoryDB::new()))
-        .mount("/", routes![index, get_key, post_kv])
+        .mount("/", routes![index, get_value, post_kv])
         .launch();
 }
