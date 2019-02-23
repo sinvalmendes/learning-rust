@@ -7,22 +7,33 @@ use db::memory::MemoryDB;
 use std::sync::RwLock;
 use rocket::State;
 
+use serde_json::json;
+
+
 #[get("/api")]
 fn index(db: State<RwLock<MemoryDB>>) -> String {
     let db = db.read().unwrap();
     return format!("{:?}", db.key_values);
 }
 
-#[get("/api/kv/<name>")]
-fn get_value(db: State<RwLock<MemoryDB>>, name: String) -> String {
+#[get("/api/kv/<key>")]
+fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
     let db = db.read().unwrap();
-    let result = db.get_value(name);
+    let result = db.get_value(&key);
+
     match result {
-        Ok(x)  => {
-            println!("{}", x);
-            return format!("Value: {}", x); // return JSON data
+        Ok(x) => {
+            let json_result = json!({
+                key: x,
+            });
+            return format!("{}", json_result);
         },
-        Err(e) => return format!("{}", e) // return JSON data
+        Err(e) => {
+            let json_result = json!({
+                "result": e,
+            });
+            return format!("{}", json_result);
+        }
     }
 }
 

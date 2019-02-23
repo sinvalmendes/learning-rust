@@ -12,8 +12,8 @@ impl MemoryDB {
         }
     }
 
-    pub fn get_value(&self, key: String) -> Result<&str, &str> {
-        let result = &self.key_values.get(&key);
+    pub fn get_value(&self, key: &str) -> Result<&str, &str> {
+        let result = &self.key_values.get(key);
         match result {
             Some(x) => Ok(x),
             None    => Err("Not found!")

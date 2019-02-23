@@ -9,6 +9,7 @@ Awesome Rust
   Reference WebServer: https://github.com/mre/rustly
   Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
   Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
+  Benchmark and Rust examples: https://doc.rust-lang.org/1.5.0/book/benchmark-tests.html
 
 Compile
   This will generate a binary file called "main":
