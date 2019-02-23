@@ -1,6 +1,15 @@
 These are a bunch of notes and a quick cheat sheet of Rust concepts, mechanics and other interesting stuff.
 
 
+Awesome Rust
+  Algorithms: https://rust-lang-nursery.github.io/rust-cookbook/algorithms.html
+  Book: https://doc.rust-lang.org/beta/book/
+  Syntax Coveniences: https://www.youtube.com/watch?v=Xk5IZOtLUmE
+  Reference about Rocket: https://matthias-endler.de/2017/rust-url-shortener/index.html
+  Reference WebServer: https://github.com/mre/rustly
+  Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
+  Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
+
 Compile
   This will generate a binary file called "main":
     `rustc main.rs`
