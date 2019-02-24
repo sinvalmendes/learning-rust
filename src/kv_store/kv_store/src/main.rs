@@ -1,14 +1,19 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket;
+#[macro_use] extern crate rocket; // https://doc.rust-lang.org/1.7.0/book/macros.html
+#[macro_use] extern crate serde_derive;
+
 mod db;
 use db::memory::MemoryDB;
-
 use std::sync::RwLock;
 use rocket::State;
-
+use rocket_contrib::json::Json;
 use serde_json::json;
 
+#[derive(Serialize, Deserialize)]
+struct KV {
+    value: String,
+}
 
 #[get("/api")]
 fn index(db: State<RwLock<MemoryDB>>) -> String {
@@ -37,10 +42,11 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
     }
 }
 
-#[get("/api/kv/<key>/<value>")] // use POST and JSON data
-fn post_kv(db: State<RwLock<MemoryDB>>, key: String, value: String) -> String {
+#[put("/api/kv/<key>", format = "json", data = "<kv>")] // CHANGE TESTS! =use POST and JSON data
+fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String { 
     let mut db = db.write().unwrap();
-    let result = db.store_kv(key, value);
+    let value = &kv.value;
+    let result = db.store_kv(key, value.to_string());
     match result {
         Ok(x)  => {
             println!("{}", x);

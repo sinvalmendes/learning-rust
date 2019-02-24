@@ -16,9 +16,14 @@ Domain
     response: 200, {"my-key":"value"}
     response: 404, {"result": "not found"}
 
+      curl -X GET http://localhost:8000/api/kv/test_key
+
     /PUT  "/kv/:key"  application/json
     example: curl --request PUT --data @contents http://127.0.0.1:8500/v1/kv/my-key
     response: 201, {"result": "ok"}
+    
+      curl -X PUT http://localhost:8000/api/kv/test_key -d '{"value":"blablabla"}' -H "Content-Type: application/json"
+
 
     DELETE "/kv/:key" application/json
     example: curl --request DELETE http://127.0.0.1:8500/v1/kv/my-key
