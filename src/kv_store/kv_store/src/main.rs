@@ -10,6 +10,7 @@ use rocket::State;
 use rocket_contrib::json::Json;
 use serde_json::json;
 
+#[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 struct KV {
     value: String,
@@ -42,14 +43,13 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
     }
 }
 
-#[put("/api/kv/<key>", format = "json", data = "<kv>")] // CHANGE TESTS! =use POST and JSON data
+#[put("/api/kv/<key>", format = "json", data = "<kv>")]
 fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String { 
     let mut db = db.write().unwrap();
     let value = &kv.value;
     let result = db.store_kv(key, value.to_string());
     match result {
         Ok(x)  => {
-            println!("{}", x);
             return format!("The KV was stored!"); // return JSON data
         },
         Err(e) => return format!("{}", e) // return JSON data

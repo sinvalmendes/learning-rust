@@ -4,8 +4,11 @@ These are a bunch of notes and a quick cheat sheet of Rust concepts, mechanics a
 Awesome Rust
   Algorithms: https://rust-lang-nursery.github.io/rust-cookbook/algorithms.html
   Book: https://doc.rust-lang.org/beta/book/
+  Rust by Examples books: https://doc.rust-lang.org/rust-by-example/
+  Dark Arts: https://doc.rust-lang.org/stable/nomicon/README.html
   Syntax Coveniences: https://www.youtube.com/watch?v=Xk5IZOtLUmE
   Reference about Rocket: https://matthias-endler.de/2017/rust-url-shortener/index.html
+  Reference examples of Rocket: https://github.com/SergioBenitez/Rocket/tree/v0.4/examples
   Reference WebServer: https://github.com/mre/rustly
   Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
   Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
@@ -217,7 +220,7 @@ Cargo
           After the thread finish its work, it MUST unlock the data/memory by releasing (giving back to Mutex) the LOCK
       
       Send and Sync (they are Traits)
-        Send is about transfering Ownership of something. Almost every type in Rust implements the Send trait.
+        Send is about transferring Ownership of something. Almost every type in Rust implements the Send trait.
         Sync is about synchronizing the access of threads to some value/memory.
 
 
@@ -238,3 +241,21 @@ Cargo
         We just use panic! to show an error when and ONLY WHEN the code has 100% of certainty that the error is not recoverable.
         Otherwise, we use Result<T, E> to return the error to the client code and let it handle the error, because it might be recoverable.
         We panic! when there is a chance of the system entering a bad state, like database corruption or something like this.
+
+    Macros
+
+    Derive
+      With the #[derive()] attribute you can tell the compiler to provide some basic implementations of Traits to specifics Structs in your code.
+      Ex: 
+        #[derive(Debug)]
+        struct KV {
+            value: String,
+        }
+        Now KV will be able to be printed in println! using the {:?} formatter.
+
+        #[derive(Serialize, Deserialize)]
+        struct KV {
+            value: String,
+        }
+      
+      Now, KV can be Serialized and Deserialized into JSON format provided by the package serde_derive (you need to provide the package import of these Traits).

@@ -16,7 +16,7 @@ impl MemoryDB {
         let result = &self.key_values.get(key);
         match result {
             Some(x) => Ok(x),
-            None    => Err("Not found!")
+            None    => Err("Not found")
         }
     }
 
@@ -24,7 +24,7 @@ impl MemoryDB {
         let result = self.key_values.insert(k, v);
         match result {
             Some(x) => Ok(x),
-            None    => Err("Error!")
+            None    => Err("Error")
         }
     }
 }
