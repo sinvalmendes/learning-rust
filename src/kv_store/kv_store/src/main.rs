@@ -50,9 +50,17 @@ fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
     let result = db.store_kv(key, value.to_string());
     match result {
         Ok(x)  => {
-            return format!("The KV was stored!"); // return JSON data
+            let json_result = json!({
+                "result": true,
+            });
+            return format!("{}", json_result);
         },
-        Err(e) => return format!("{}", e) // return JSON data
+        Err(e) => {
+            let json_result = json!({
+                "error": format!("{}", e),
+            });
+            return format!("{}", json_result);
+        }
     }
 }
 

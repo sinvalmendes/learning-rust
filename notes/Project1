@@ -28,3 +28,11 @@ Domain
     DELETE "/kv/:key" application/json
     example: curl --request DELETE http://127.0.0.1:8500/v1/kv/my-key
     response: 200, {"result": "ok"}
+
+
+  TODO:
+    Add unit tests with mock;.
+    Refactor code to be easier to understand.
+    Dockerize the application.
+    Make sure we are returning JSON hearder.
+      Make a simple Rust client to automate requests against the application.
