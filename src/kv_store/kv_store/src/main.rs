@@ -2,6 +2,7 @@
 
 #[macro_use] extern crate rocket; // https://doc.rust-lang.org/1.7.0/book/macros.html
 #[macro_use] extern crate serde_derive;
+#[cfg(test)] mod tests;
 
 mod db;
 use db::memory::MemoryDB;
@@ -64,9 +65,12 @@ fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
     }
 }
 
-fn main() {
+fn get_rocket() -> rocket::Rocket {
     rocket::ignite()
         .manage(RwLock::new(MemoryDB::new()))
         .mount("/", routes![index, get_value, post_kv])
-        .launch();
+}
+
+fn main() {
+    get_rocket().launch();
 }
