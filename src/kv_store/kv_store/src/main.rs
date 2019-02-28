@@ -45,7 +45,7 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
 }
 
 #[put("/api/kv/<key>", format = "json", data = "<kv>")]
-fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String { 
+fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
     let mut db = db.write().unwrap();
     let value = &kv.value;
     let result = db.store_kv(key, value.to_string());
@@ -68,7 +68,7 @@ fn post_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
 fn get_rocket() -> rocket::Rocket {
     rocket::ignite()
         .manage(RwLock::new(MemoryDB::new()))
-        .mount("/", routes![index, get_value, post_kv])
+        .mount("/", routes![index, get_value, put_kv])
 }
 
 fn main() {
