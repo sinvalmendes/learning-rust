@@ -27,4 +27,12 @@ impl MemoryDB {
             None    => Err("Error")
         }
     }
+
+    pub fn delete_kv(&mut self, k:String) -> Result<String, &str> {
+        let result = self.key_values.remove(&k);
+        match result {
+            Some(x) => Ok(x),
+            None    => Err("Error")
+        }
+    }
 }
