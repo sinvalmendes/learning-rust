@@ -1,6 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket; // https://doc.rust-lang.org/1.7.0/book/macros.html
+#[macro_use] extern crate rocket;
 #[macro_use] extern crate serde_derive;
 #[cfg(test)] mod tests;
 
