@@ -41,6 +41,29 @@ mod tests {
         let mut response_get = req.dispatch();
         assert_eq!(response_get.status(), Status::Ok);
         assert_eq!(response_get.body_string(), Some("{\"test_value\":\"blablabla\"}".into()));
+    }
 
+    #[test]
+    fn test_get_value_invalid_format_causes_bad_request() {
+        let rocket = get_rocket();
+        let client = Client::new(rocket).expect("valid rocket instance");
+
+        let req = client.put("/api/kv/test_value")
+            .body("{\"value\":\"\"")
+            .header(ContentType::JSON);
+        let response_put = req.dispatch();
+        assert_eq!(response_put.status(), Status::BadRequest);
+    }
+
+    #[test]
+    fn test_get_value_invalid_content_type_causes_not_found() {
+        let rocket = get_rocket();
+        let client = Client::new(rocket).expect("valid rocket instance");
+
+        let req = client.put("/api/kv/test_value")
+            .body("{\"value\":\"blablabla\"}")
+            .header(ContentType::HTML);
+        let response_put = req.dispatch();
+        assert_eq!(response_put.status(), Status::NotFound);
     }
 }
