@@ -8,6 +8,7 @@ mod db;
 use db::memory::MemoryDB;
 use std::sync::RwLock;
 use rocket::State;
+use rocket::response::content;
 use rocket_contrib::json::Json;
 use serde_json::json;
 
@@ -24,7 +25,7 @@ fn index(db: State<RwLock<MemoryDB>>) -> String {
 }
 
 #[get("/api/kv/<key>")]
-fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
+fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> {
     let db = db.read().unwrap();
     let result = db.get_value(&key);
 
@@ -33,19 +34,19 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> String {
             let json_result = json!({
                 key: x,
             });
-            return format!("{}", json_result);
+            return content::Json(format!("{}", json_result));
         },
         Err(e) => {
             let json_result = json!({
                 "result": e,
             });
-            return format!("{}", json_result);
+            return content::Json(format!("{}", json_result));
         }
     }
 }
 
 #[put("/api/kv/<key>", format = "json", data = "<kv>")]
-fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
+fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> content::Json<String> {
     let mut db = db.write().unwrap();
     let value = &kv.value;
     let result = db.store_kv(key, value.to_string());
@@ -54,13 +55,13 @@ fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> String {
             let json_result = json!({
                 "result": true,
             });
-            return format!("{}", json_result);
+            return content::Json(format!("{}", json_result));
         },
         Err(e) => {
             let json_result = json!({
                 "error": format!("{}", e),
             });
-            return format!("{}", json_result);
+            return content::Json(format!("{}", json_result));
         }
     }
 }

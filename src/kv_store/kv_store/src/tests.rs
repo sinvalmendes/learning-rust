@@ -24,6 +24,9 @@ mod tests {
         let mut response = req.dispatch();
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(response.body_string(), Some("{\"result\":\"Not found\"}".into()));
+
+        let custom_headers = response.headers();
+        assert_eq!(custom_headers.get_one("Content-Type"), Some("application/json"));
     }
 
     #[test]
@@ -31,11 +34,11 @@ mod tests {
         let rocket = get_rocket();
         let client = Client::new(rocket).expect("valid rocket instance");
 
-        let response_put = req.dispatch();
         let req = client.put("/api/kv/test_value")
             .body("{\"value\":\"blablabla\"}")
             .header(ContentType::JSON);
 
+        let response_put = req.dispatch();
         assert_eq!(response_put.status(), Status::Ok);
 
         let req = client.get("/api/kv/test_value");
@@ -45,7 +48,7 @@ mod tests {
         assert_eq!(response_get.status(), Status::Ok);
 
         let custom_headers = response_get.headers();
-        assert_eq!(custom_headers.get_one("Content-Type"), Some("text/plain; charset=utf-8"));
+        assert_eq!(custom_headers.get_one("Content-Type"), Some("application/json"));
     }
 
     #[test]
