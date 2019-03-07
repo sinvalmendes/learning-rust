@@ -52,12 +52,27 @@ mod tests {
     }
 
     #[test]
-    fn test_get_value_invalid_format_causes_bad_request() {
+    fn test_put_value_invalid_format_causes_bad_request() {
         let rocket = get_rocket();
         let client = Client::new(rocket).expect("valid rocket instance");
 
         let req = client.put("/api/kv/test_value")
             .body("{\"value\":\"\"")
+            .header(ContentType::JSON);
+        let response_put = req.dispatch();
+        assert_eq!(response_put.status(), Status::BadRequest);
+
+        let custom_headers = response_put.headers();
+        assert_eq!(custom_headers.get_one("Content-Type"), Some("text/html; charset=utf-8"));
+    }
+
+    #[test]
+    fn test_put_value_invalid_key_format_causes_bad_request() {
+        let rocket = get_rocket();
+        let client = Client::new(rocket).expect("valid rocket instance");
+
+        let req = client.put("/api/kv/test_value")
+            .body("{\"\":\"value without a key\"")
             .header(ContentType::JSON);
         let response_put = req.dispatch();
         assert_eq!(response_put.status(), Status::BadRequest);
