@@ -27,20 +27,21 @@ fn index(db: State<RwLock<MemoryDB>>) -> String {
 #[get("/api/kv/<key>")]
 fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> {
     let db = db.read().unwrap();
-    let result = db.get_value(&key);
 
+    let mount_response = |key, result| {
+        let json_result = json!({
+            format!("{}",key): format!("{}", result)
+        });
+        return content::Json(format!("{}", json_result));
+    };
+
+    let result = db.get_value(&key);
     match result {
         Ok(x) => {
-            let json_result = json!({
-                key: x,
-            });
-            return content::Json(format!("{}", json_result));
+            return mount_response(key, x);
         },
         Err(e) => {
-            let json_result = json!({
-                "error": format!("{}", e),
-            });
-            return content::Json(format!("{}", json_result));
+            return mount_response(String::from("error"), e); // once key is String, the clojure will always assume the parameter key will be a String
         }
     }
 }
@@ -49,19 +50,21 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> 
 fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> content::Json<String> {
     let mut db = db.write().unwrap();
     let value = &kv.value;
+
+    let mount_response = |key, result| {
+        let json_result = json!({
+            format!("{}",key): format!("{}", result)
+        });
+        return content::Json(format!("{}", json_result));
+    };
+
     let result = db.store_kv(key, value.to_string());
     match result {
         Ok(x)  => {
-            let json_result = json!({
-                "result": true,
-            });
-            return content::Json(format!("{}", json_result));
+            return mount_response("result", "true");
         },
         Err(e) => {
-            let json_result = json!({
-                "error": format!("{}", e),
-            });
-            return content::Json(format!("{}", json_result));
+            return mount_response("error", e);
         }
     }
 }
