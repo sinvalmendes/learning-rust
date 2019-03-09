@@ -23,7 +23,7 @@ mod tests {
         let req = client.get("/api/kv/test_value");
         let mut response = req.dispatch();
         assert_eq!(response.status(), Status::Ok);
-        assert_eq!(response.body_string(), Some("{\"result\":\"Not found\"}".into()));
+        assert_eq!(response.body_string(), Some("{\"error\":\"Not found\"}".into()));
 
         let custom_headers = response.headers();
         assert_eq!(custom_headers.get_one("Content-Type"), Some("application/json"));
@@ -89,6 +89,20 @@ mod tests {
         let req = client.put("/api/kv/test_value")
             .body("{\"value\":\"blablabla\"}")
             .header(ContentType::HTML);
+        let response_put = req.dispatch();
+        assert_eq!(response_put.status(), Status::NotFound);
+
+        let custom_headers = response_put.headers();
+        assert_eq!(custom_headers.get_one("Content-Type"), Some("text/html; charset=utf-8"));
+    }
+
+    #[test]
+    fn test_get_value_without_content_type_causes_not_found() {
+        let rocket = get_rocket();
+        let client = Client::new(rocket).expect("valid rocket instance");
+
+        let req = client.put("/api/kv/test_value")
+            .body("{\"value\":\"blablabla\"}");
         let response_put = req.dispatch();
         assert_eq!(response_put.status(), Status::NotFound);
 

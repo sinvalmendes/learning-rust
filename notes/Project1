@@ -14,7 +14,7 @@ Domain
     /GET "/kv/:key" application/json
     example: curl http://127.0.0.1:8000/v1/kv/my-key
     response: 200, {"my-key":"value"}
-    response: 404, {"result": "not found"}
+    response: 404, {"error": "not found"}
 
       curl -X GET http://localhost:8000/api/kv/test_key
 
@@ -31,8 +31,6 @@ Domain
 
 
   TODO:
-    Add unit tests with mock;.
+    Add unit tests with mock;
     Refactor code to be easier to understand.
     Dockerize the application.
-    Make sure we are returning JSON hearder.
-      Make a simple Rust client to automate requests against the application.

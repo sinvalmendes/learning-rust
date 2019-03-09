@@ -38,7 +38,7 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> 
         },
         Err(e) => {
             let json_result = json!({
-                "result": e,
+                "error": format!("{}", e),
             });
             return content::Json(format!("{}", json_result));
         }
