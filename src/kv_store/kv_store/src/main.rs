@@ -28,20 +28,13 @@ fn index(db: State<RwLock<MemoryDB>>) -> String {
 fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> {
     let db = db.read().unwrap();
 
-    let mount_response = |key, result| {
-        let json_result = json!({
-            format!("{}",key): format!("{}", result)
-        });
-        return content::Json(format!("{}", json_result));
-    };
-
     let result = db.get_value(&key);
     match result {
-        Ok(x) => {
+        Ok(x)  => {
             return mount_response(key, x);
         },
         Err(e) => {
-            return mount_response(String::from("error"), e); // once key is String, the clojure will always assume the parameter key will be a String
+            return mount_response(String::from("error"), &e.to_string());
         }
     }
 }
@@ -51,22 +44,22 @@ fn put_kv(db: State<RwLock<MemoryDB>>, key: String, kv: Json<KV>) -> content::Js
     let mut db = db.write().unwrap();
     let value = &kv.value;
 
-    let mount_response = |key, result| {
-        let json_result = json!({
-            format!("{}",key): format!("{}", result)
-        });
-        return content::Json(format!("{}", json_result));
-    };
-
     let result = db.store_kv(key, value.to_string());
     match result {
         Ok(x)  => {
-            return mount_response("result", "true");
+            return mount_response(String::from("result"), String::from("true"));
         },
         Err(e) => {
-            return mount_response("error", e);
+            return mount_response(String::from("error"), e.to_string());
         }
     }
+}
+
+fn mount_response(key: String, result: String) -> content::Json<String> {
+    let json_result = json!({
+        format!("{}",key): format!("{}", result)
+    });
+    return content::Json(format!("{}", json_result));
 }
 
 fn get_rocket() -> rocket::Rocket {
