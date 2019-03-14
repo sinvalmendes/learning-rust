@@ -8,9 +8,25 @@ use criterion::Criterion;
 use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
 
+
+pub struct VecTest {
+    memo: Vec<String>
+}
+
+impl VecTest {
+    pub fn new() -> VecTest {
+        VecTest { memo: Vec::new() }
+    }
+
+    pub fn insert(&mut self, k: String) {
+        self.memo.push(k);
+    }
+}
+
 pub struct HashTest {
     memo: HashMap<String, i32>
 }
+
 
 impl HashTest {
 
@@ -64,7 +80,7 @@ fn criterion_benchmark4(c: &mut Criterion) {
             .collect();
         fib.insert(s.to_string(), i);
     }
-    c.bench_function("get existent key in huge map", move |b| 
+    c.bench_function("get existent key in huge map", move |b|
         b.iter(|| fib.get("key".to_string())));
 }
 
@@ -77,11 +93,23 @@ fn criterion_benchmark5(c: &mut Criterion) {
             .collect();
         fib.insert(s.to_string(), i);
     }
-    c.bench_function("insert existent in huge map", move |b| 
+    c.bench_function("insert existent in huge map", move |b|
         b.iter(|| fib.insert("key".to_string(), 0)));
 }
 
+fn criterion_benchmark6(c: &mut Criterion) {
+    let mut fib = VecTest::new();
+    c.bench_function("insert in vec!", move |b|
+        b.iter(|| fib.insert("key".to_string())));
+}
+
+fn criterion_benchmark7(c: &mut Criterion) {
+    let mut fib = Vec::new();
+    c.bench_function("insert in local vec!", move |b|
+        b.iter(|| fib.push("key".to_string())));
+}
 
 criterion_group!(benches, criterion_benchmark1, criterion_benchmark2, 
-    criterion_benchmark3, criterion_benchmark4, criterion_benchmark5);
+    criterion_benchmark3, criterion_benchmark4, criterion_benchmark5,
+    criterion_benchmark6, criterion_benchmark7);
 criterion_main!(benches);

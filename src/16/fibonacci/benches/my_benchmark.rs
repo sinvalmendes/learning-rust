@@ -14,6 +14,23 @@ impl Fib {
         Fib { memo: HashMap::new() }
     }
 
+    pub fn other_fib_memo(&mut self, number: usize) -> usize {
+        fn fib_memo(n: usize, memo: &mut [Option<usize>]) -> usize {
+            memo[n].unwrap_or_else(|| {
+                let result = {
+                    if n > 1 {
+                        fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+                    } else {
+                        1
+                    }
+                };
+                memo[n] = Some(result);
+                result
+            })
+        }
+        fib_memo(number, &mut vec![None; number + 1])
+    }
+
     pub fn fibonacci(&mut self, n: i32) -> i32 {
         if n == 1 || n == 0 {
             return 1;
@@ -78,8 +95,6 @@ impl Fib {
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut fib = Fib::new();
-    // let result = fib.fibonacci_memo2(10);
-    // println!("{}", result);
     c.bench_function("fibonacci_memo 35", move |b| b.iter(|| fib.fibonacci_memo(35)));
 }
 
@@ -95,7 +110,7 @@ fn criterion_benchmark3(c: &mut Criterion) {
 
 fn criterion_benchmark4(c: &mut Criterion) {
     let mut fib = Fib::new();
-    c.bench_function("fibonacci_iter 35", move |b| b.iter(|| fib.fibonacci_iterative(35)));
+    c.bench_function("other_fib_memo 35", move |b| b.iter(|| fib.other_fib_memo(35)));
 }
 criterion_group!(benches, criterion_benchmark, criterion_benchmark2, criterion_benchmark3, criterion_benchmark4);
 criterion_main!(benches);
