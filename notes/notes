@@ -259,3 +259,43 @@ Cargo
         }
       
       Now, KV can be Serialized and Deserialized into JSON format provided by the package serde_derive (you need to provide the package import of these Traits).
+
+    Pointers
+      Pointer is a reference to a value stored in the memory. Indicated by the
+      & character. They don't have any special property other than reference to data.
+
+      Smart Pointer is a reference to a value stored in the memory but it also has 
+      metadata. SP are usually implemented using Structs, and it implements the
+      Deref and Drop traits. There are several types of SP and libs usually have their
+      own Smart Pointers.
+
+      Examples of Smart Pointers:
+        * Box<T>: allocates memory on the Heap
+        * Rc<T>: enables multiple ownership
+
+        Box<T> allocates value on the Heap, and the pointer to the value stays on the Stack.
+        ```
+          let b = Box::new(5); // allocates value "5" on the Heap and b as a reference on the Stack
+          println!("b = {}", b);
+        ```
+      
+      Deref
+        This Trait acts making a reference to a pointer (another reference) work like a normal reference.
+        ```
+          fn main() {
+            let x = 5;
+            let y = &x;
+
+            assert_eq!(5, x);
+            assert_eq!(5, *y);
+          }
+        ```
+
+        We declare a reference (x) to a i32 value (5), on the line 3 
+        we declare another reference (y) that points to the x (which is a reference to 5);
+
+        So y is basically a pointer to a pointer. We can follow the "rabbit hole" and get
+        the real value, which is 5, if we use "*" to DEREF y, so "*y" gives us the 5 value
+        which is stored on the memory (Stack).
+
+        
