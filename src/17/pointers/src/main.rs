@@ -15,6 +15,8 @@ fn main() {
     let c = CustomSmartPointer { data: String::from("my stuff") };
     let d = CustomSmartPointer { data: String::from("other stuff") };
     println!("CustomSmartPointers created.");
+    println!("c: {}, d: {}", c.data, d.data);
+    // we can call drop(c); and drop(d); before main() ends in order to free the memory before
     // this is the last line of the main() function, c and d will go out of scope and our custom drop function will be called
 }
 
