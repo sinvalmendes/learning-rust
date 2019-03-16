@@ -18,8 +18,9 @@ fn main() {
     println!("c: {}, d: {}", c.data, d.data);
     // we can call drop(c); and drop(d); before main() ends in order to free the memory before
     // this is the last line of the main() function, c and d will go out of scope and our custom drop function will be called
-}
 
+    func();
+}
 
 struct CustomSmartPointer {
     data: String,
@@ -29,4 +30,15 @@ impl Drop for CustomSmartPointer {
     fn drop(&mut self) {
         println!("Dropping CustomSmartPointer with data `{}`!", self.data);
     }
+}
+
+fn func() {
+    let a = String::from("a");
+    another_func(a); // a is moved to another_func
+    // println!("a: {}", a); // won't work, because a as moved to another_func on the line above
+    // another_func(a); // this also won't work, because a is dead now, because it was moved in the previous another_func call
+}
+
+fn another_func(a: String) {
+    println!("a: {}, was moved to me, I own it", a);
 }

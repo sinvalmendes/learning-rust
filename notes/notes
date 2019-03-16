@@ -298,4 +298,32 @@ Cargo
         the real value, which is 5, if we use "*" to DEREF y, so "*y" gives us the 5 value
         which is stored on the memory (Stack).
 
+      Move
+        A reference to a value (variables and constants), they are initially owned by the
+        function/scope where they were first declared.
+
+        ```
+          fn func() {
+            let a = String::from("a");
+          }
+        ```
+
+        Here, we see a variable called "a" being declared inside the scope of funct, this
+        means that func OWNS a, when func ends, the value of a will also be gone, because Rust
+        will call the drop Trait of a.
+
+        ```
+          fn func() {
+            let a = String::from("a");
+            another_func(a); // a is moved to another_func
+          }
+          
+          fn another_func(String a) {
+            println!("a: {}, was moved to me, I own it", a);
+          }
+        ```
+
+        In this example, "a" is moved into another_func before func ends, "move" means that
+        "a" is not owned by func anymore, and it will be gone when another_func ends, the ownership
+        was "moved", transferred to another scope (another_func's scope);
         
