@@ -40,6 +40,12 @@ Cargo
     This is very nice, you can also see the documentation of your dependencies!
     You can see documentation of your builded dependencies
     `cargo doc -p gcc --open`
+  Cargo can format the code of a project!
+    `cargo fmt`
+  Cargo can fix warnings about the code of a project!
+    `cargo fix`
+  Cargo can run tests and print their output!
+    `cargo test -- --nocapture`
 
   Rust language
     Pattern Matching
@@ -326,4 +332,3 @@ Cargo
         In this example, "a" is moved into another_func before func ends, "move" means that
         "a" is not owned by func anymore, and it will be gone when another_func ends, the ownership
         was "moved", transferred to another scope (another_func's scope);
-        
