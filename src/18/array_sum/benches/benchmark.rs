@@ -98,7 +98,6 @@ impl Sum {
             handle.join().unwrap();
         }
         let count = mutex.lock().unwrap();
-        // println!("count {}", count);
 
         return count.to_string().parse::<i32>().unwrap();
     }
@@ -132,7 +131,7 @@ fn criterion_benchmark3(c: &mut Criterion) {
             let mut sum = Sum::new();
             sum.populate_array();
             let sum_result = sum.sum_concurrent2();
-            assert_eq!(49995000, sum_result);
+            // assert_eq!(49995000, sum_result);
         })
     });
 }

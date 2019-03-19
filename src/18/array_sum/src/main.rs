@@ -1,6 +1,9 @@
 #[cfg(test)]
 mod tests;
 
+use std::time::{Instant};
+
+
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::vec::Vec;
@@ -15,7 +18,7 @@ impl Sum {
     }
 
     fn populate_array(&mut self) {
-        for i in 1..10000 {
+        for i in 0..10000 {
             self.array.push(i);
         }
     }
@@ -28,48 +31,61 @@ impl Sum {
         return result;
     }
 
-    fn sum_concurrent(self) -> i32 {
-        let mut result = 0;
+    fn sum_concurrent(self) -> std::vec::Vec<thread::JoinHandle<()>> {
+        let _result = 0;
+        let array_len = self.array.len();
         let mut handles = vec![];
         let mutex_array = Arc::new(Mutex::new(self.array));
         let mutex = Arc::new(Mutex::new(0));
 
-        let c_mutex = Arc::clone(&mutex);
-        let a_mutex = Arc::clone(&mutex_array);
+        let mut k = 0;
+        for i in 1..11 {
+            let slice = array_len/10;
+            let offset = (slice * i) - 1;
 
-        let t1 = thread::spawn(move || {
-            let mut count = c_mutex.lock().unwrap();
-            let mut array = a_mutex.lock().unwrap();
-            for i in 0..5000 {
-                *count += array[i];
-                println!("t1 {:?}", array[i]);
-            }
-        });
-        handles.push(t1);
-
-        let c_mutex = Arc::clone(&mutex);
-        let a_mutex = Arc::clone(&mutex_array);
-
-        let t2 = thread::spawn(move || {
-            let mut count = c_mutex.lock().unwrap();
-            let mut array = a_mutex.lock().unwrap();
-            for i in 5000..9999 {
-                *count += array[i];
-                println!("t2 {:?}", array[i]);
-            }
-        });
-        handles.push(t2);
-
-        for handle in handles {
-            handle.join().unwrap();
+            let c_mutex = Arc::clone(&mutex);
+            let a_mutex = Arc::clone(&mutex_array);
+            let t1 = thread::spawn(move || {
+                let array = a_mutex.lock().unwrap();
+                let mut thread_internal_count = 0;
+                for j in k..offset {
+                    thread_internal_count += array[j];
+                }
+                let mut count = c_mutex.lock().unwrap();
+                *count += thread_internal_count;
+            });
+            k = offset + 1;
+            handles.push(t1);
         }
-        let count = mutex.lock().unwrap();
-
-        println!("t1_result---> {}", count);
-        return count.to_string().parse::<i32>().unwrap();
+        return handles;
     }
 }
 
+
+fn benchmark1() {
+    let bench_name = "benchmark conc";
+    let mut sum = Sum::new();
+    sum.populate_array();
+    let handles = sum.sum_concurrent();
+    let now = Instant::now();
+    for handle in handles {
+        handle.join().unwrap();
+    }
+    let elapsed = now.elapsed().as_nanos();
+    println!("{}: {}", bench_name, elapsed);
+}
+
+fn benchmark2 () {
+    let bench_name = "benchmark iter";
+    let mut sum = Sum::new();
+    sum.populate_array();
+    let now = Instant::now();
+    sum.sum_iter();
+    let elapsed = now.elapsed().as_nanos();
+    println!("{}: {}", bench_name, elapsed);
+}
+
 pub fn main() {
-    println!("Sum!");
+    benchmark1();
+    benchmark2();
 }
