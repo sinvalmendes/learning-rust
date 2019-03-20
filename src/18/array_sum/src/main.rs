@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use std::time::{Instant};
+use std::time::Instant;
 
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -34,7 +34,12 @@ impl Sum {
         return 0;
     }
 
-    fn get_thread_pool(self, mutex: &mut Arc<Mutex<i32>>, number_of_threads: i32, slice:i32) -> std::vec::Vec<thread::JoinHandle<()>> {
+    fn get_thread_pool(
+        self,
+        mutex: &mut Arc<Mutex<i32>>,
+        number_of_threads: i32,
+        slice: i32,
+    ) -> std::vec::Vec<thread::JoinHandle<()>> {
         let mut threads = vec![];
         // let mutex = Arc::new(Mutex::new(0));
 
@@ -58,43 +63,55 @@ impl Sum {
         return threads;
     }
 
-    fn get_sum_thread_pool(self, mutex: &mut Arc<Mutex<i32>>) -> std::vec::Vec<thread::JoinHandle<()>> {
+    fn get_sum_thread_pool(
+        self,
+        mutex: &mut Arc<Mutex<i32>>,
+    ) -> std::vec::Vec<thread::JoinHandle<()>> {
         let mut number_of_threads: i32 = 10;
         let array_len: i32 = self.array.len() as i32;
 
         if self.array.len() % 10 != 0 {
             number_of_threads = 1;
         }
-        let slice: i32 = array_len/number_of_threads;
+        let slice: i32 = array_len / number_of_threads;
         return self.get_thread_pool(mutex, number_of_threads, slice);
     }
 }
-
 
 fn benchmark1() {
     let bench_name = "benchmark conc1";
     let mut sum = Sum::new();
     sum.populate_array();
 
-    let mut mutex = Arc::new(Mutex::new(0));
-    let thread_pool = sum.get_sum_thread_pool(&mut mutex);
+    let mut mutex = Arc::new(Mutex::new(0)); // here we create counter as Mutex of a i32 with Send and Sync
+    let thread_pool = sum.get_sum_thread_pool(&mut mutex); // this &mut is fundamental to get the result of the threads counting
+
     let now = Instant::now();
     for handle in thread_pool {
         handle.join().unwrap();
     }
     let elapsed = now.elapsed().as_nanos();
+
     let mut result = mutex.lock().unwrap();
-    println!("{}:, result:{}, elapsed time:{}", bench_name, result, elapsed);
+    println!(
+        "{}:, result:{}, elapsed time:{}",
+        bench_name, result, elapsed
+    );
 }
 
-fn benchmark2 () {
+fn benchmark2() {
     let bench_name = "benchmark iter1";
     let mut sum = Sum::new();
     sum.populate_array();
+
     let now = Instant::now();
     let result = sum.sum_iter();
     let elapsed = now.elapsed().as_nanos();
-    println!("{}:, result:{}, elapsed time:{}", bench_name, result, elapsed);
+
+    println!(
+        "{}:, result:{}, elapsed time:{}",
+        bench_name, result, elapsed
+    );
 }
 
 pub fn main() {

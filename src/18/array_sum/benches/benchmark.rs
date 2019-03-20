@@ -77,7 +77,7 @@ impl Sum {
 
         let mut k = 0;
         for i in 1..11 {
-            let slice = array_len/10;
+            let slice = array_len / 10;
             let offset = (slice * i) - 1;
             // println!("i: {}, k: {}, slice: {}, offset: {}", i, k, slice, offset);
 
@@ -120,7 +120,6 @@ fn criterion_benchmark2(c: &mut Criterion) {
             sum.populate_array();
             let sum_result = sum.sum_iter();
             assert_eq!(49995000, sum_result);
-
         })
     });
 }
@@ -135,5 +134,10 @@ fn criterion_benchmark3(c: &mut Criterion) {
         })
     });
 }
-criterion_group!(benches, criterion_benchmark1, criterion_benchmark2, criterion_benchmark3);
+criterion_group!(
+    benches,
+    criterion_benchmark1,
+    criterion_benchmark2,
+    criterion_benchmark3
+);
 criterion_main!(benches);
