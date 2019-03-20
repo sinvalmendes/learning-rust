@@ -35,21 +35,22 @@ impl Sum {
         let _result = 0;
         let array_len = self.array.len();
         let mut handles = vec![];
-        let mutex_array = Arc::new(Mutex::new(self.array));
+        // let mutex_array = Arc::new(Mutex::new(self.array));
         let mutex = Arc::new(Mutex::new(0));
 
         let mut k = 0;
-        for i in 1..11 {
-            let slice = array_len/10;
+        for i in 1..9 {
+            let slice = array_len/8;
             let offset = (slice * i) - 1;
 
+            let thread_array = self.array.clone();
             let c_mutex = Arc::clone(&mutex);
-            let a_mutex = Arc::clone(&mutex_array);
+            // let a_mutex = Arc::clone(&mutex_array);
             let t1 = thread::spawn(move || {
-                let array = a_mutex.lock().unwrap();
+                // let array = a_mutex.lock().unwrap();
                 let mut thread_internal_count = 0;
                 for j in k..offset {
-                    thread_internal_count += array[j];
+                    thread_internal_count += thread_array[j];
                 }
                 let mut count = c_mutex.lock().unwrap();
                 *count += thread_internal_count;
