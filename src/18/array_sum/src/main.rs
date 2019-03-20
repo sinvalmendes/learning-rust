@@ -34,9 +34,9 @@ impl Sum {
         return 0;
     }
 
-    fn get_thread_pool(self, number_of_threads: i32, slice:i32) -> std::vec::Vec<thread::JoinHandle<()>> {
+    fn get_thread_pool(self, mutex: &mut Arc<Mutex<i32>>, number_of_threads: i32, slice:i32) -> std::vec::Vec<thread::JoinHandle<()>> {
         let mut threads = vec![];
-        let mutex = Arc::new(Mutex::new(0));
+        // let mutex = Arc::new(Mutex::new(0));
 
         let mut k = 0;
         for i in 0..number_of_threads {
@@ -58,7 +58,7 @@ impl Sum {
         return threads;
     }
 
-    fn get_sum_thread_pool(self) -> std::vec::Vec<thread::JoinHandle<()>> {
+    fn get_sum_thread_pool(self, mutex: &mut Arc<Mutex<i32>>) -> std::vec::Vec<thread::JoinHandle<()>> {
         let mut number_of_threads: i32 = 10;
         let array_len: i32 = self.array.len() as i32;
 
@@ -66,8 +66,7 @@ impl Sum {
             number_of_threads = 1;
         }
         let slice: i32 = array_len/number_of_threads;
-
-        return self.get_thread_pool(number_of_threads, slice);
+        return self.get_thread_pool(mutex, number_of_threads, slice);
     }
 }
 
@@ -76,13 +75,16 @@ fn benchmark1() {
     let bench_name = "benchmark conc1";
     let mut sum = Sum::new();
     sum.populate_array();
-    let thread_pool = sum.get_sum_thread_pool();
+
+    let mut mutex = Arc::new(Mutex::new(0));
+    let thread_pool = sum.get_sum_thread_pool(&mut mutex);
     let now = Instant::now();
     for handle in thread_pool {
         handle.join().unwrap();
     }
     let elapsed = now.elapsed().as_nanos();
-    println!("{}: {}", bench_name, elapsed);
+    let mut result = mutex.lock().unwrap();
+    println!("{}:, result:{}, elapsed time:{}", bench_name, result, elapsed);
 }
 
 fn benchmark2 () {
