@@ -63,7 +63,7 @@ impl Sum {
 
 
 fn benchmark1() {
-    let bench_name = "benchmark conc";
+    let bench_name = "benchmark conc1";
     let mut sum = Sum::new();
     sum.populate_array();
     let handles = sum.sum_concurrent();
@@ -76,7 +76,7 @@ fn benchmark1() {
 }
 
 fn benchmark2 () {
-    let bench_name = "benchmark iter";
+    let bench_name = "benchmark iter1";
     let mut sum = Sum::new();
     sum.populate_array();
     let now = Instant::now();
