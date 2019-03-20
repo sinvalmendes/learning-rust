@@ -6,6 +6,13 @@ fn main() {
     let mut s = String::from("hello"); // we need to make s mutable in order to pass its mutable reference to other scopes mutate its value
     borrowing_to_mutate(&mut s); // borrowing a mutable reference
     println!("s mutated: {}", s); // it is done, s mutated and is still valid in the current scope!
+
+    let mut counter = 0;
+    println!("counter: {}, before mutation", counter);
+    increment_mutable_counter_reference(&mut counter);
+    println!("counter: {}, after first mutation", counter);
+    increment_mutable_counter_reference(&mut counter); // you can borrow the mutable reference as much as you want
+    println!("counter: {}, after second mutation", counter);
 }
 
 fn calculate_length(s_pointer: &String) -> usize { // &String means the function want a pointer/reference to a String value in the Heap
@@ -16,4 +23,8 @@ fn calculate_length(s_pointer: &String) -> usize { // &String means the function
 
 fn borrowing_to_mutate(s_mutable_pointer: &mut String) {
     s_mutable_pointer.push_str(" world");
+}
+
+fn increment_mutable_counter_reference(counter: &mut i32) {
+    *counter += 1; // counter is incremented and won't die at the end of this function
 }
