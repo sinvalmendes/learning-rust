@@ -31,7 +31,7 @@ impl Sum {
     }
 
     fn sum_concurrent(self) -> i32 {
-        let mut result = 0;
+        let _result = 0;
         let mut handles = vec![];
         let mutex_array = Arc::new(Mutex::new(self.array));
         let mutex = Arc::new(Mutex::new(0));
@@ -41,7 +41,7 @@ impl Sum {
 
         let t1 = thread::spawn(move || {
             let mut count = c_mutex.lock().unwrap();
-            let mut array = a_mutex.lock().unwrap();
+            let array = a_mutex.lock().unwrap();
             for i in 0..5000 {
                 *count += array[i];
             }
@@ -53,7 +53,7 @@ impl Sum {
 
         let t2 = thread::spawn(move || {
             let mut count = c_mutex.lock().unwrap();
-            let mut array = a_mutex.lock().unwrap();
+            let array = a_mutex.lock().unwrap();
             for i in 5000..9999 {
                 *count += array[i];
             }
@@ -69,7 +69,7 @@ impl Sum {
     }
 
     fn sum_concurrent2(self) -> i32 {
-        let mut result = 0;
+        let _result = 0;
         let array_len = self.array.len();
         let mut handles = vec![];
         let mutex_array = Arc::new(Mutex::new(self.array));
@@ -85,7 +85,7 @@ impl Sum {
             let a_mutex = Arc::clone(&mutex_array);
             let t1 = thread::spawn(move || {
                 let mut count = c_mutex.lock().unwrap();
-                let mut array = a_mutex.lock().unwrap();
+                let array = a_mutex.lock().unwrap();
                 for j in k..offset {
                     *count += array[j];
                 }
@@ -129,7 +129,7 @@ fn criterion_benchmark3(c: &mut Criterion) {
         b.iter(|| {
             let mut sum = Sum::new();
             sum.populate_array();
-            let sum_result = sum.sum_concurrent2();
+            let _sum_result = sum.sum_concurrent2();
             // assert_eq!(49995000, sum_result);
         })
     });

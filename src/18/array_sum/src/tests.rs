@@ -30,7 +30,7 @@ mod tests {
         sum.populate_array();
         assert_eq!(9999, sum.array.len());
 
-        let sum_result = sum.sum_concurrent();
+        let _sum_result = sum.sum_concurrent();
         // assert_eq!(49995000, sum_result);
     }
 
