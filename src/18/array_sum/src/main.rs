@@ -49,7 +49,6 @@ impl Sum {
         slice: i32,
     ) -> std::vec::Vec<thread::JoinHandle<()>> {
         let mut threads = vec![];
-        // let mutex = Arc::new(Mutex::new(0));
 
         let mut k = 0;
         for i in 0..number_of_threads {

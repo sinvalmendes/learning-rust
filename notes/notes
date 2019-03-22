@@ -13,6 +13,7 @@ Awesome Rust
   Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
   Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
   Benchmark and Rust examples: https://doc.rust-lang.org/1.5.0/book/benchmark-tests.html
+  Great Blog about borrowing and mutability: https://medium.com/@vikram.fugro/mutable-reference-in-rust-995320366e22
 
 Compile
   This will generate a binary file called "main":
