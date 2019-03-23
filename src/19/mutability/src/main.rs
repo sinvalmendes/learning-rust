@@ -42,4 +42,8 @@ fn main() {
     println!("{:?}", bla);
     drop(bla); // bla is dropped here
                // println!("{:?}", bla); // this won't compile, bla was dropped, it does not exist anymore
+
+    let six = 6;
+    drop(six); // this does not drop six, because primitive types does not implement the Drop trait
+    println!("{}", six); // this works
 }
