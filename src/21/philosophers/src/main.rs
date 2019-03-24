@@ -41,21 +41,21 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
         println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         loop {
             let mut locked_forks = forks.lock().unwrap();
-            let philosopher_left_fork = locked_forks[left_fork];
-            let philosopher_right_fork = locked_forks[right_fork];
+            let philosopher_left_fork = locked_forks[left_fork]; // extract method and lock only when needed
+            let philosopher_right_fork = locked_forks[right_fork]; // extract method and lock only when needed
 
-            let got_left_fork = philosopher_left_fork == needed_left_fork;
+            let got_left_fork = philosopher_left_fork == needed_left_fork; // extract method
             // needs to add thinking step here
-            let got_right_fork = philosopher_right_fork == needed_right_fork;
+            let got_right_fork = philosopher_right_fork == needed_right_fork; // extract method
 
-            if got_left_fork {
+            if got_left_fork { // extract method
                 println!("{} got left_fork: {}", name, philosopher_left_fork);
                 locked_forks[left_fork] = "None";
             } else {
                 println!("{} didn't get left_fork: {}", name, philosopher_left_fork);
             }
 
-            if got_right_fork {
+            if got_right_fork { // extract method
                 println!("{} got right_fork: {}", name, philosopher_right_fork);
                 locked_forks[right_fork] = "None";
             } else {
