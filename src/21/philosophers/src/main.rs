@@ -14,11 +14,11 @@ fn main() {
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(forks));
     let mut philosophers_thread_pool = vec![];
 
-    let p0 = create_philosopher_thread(&mut mutex, "0", 0, 1);
-    let p1 = create_philosopher_thread(&mut mutex, "1", 1, 2);
-    let p2 = create_philosopher_thread(&mut mutex, "2", 2, 3);
-    let p3 = create_philosopher_thread(&mut mutex, "3", 3, 4);
-    let p4 = create_philosopher_thread(&mut mutex, "4", 4, 0);
+    let p0 = create_philosopher_thread(&mut mutex, "P0", 0, 1);
+    let p1 = create_philosopher_thread(&mut mutex, "P1", 1, 2);
+    let p2 = create_philosopher_thread(&mut mutex, "P2", 2, 3);
+    let p3 = create_philosopher_thread(&mut mutex, "P3", 3, 4);
+    let p4 = create_philosopher_thread(&mut mutex, "P4", 4, 0);
 
     philosophers_thread_pool.push(p0);
     philosophers_thread_pool.push(p1);
@@ -38,28 +38,51 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
     let needed_right_fork = format!("fork{}", right_fork);
 
     let t = thread::spawn(move || {
-        println!("P{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
+        println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         loop {
             let mut locked_forks = forks.lock().unwrap();
             let philosopher_left_fork = locked_forks[left_fork];
             let philosopher_right_fork = locked_forks[right_fork];
 
-            if philosopher_left_fork == needed_left_fork{
-                println!("P{} got left_fork: {}", name, philosopher_left_fork);
+            let got_left_fork = philosopher_left_fork == needed_left_fork;
+            // needs to add thinking step here
+            let got_right_fork = philosopher_right_fork == needed_right_fork;
+
+            if got_left_fork {
+                println!("{} got left_fork: {}", name, philosopher_left_fork);
+                locked_forks[left_fork] = "None";
             } else {
-                println!("P{} didn't get left_fork: {}", name, "other thing");
+                println!("{} didn't get left_fork: {}", name, philosopher_left_fork);
             }
 
-            if philosopher_right_fork == needed_right_fork{
-                println!("P{} got right_fork: {}", name, philosopher_right_fork);
+            if got_right_fork {
+                println!("{} got right_fork: {}", name, philosopher_right_fork);
+                locked_forks[right_fork] = "None";
             } else {
-                println!("P{} didn't get right_fork: {}", name, "other thing");
+                println!("{} didn't get right_fork: {}", name, philosopher_right_fork);
             }
 
-            println!("P{} current status: right_fork '{}', right_fork '{}'", name, philosopher_left_fork, philosopher_right_fork);
+            if (got_left_fork == got_right_fork) == true {
+                println!("{} CAN EAT!: right_fork '{}', right_fork '{}'", name, philosopher_left_fork, philosopher_right_fork);
+                println!("{} EATING!", name);
+            }
+            locked_forks[left_fork] = philosopher_left_fork;
+            // needs to add thinking step here
+            locked_forks[right_fork] = philosopher_right_fork;
+            std::mem::drop(locked_forks);
+
             break;
         }
     
     });
     return t;
+}
+
+
+fn think(thread_name: String) {
+    let mut rng = rand::thread_rng();
+    let random = rng.gen_range(1000, 10000);
+    println!("{} thinking for: {} milliseconds", thread_name, random);
+    let sleep = time::Duration::from_millis(random);
+    thread::sleep(sleep);
 }
