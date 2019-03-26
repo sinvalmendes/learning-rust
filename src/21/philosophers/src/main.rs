@@ -5,11 +5,13 @@ use std::sync::{Arc, Mutex};
 use std::vec::Vec;
 use std::{thread, time};
 
+static FORK: &str = "fork";
+
 fn main() {
     println!("Hello, philosophers!");
 
     let number_of_times = 5;
-    let forks = vec!["fork", "fork", "fork", "fork", "fork"];
+    let forks = vec![FORK, FORK, FORK, FORK, FORK];
 
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(forks));
     let mut philosophers_thread_pool = vec![];
@@ -34,7 +36,6 @@ fn main() {
 
 fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork: usize, right_fork: usize) -> thread::JoinHandle<()> {
     let mut forks = Arc::clone(&mutex);
-    let fork = "fork";
     let t = thread::spawn(move || {
         println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         let mut got_left_fork = false;
@@ -46,7 +47,6 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
             }
 
             if (got_left_fork) {
-                got_left_fork = true;
                 println!("{} got left fork!", name);
                 think(name);
                 println!("{} will attempt to get right fork!", name);
@@ -56,12 +56,12 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
                     println!("{} EATING!", name);
                     think(name);
                     let mut locked_forks = forks.lock().unwrap();
-                    locked_forks[left_fork] = fork;
-                    locked_forks[right_fork] = fork;
+                    locked_forks[left_fork] = FORK;
+                    locked_forks[right_fork] = FORK;
                     break;
                 }
                 let mut locked_forks = forks.lock().unwrap();
-                locked_forks[left_fork] = fork;
+                locked_forks[left_fork] = FORK;
             }
         }
     });
@@ -70,13 +70,11 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
 
 fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize) -> bool {
     let mut locked_forks = forks.lock().unwrap();
-    let philosopher_fork = locked_forks[fork_index];
-    if philosopher_fork == "fork" {
+    if locked_forks[fork_index] == FORK {
         locked_forks[fork_index] = "None";
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 fn think(thread_name: &'static str) {
