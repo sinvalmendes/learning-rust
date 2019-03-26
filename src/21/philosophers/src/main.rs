@@ -34,7 +34,7 @@ fn main() {
 
 fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork: usize, right_fork: usize) -> thread::JoinHandle<()> {
     let mut forks = Arc::clone(&mutex);
-
+    let fork = "fork";
     let t = thread::spawn(move || {
         println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         let mut got_left_fork = false;
@@ -46,23 +46,22 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
             }
 
             if (got_left_fork) {
+                got_left_fork = true;
                 println!("{} got left fork!", name);
                 think(name);
                 println!("{} will attempt to get right fork!", name);
                 let got_right_fork = try_get_fork(&mut forks, right_fork);
                 if (got_right_fork) {
                     println!("{} got right fork!", name);
-                    println!("{} CAN EAT!", name);
                     println!("{} EATING!", name);
                     think(name);
                     let mut locked_forks = forks.lock().unwrap();
-                    locked_forks[right_fork] = "fork";
-                    locked_forks[left_fork] = "fork";
+                    locked_forks[left_fork] = fork;
+                    locked_forks[right_fork] = fork;
                     break;
-                    // got_left_fork = false;
-                    // needes to give back the right fork
-                    // needes to give back the left fork
                 }
+                let mut locked_forks = forks.lock().unwrap();
+                locked_forks[left_fork] = fork;
             }
         }
     });
@@ -82,7 +81,7 @@ fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize) -> 
 
 fn think(thread_name: &'static str) {
     let mut rng = rand::thread_rng();
-    let random = rng.gen_range(1000, 10000);
+    let random = rng.gen_range(1000, 5000);
     println!("{} thinking for: {} milliseconds", thread_name, random);
     let sleep = time::Duration::from_millis(random);
     thread::sleep(sleep);
