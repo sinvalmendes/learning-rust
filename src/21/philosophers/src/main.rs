@@ -33,30 +33,31 @@ fn main() {
 
 
 fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork: usize, right_fork: usize) -> thread::JoinHandle<()> {
-    let needed_left_fork = "fork";
-    let needed_right_fork = "fork";
     let mut forks = Arc::clone(&mutex);
 
     let t = thread::spawn(move || {
         println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         let mut got_left_fork = false;
         loop {
-
             if !(got_left_fork) {
                 think(name);
-                got_left_fork = try_get_left_fork(name, &mut forks, left_fork, needed_left_fork);
+                println!("{} will attempt to get left fork!", name);
+                got_left_fork = try_get_fork(&mut forks, left_fork);
             }
 
             if (got_left_fork) {
+                println!("{} got left fork!", name);
                 think(name);
-                let got_right_fork = try_get_right_fork(name, &mut forks, right_fork, needed_right_fork);
+                println!("{} will attempt to get right fork!", name);
+                let got_right_fork = try_get_fork(&mut forks, right_fork);
                 if (got_right_fork) {
+                    println!("{} got right fork!", name);
                     println!("{} CAN EAT!", name);
                     println!("{} EATING!", name);
                     think(name);
                     let mut locked_forks = forks.lock().unwrap();
-                    locked_forks[right_fork] = needed_right_fork;
-                    locked_forks[left_fork] = needed_left_fork;
+                    locked_forks[right_fork] = "fork";
+                    locked_forks[left_fork] = "fork";
                     break;
                     // got_left_fork = false;
                     // needes to give back the right fork
@@ -64,36 +65,17 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
                 }
             }
         }
-    
     });
     return t;
 }
 
-// refactor both methods into just one
-fn try_get_right_fork(name: &'static str, forks: &mut Arc<Mutex<Vec<&'static str>>>, right_fork:usize, needed_right_fork: &'static str) -> bool {
+fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize) -> bool {
     let mut locked_forks = forks.lock().unwrap();
-    let philosopher_right_fork = locked_forks[right_fork]; // extract method and lock only when needed
-    let got_right_fork = philosopher_right_fork == needed_right_fork; // extract method
-    if got_right_fork { // extract method
-        println!("{} got right_fork: {}", name, philosopher_right_fork);
-        locked_forks[right_fork] = "None";
+    let philosopher_fork = locked_forks[fork_index];
+    if philosopher_fork == "fork" {
+        locked_forks[fork_index] = "None";
         return true;
     } else {
-        println!("{} didn't get right_fork: {}", name, philosopher_right_fork);
-        return false;
-    }
-}
-
-fn try_get_left_fork(name: &'static str, forks: &mut Arc<Mutex<Vec<&'static str>>>, left_fork:usize, needed_left_fork: &'static str) -> bool {
-    let mut locked_forks = forks.lock().unwrap();
-    let philosopher_left_fork = locked_forks[left_fork]; // extract method and lock only when needed
-    let got_left_fork = philosopher_left_fork == needed_left_fork; // extract method
-    if got_left_fork { // extract method
-        println!("{} got left_fork: {}", name, philosopher_left_fork);
-        locked_forks[left_fork] = "None";
-        return true;
-    } else {
-        println!("{} didn't get left_fork: {}", name, philosopher_left_fork);
         return false;
     }
 }
