@@ -128,7 +128,7 @@ Cargo
           The character type, char.
           Tuples, if they only contain types that are also Copy. For example, (i32, i32) is Copy, but (i32, String) is not.
 
-      Ownership and Functions
+      Ownership and Fun ctions
         The mechanics of copy and moving values in functions are similar to variables assignment.
 
       Borrowing and References
@@ -141,6 +141,14 @@ Cargo
             1. `let mut s = String::from("borrowed");`
             2. `borrow_s(&mut s);`
           Now, borrow_s function can mutate s using the "&mut s" pointer.
+
+        Every value passed to other scopes get moved. You can make the value mutable adding "mut" and make the function return the altered value and store
+        it at the same variable. (THIS SUCKS)
+      
+        If your second scope will not alter the variable (just consume the value) you should borrow a reference passing "&var" to the function.
+
+        It's better to use the "&mut" references and borrow mutable references if you need to keep values on the current scope and have it mutated by other
+        scopes like functions.
 
     Modules and Namespaces
       You can use Rust modules in Rust code.
@@ -333,3 +341,22 @@ Cargo
         In this example, "a" is moved into another_func before func ends, "move" means that
         "a" is not owned by func anymore, and it will be gone when another_func ends, the ownership
         was "moved", transferred to another scope (another_func's scope);
+
+    Strings
+      There are 6 String types in Rust, but we use only 2 mostly.
+
+      &str (string slice)
+        it's a pointer to a value and a length, it's fixed. immutable and stays at the stack (can live on the Heap as well)
+
+      String
+        it's an object, lives at the heap and it's extensible
+
+      Prefer &str as a function parameter or if you want a read-only view of a string; String when you want to own and mutate a string.
+
+    Ownership Rules (again)
+      1. Each value has a owner.
+      2. Only one owner .
+      3. When the owner scope ends the value is gone.
+
+    Why it's called clone() and not copy()?
+      clone() is a deep copy, copies the value and stores at completely different reference to the new value.
