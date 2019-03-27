@@ -14,6 +14,8 @@ Awesome Rust
   Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
   Benchmark and Rust examples: https://doc.rust-lang.org/1.5.0/book/benchmark-tests.html
   Great Blog about borrowing and mutability: https://medium.com/@vikram.fugro/mutable-reference-in-rust-995320366e22
+  Nathan Stocks course examples: https://github.com/CleanCut/rust_programming/
+  Notes about optimization: https://gist.github.com/jFransham/369a86eff00e5f280ed25121454acec1#number-one-optimization-tip-dont
 
 Compile
   This will generate a binary file called "main":
