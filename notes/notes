@@ -296,8 +296,8 @@ Cargo
           println!("b = {}", b);
         ```
       
-      Deref
-        This Trait acts making a reference to a pointer (another reference) work like a normal reference.
+    Deref
+      This Trait acts making a reference to a pointer (another reference) work like a normal reference.
         ```
           fn main() {
             let x = 5;
@@ -308,16 +308,16 @@ Cargo
           }
         ```
 
-        We declare a reference (x) to a i32 value (5), on the line 3 
-        we declare another reference (y) that points to the x (which is a reference to 5);
+      We declare a reference (x) to a i32 value (5), on the line 3 
+      we declare another reference (y) that points to the x (which is a reference to 5);
 
-        So y is basically a pointer to a pointer. We can follow the "rabbit hole" and get
-        the real value, which is 5, if we use "*" to DEREF y, so "*y" gives us the 5 value
-        which is stored on the memory (Stack).
+      So y is basically a pointer to a pointer. We can follow the "rabbit hole" and get
+      the real value, which is 5, if we use "*" to DEREF y, so "*y" gives us the 5 value
+      which is stored on the memory (Stack).
 
-      Move
-        A reference to a value (variables and constants), they are initially owned by the
-        function/scope where they were first declared.
+    Move
+      A reference to a value (variables and constants), they are initially owned by the
+      function/scope where they were first declared.
 
         ```
           fn func() {
@@ -325,10 +325,9 @@ Cargo
           }
         ```
 
-        Here, we see a variable called "a" being declared inside the scope of funct, this
-        means that func OWNS a, when func ends, the value of a will also be gone, because Rust
-        will call the drop Trait of a.
-
+      Here, we see a variable called "a" being declared inside the scope of funct, this
+      means that func OWNS a, when func ends, the value of a will also be gone, because Rust
+      will call the drop Trait of a.
         ```
           fn func() {
             let a = String::from("a");
@@ -340,9 +339,9 @@ Cargo
           }
         ```
 
-        In this example, "a" is moved into another_func before func ends, "move" means that
-        "a" is not owned by func anymore, and it will be gone when another_func ends, the ownership
-        was "moved", transferred to another scope (another_func's scope);
+      In this example, "a" is moved into another_func before func ends, "move" means that
+      "a" is not owned by func anymore, and it will be gone when another_func ends, the ownership
+      was "moved", transferred to another scope (another_func's scope);
 
     Strings
       There are 6 String types in Rust, but we use only 2 mostly.
@@ -357,7 +356,7 @@ Cargo
 
     Ownership Rules (again)
       1. Each value has a owner.
-      2. Only one owner .
+      2. Only one owner.
       3. When the owner scope ends the value is gone.
 
     Why it's called clone() and not copy()?
