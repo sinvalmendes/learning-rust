@@ -5,6 +5,7 @@ Awesome Rust
   Algorithms: https://rust-lang-nursery.github.io/rust-cookbook/algorithms.html
   Book: https://doc.rust-lang.org/beta/book/
   Rust by Examples books: https://doc.rust-lang.org/rust-by-example/
+  Rust Error code documentation: https://doc.rust-lang.org/error-index.html
   Dark Arts: https://doc.rust-lang.org/stable/nomicon/README.html
   Syntax Coveniences: https://www.youtube.com/watch?v=Xk5IZOtLUmE
   Reference about Rocket: https://matthias-endler.de/2017/rust-url-shortener/index.html
@@ -51,6 +52,10 @@ Cargo
     `cargo fix`
   Cargo can run tests and print their output!
     `cargo test -- --nocapture`
+
+Rustc
+  Rustc can show simple documentation about errors, it's very useful!
+    `rustc --explain E0204`
 
   Rust language
     Pattern Matching
@@ -383,3 +388,5 @@ Cargo
             println!("{} {}", a, b);
         }
       ```
+
+      Move Semantics x Copy Semantics
