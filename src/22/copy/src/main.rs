@@ -10,7 +10,7 @@ struct CopyFoo {
 
 #[derive(Debug, Copy, Clone)]
 struct AnotherCopyFoo {
-    name: &'static str,
+    name: &'static str, // name is a string literal type, and string literal implements Copy trait just like other primitive types like i32 for e.g
 }
 
 // #[derive(Debug, Copy, Clone)] // this will lead to an E0204 error, because the String, type of the name field, does not implement Copy, thus StringCopyFoo cannot be Copy
