@@ -8,6 +8,11 @@ struct CopyFoo {
     id: i32,
 }
 
+#[derive(Debug, Copy, Clone)]
+struct AnotherCopyFoo {
+    name: &'static str,
+}
+
 // #[derive(Debug, Copy, Clone)] // this will lead to an E0204 error, because the String, type of the name field, does not implement Copy, thus StringCopyFoo cannot be Copy
 // struct StringCopyFoo {
 //     name: String,
@@ -27,6 +32,13 @@ fn main() {
     let d = c;
     println!("{:?}", c); // this will compile because c is valid here, its value was not MOVED to d, it was COPIED because CopyFoo implements Copy and Clone!
     println!("{:?}", d);
+
+    let e = AnotherCopyFoo { name: "e" }; //this will compile and work because e implements Copye and Clone traits
+    println!("{:?}", e);
+
+    let f = e;
+    println!("{:?}", e); // e is still valid, because f has a copied value of e
+    println!("{:?}", f);
 }
 
 // CopyFoo only works as a Copy trait because it's fields (id: i32) are able to implement Copy!
