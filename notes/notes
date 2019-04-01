@@ -2,23 +2,23 @@ These are a bunch of notes and a quick cheat sheet of Rust concepts, mechanics a
 
 
 Awesome Rust
-  Algorithms: https://rust-lang-nursery.github.io/rust-cookbook/algorithms.html
-  Book: https://doc.rust-lang.org/beta/book/
-  Rust by Examples books: https://doc.rust-lang.org/rust-by-example/
-  Rust Error code documentation: https://doc.rust-lang.org/error-index.html
-  Dark Arts: https://doc.rust-lang.org/stable/nomicon/README.html
-  Syntax Coveniences: https://www.youtube.com/watch?v=Xk5IZOtLUmE
-  Reference about Rocket: https://matthias-endler.de/2017/rust-url-shortener/index.html
-  Reference examples of Rocket: https://github.com/SergioBenitez/Rocket/tree/v0.4/examples
-  Reference WebServer: https://github.com/mre/rustly
-  Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
-  Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
-  Benchmark and Rust examples: https://doc.rust-lang.org/1.5.0/book/benchmark-tests.html
-  Great Blog about borrowing and mutability: https://medium.com/@vikram.fugro/mutable-reference-in-rust-995320366e22
-  Nathan Stocks course examples: https://github.com/CleanCut/rust_programming/
-  Notes about optimization: https://gist.github.com/jFransham/369a86eff00e5f280ed25121454acec1#number-one-optimization-tip-dont
-  Blog post about Rust Ownership: https://medium.com/@thomascountz/ownership-in-rust-part-1-112036b1126b
-  Web Rust compiler and runtime: https://play.rust-lang.org
+  * Algorithms: https://rust-lang-nursery.github.io/rust-cookbook/algorithms.html
+  * Book: https://doc.rust-lang.org/beta/book/
+  * Rust by Examples books: https://doc.rust-lang.org/rust-by-example/
+  * Rust Error code documentation: https://doc.rust-lang.org/error-index.html
+  * Dark Arts: https://doc.rust-lang.org/stable/nomicon/README.html
+  * Syntax Coveniences: https://www.youtube.com/watch?v=Xk5IZOtLUmE
+  * Reference about Rocket: https://matthias-endler.de/2017/rust-url-shortener/index.html
+  * Reference examples of Rocket: https://github.com/SergioBenitez/Rocket/tree/v0.4/examples
+  * Reference WebServer: https://github.com/mre/rustly
+  * Rust Talk in Stanford: https://www.youtube.com/watch?v=O5vzLKg7y-k
+  * Rust Concurrency Talk: https://www.youtube.com/watch?v=Dbytx0ivH7Q
+  * Benchmark and Rust examples: https://doc.rust-lang.org/1.5.0/book/benchmark-tests.html
+  * Great Blog about borrowing and mutability: https://medium.com/@vikram.fugro/mutable-reference-in-rust-995320366e22
+  * Nathan Stocks course examples: https://github.com/CleanCut/rust_programming/
+  * Notes about optimization: https://gist.github.com/jFransham/369a86eff00e5f280ed25121454acec1#number-one-optimization-tip-dont
+  * Blog post about Rust Ownership: https://medium.com/@thomascountz/ownership-in-rust-part-1-112036b1126b
+  * Web Rust compiler and runtime: https://play.rust-lang.org
 
 Compile
   This will generate a binary file called "main":
@@ -99,6 +99,7 @@ Rustc
           You add data pushing-onto-the-stack, and remove data popping-off-the-stack.
           The Stack is simple and fast because there is always only one place to manipulate: the top.
           All the data in the stack has a known and fixed size.
+
         The Heap is like a bag.
           Data with unknown size at compile time can be stored on the heap.
           The Heap has less rules than the Stack, you request an amount of space and store in it, there is no "order" the store or access the data.
@@ -370,7 +371,7 @@ Rustc
       clone() is a deep copy, copies the value and stores at completely different reference to the new value.
     
     Copy
-      Copy is a Trait that is implemented byt a lot of built in values and the user can implement the Copy trait for it's own types.
+      Copy is a Trait that is implemented by a lot of built in values and the user can implement the Copy trait for it's own types.
       What Copy does is actually used during moving situations, instead of "moving" the original value, the function will receive a "copy" (result of Copy).
       Copy can only be implemented by Stack values (no Heap).
 
@@ -390,3 +391,15 @@ Rustc
       ```
 
       Move Semantics x Copy Semantics
+
+    Clone
+      Clone is a Trait that explicitly (and sometimes expensive) duplicates an object.
+      The Copy trait also "duplicates" a value but in a implicit fashion and always inexpensive.
+      Every Copy is also Clone.
+      Clone is not like "deep copy" or "shallow copy" in other languages, it can do both depending on the T and the inner fields
+      types T.
+
+    Clone x Copy
+      Clone is explicitly, you actually is making a statement to CLONE something and will get another memory address to a value equals to the original.
+      Copy is called implicitly during functions or closures call, Rust will call Copy of the variable type and if the type is a non-Copy
+      the value will be MOVED and when the new scope ends the value will be gone with it (drop).
