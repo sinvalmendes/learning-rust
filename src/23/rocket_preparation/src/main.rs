@@ -1,3 +1,6 @@
+extern crate rand;
+
+use rand::Rng;
 use std::sync::{Arc, Mutex};
 use std::vec::Vec;
 use std::{thread, time};
@@ -44,19 +47,9 @@ fn create_rocket_thread(
 
         let mut necessary_rocket_index = 0;
         while necessary_rocket_index < 3 {
-            println!(
-                "Rocket: {}, necessary_rocket_index: {}",
-                name, necessary_rocket_index,
-            );
-
             let mut locked_resources = produced_resources.lock().unwrap();
             let mut i = 0;
             while i < locked_resources.len() {
-                println!(
-                    "Rocket: {}, locked_resources: {:?}, i: {}",
-                    name, locked_resources, i
-                );
-
                 if locked_resources[i] == necessary_rocket_resources[necessary_rocket_index] {
                     necessary_rocket_index += 1;
                     let consumed_resource = locked_resources[i];
@@ -66,7 +59,16 @@ fn create_rocket_thread(
                 }
                 i += 1;
             }
+            sleep(name);
         }
     });
     return t;
+}
+
+fn sleep(thread_name: &'static str) {
+    let mut rng = rand::thread_rng();
+    let random = rng.gen_range(1000, 5000);
+    println!("{} sleeping for: {} milliseconds", thread_name, random);
+    let sleep = time::Duration::from_millis(random);
+    thread::sleep(sleep);
 }
