@@ -47,9 +47,10 @@ fn create_rocket_thread(
 
         let mut necessary_rocket_index = 0;
         while necessary_rocket_index < 3 {
-            let mut locked_resources = produced_resources.lock().unwrap();
             let mut i = 0;
-            while i < locked_resources.len() {
+            let number_of_resources = produced_resources.clone().lock().unwrap().len();
+            while i < number_of_resources {
+                let mut locked_resources = produced_resources.lock().unwrap();
                 if locked_resources[i] == necessary_rocket_resources[necessary_rocket_index] {
                     necessary_rocket_index += 1;
                     let consumed_resource = locked_resources[i];
