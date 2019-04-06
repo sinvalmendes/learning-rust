@@ -15,20 +15,21 @@ fn main() {
     println!("Hello, Rocket Preparation problem!");
     let resources = vec![FUEL, OXI, FUEL, ASTRO, ASTRO, OXI, OXI, FUEL, ASTRO]; // concrete vector to simplify implementation for now
     println!("Resources: {:?}", resources);
-    let lift_off_arc = Arc::new(Barrier::new(4));
+
+    let lift_off_barrier = Arc::new(Barrier::new(4));
 
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(resources));
     let mut thread_pool = vec![];
 
     let names = vec!["STS-1", "STS-66", "Apollo-11"];
     for name in &names {
-        let lift_off = Arc::clone(&lift_off_arc);
+        let lift_off = Arc::clone(&lift_off_barrier);
         let r = create_rocket_thread(&mut mutex, name, lift_off);
         thread_pool.push(r);
     }
 
     sleep("Main", 10000, 10001);
-    lift_off_arc.wait();
+    lift_off_barrier.wait();
 
     for thread in thread_pool {
         thread.join().unwrap();
@@ -56,8 +57,7 @@ fn create_rocket_thread(
                 let mut locked_resources = produced_resources.lock().unwrap();
                 if locked_resources[i] == necessary_rocket_resources[necessary_rocket_index] {
                     necessary_rocket_index += 1;
-                    let consumed_resource = locked_resources[i];
-                    println!("Rocket: {} consumed {}", name, consumed_resource);
+                    println!("Rocket: {} consumed {}", name, locked_resources[i]);
                     locked_resources[i] = NONE;
                     break;
                 }
@@ -72,9 +72,7 @@ fn create_rocket_thread(
 }
 
 fn sleep(thread_name: &'static str, min: u64, max: u64) {
-    let mut rng = rand::thread_rng();
-    let random = rng.gen_range(min, max);
+    let random = rand::thread_rng().gen_range(min, max);
     println!("{} sleeping for: {} milliseconds", thread_name, random);
-    let sleep = time::Duration::from_millis(random);
-    thread::sleep(sleep);
+    thread::sleep(time::Duration::from_millis(random));
 }
