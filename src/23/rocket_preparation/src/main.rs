@@ -20,17 +20,12 @@ fn main() {
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(resources));
     let mut thread_pool = vec![];
 
-    let lift_off0 = Arc::clone(&lift_off_arc);
-    let r0 = create_rocket_thread(&mut mutex, "STS-1", lift_off0);
-    thread_pool.push(r0);
-
-    let lift_off1 = Arc::clone(&lift_off_arc);
-    let r1 = create_rocket_thread(&mut mutex, "Apollo 11", lift_off1);
-    thread_pool.push(r1);
-
-    let lift_off2 = Arc::clone(&lift_off_arc);
-    let r2 = create_rocket_thread(&mut mutex, "STS-66", lift_off2);
-    thread_pool.push(r2);
+    let names = vec!["STS-1", "STS-66", "Apollo-11"];
+    for name in &names {
+        let lift_off = Arc::clone(&lift_off_arc);
+        let r = create_rocket_thread(&mut mutex, name, lift_off);
+        thread_pool.push(r);
+    }
 
     sleep("Main", 10000, 10001);
     lift_off_arc.wait();
