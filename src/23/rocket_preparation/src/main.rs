@@ -23,8 +23,8 @@ fn main() {
 
     let names = vec!["STS-1", "STS-66", "Apollo-11"];
     for name in &names {
-        let lift_off = Arc::clone(&lift_off_barrier);
-        let r = create_rocket_thread(&mut mutex, name, lift_off);
+        let c_lift_off = Arc::clone(&lift_off_barrier);
+        let r = create_rocket_thread(&mut mutex, name, c_lift_off);
         thread_pool.push(r);
     }
 
@@ -37,13 +37,9 @@ fn main() {
 
 }
 
-fn control_room_thread() {
-    
-}
-
 fn create_rocket_thread(
-    mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, lift_off: Arc<Barrier>) -> thread::JoinHandle<()> {
-    let mut produced_resources = Arc::clone(&mutex);
+    mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, lift_off_barrier: Arc<Barrier>) -> thread::JoinHandle<()> {
+    let produced_resources = Arc::clone(&mutex);
 
     let t = thread::spawn(move || {
         println!("Rocket: {}", name);
@@ -57,7 +53,7 @@ fn create_rocket_thread(
                 let mut locked_resources = produced_resources.lock().unwrap();
                 if locked_resources[i] == necessary_rocket_resources[necessary_rocket_index] {
                     necessary_rocket_index += 1;
-                    println!("Rocket: {} consumed {}", name, locked_resources[i]);
+                    println!("{} consumed {}", name, locked_resources[i]);
                     locked_resources[i] = NONE;
                     break;
                 }
@@ -65,9 +61,11 @@ fn create_rocket_thread(
             }
             sleep(name, 1000, 2000);
         }
-        lift_off.wait();
-        println!("Rocket: {} LIFT OFF", name);
+
+        lift_off_barrier.wait();
+        println!("{} LIFT OFF", name);
     });
+    println!("-> {} was built! <-", name);
     return t;
 }
 
