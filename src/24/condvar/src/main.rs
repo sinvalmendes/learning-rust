@@ -21,9 +21,9 @@ fn main() {
             let &(ref mtx, ref cnd) = &*mutcond;
             let mut guard = mtx.lock().unwrap();
             while !guard.0 {
-                println!("thread {} guard {:?}", name, guard);
+                println!("thread {} guard {:?} before wait", name, guard);
                 guard = cnd.wait(guard).unwrap();
-                println!("thread {} guard {:?}", name, guard);
+                println!("thread {} guard {:?} after wait", name, guard);
             }
             println!("Started execution of thread {}", name);
         });
