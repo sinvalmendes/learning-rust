@@ -108,7 +108,16 @@ Rustc
           The Heap is like a big restaurant, you come in and request a table, the staff (OS) finds one and lead you there, if someone is coming they can ask for your table address and go there.
 
         Heap is slower than the Stack, you have to process the address (follow the pointer) to access data.
-          Contemporary processors are faster if they jump around less in memory. Continuing the analogy, consider a server at a restaurant taking orders from many tables. It’s most efficient to get all the orders at one table before moving on to the next table. Taking an order from table A, then an order from table B, then one from A again, and then one from B again would be a much slower process. By the same token, a processor can do its job better if it works on data that’s close to other data (as it is on the stack) rather than farther away (as it can be on the heap). Allocating a large amount of space on the heap can also take time.
+          Contemporary processors are faster if they jump around less in memory.
+          Continuing the analogy, consider a server at a restaurant taking orders from many tables.
+          It’s more efficient to get all the orders at one table before moving on to the next table.
+          Taking an order from table A, then an order from table B, then one from A again, and then one from B
+          again would be a much slower process.
+
+          By the same token, a processor can do its job better if it works on data that’s close to other data
+          (as it is on the stack) rather than farther away (as it can be on the heap).
+
+          Allocating a large amount of space on the heap can also take time.
 
         Heap gives you other types of power that the Stack does not.
 
@@ -404,3 +413,19 @@ Rustc
       Clone is explicitly, you actually is making a statement to CLONE something and will get another memory address to a value equals to the original.
       Copy is called implicitly during functions or closures call, Rust will call Copy of the variable type and if the type is a non-Copy
       the value will be MOVED and when the new scope ends the value will be gone with it (drop).
+
+    Memory Layout
+
+      The stack frame
+        The stack frame or simply "The stack" is the amount of memory dedicated to a function or closure, which is used to store
+        local variables and parameters. The size of the stack is known at compile time, because the compiler will evaluate the amount
+        of memory that will be used once it knows exatcly which types and how many of them each function uses (because Rust is strong typed).
+
+        The stack is released or cleaned when the scope ends (when the function reaches the end).
+
+        Both allocating and dealocatting stack memory is done by Rust, the developer don't need to handle memory details, just need
+        to declare the types of the values to be used under a certain scope. The beauty behind Rust memory management gives also a
+        huge performance boost because the compiler already know in advance how and where to allocate and store the future values and
+        because of the cache effects that the CPU will leverage of that (there is a insteresting discussion about that on https://github.com/rust-lang/book/issues/1524).
+        This is called "fixed size" values, because even during runtime, Rust is 100% sure that the values won't change their size,
+        and this makes the usage of the stack possible.
