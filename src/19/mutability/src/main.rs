@@ -28,6 +28,24 @@ fn main() {
     // y is a borrow, and cannot be used anymore, x is the only valid reference now
     // there can only be one mutable borrowed reference to a value at a given time, but y can borrow x again...
 
+    //============================================================
+    let mut x = "value";
+    println!("x:{}", x);
+    x = "mutated";
+    println!("x after mutation: {}", x);
+
+    {
+        let y = &mut x;
+        println!("y: {}", y);
+
+        *y = "mutated by y";
+        println!("y after mutation: {}", y);
+        println!("x after mutation: {}", x);
+    }
+    // y is not valid here because it went out of scope on the end of the last closure
+    println!("x: {}", x);
+
+    // ============================================================
     let five = 5;
     let a = &five;
     let b = &five;
