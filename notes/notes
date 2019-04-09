@@ -20,6 +20,11 @@ Awesome Rust
   * Blog post about Rust Ownership: https://medium.com/@thomascountz/ownership-in-rust-part-1-112036b1126b
   * Web Rust compiler and runtime: https://play.rust-lang.org
   * Rust material about concurrency: https://github.com/PacktPublishing/Hands-On-Concurrency-with-Rust
+  * Concurrency problems book: http://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf
+  * Simple blog post about rust concurrency: http://squidarth.com/rc/rust/2018/06/04/rust-concurrency.html
+  * Awesome talk about cache lanes: https://www.youtube.com/watch?v=WDIkqP4JbkE
+  * Paper about memory and performance: https://people.freebsd.org/~lstewart/articles/cpumemory.pdf
+  * Awesome reddit thread about optimization: https://www.reddit.com/r/rust/comments/bb5lnj/where_should_i_start_if_i_want_to_squeeze_out_as/
 
 Compile
   This will generate a binary file called "main":
