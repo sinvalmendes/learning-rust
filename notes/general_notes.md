@@ -33,8 +33,26 @@ Depending on the processor layout (multi core, multi processor) there are differ
 
 ```
 
-Temporal Locality
+`Temporal Locality`
+
 During the program execution, the processor will request data and code that are not in cache. The needed data will be retrieved from Main Memory. Because the chance of executing and processing the same data is high a copy will be made and stored in cache memory. Hence the processor will leverage the Temporal Locality, something will probably be used in the future (temporal) so it will get a copy closer to the processor (locality).
 
-Spacial Locality
+`Spacial Locality`
+
 During the program execution, the processor will request data and code that are not in cache. The needed data will be retrieved from Main Memory. However, not only the requested data will be copied to the cache memory but also the neighboor data will be copied because the chance of executing and processing the same data and the neighboor is high. Hence the processor will leverage the Spacial Locality, something close (spacial) to the current data will probably be used in the future so it will get a copy closer to the processor (locality).
+
+`Cache Miss`
+
+When a processor needs to access some data and this data is not cached the cost and latency is sky high, because the processor will retrieve the data from the Main Memory and then make the copy to store on the cache. This is the Cache Miss, when a necessary data is not cached.
+
+One way to increase performance is to avoid as much as possible cache miss.
+
+There are mainly three operations to have cost considered, they are READ, WRITE and COPY. The unit of cost is usually the number of cycles of CPU that the operation takes to be completed. Another variable is the size of the chunk of data, it is obvious that the size of the data plays a huge role because a specific amount of data to be read may not fit on L1 and this will increase the cost.
+
+READ is basically reading operations involving caches and Main Memory. If a data needs to be read by the processor the cost consider the latency of the process of the CPU getting data from cache lances or from the Main Memory.
+
+The cost C for this operation will be cheaper if the data to be read is cached (obviously), and it will depend on which cache level the data is stored of if it is in Main Memory. 
+
+WRITE is the operation of writing data to a piece of memory (cache or main) and COPY is the operation of copying data from one memory region to another memory region, like moving from L1 to L2.
+
+The size of the cache lanes also plays a huge role on performance, L1 is the fastest level, L2 the second fastest, L3 the third fastest and Main Memory is the worst, with a latency 2x higher than L3. If the cache lanes are significantly bigger the performance will increase because the chance of Cache Miss will decrease since there is more space to store data closer to the CPU.
