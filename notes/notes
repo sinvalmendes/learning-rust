@@ -63,6 +63,29 @@ Rustc
   Rustc can show simple documentation about errors, it's very useful!
     `rustc --explain E0204`
 
+Profiling
+  Rust programs can be profiled using tools like `perf`, `callgrind`, `kcachegrind` and `FlameGraph`
+
+  Links
+    * https://blog.anp.lol/rust/2016/07/24/profiling-rust-perf-flamegraph/
+    * http://www.codeofview.com/fix-rs/2017/01/24/how-to-optimize-rust-programs-on-linux/
+    * https://github.com/brendangregg/FlameGraph
+    * http://carol-nichols.com/
+
+  The best way is to use Linux (ubuntu) and install all these dependencies and profile Rust code from there.
+
+  1. Setup a VirtualBox Linux vm with Network card in bridge mode
+  2. Install dependencies
+    sudo apt install curl
+    curl https://sh.rustup.rs -sSf | sh
+    sudo apt install -y cargo vim linux-tools-common net-tools ssh git kcachegrind
+    cargo install cargo-profiler
+  3. ssh into the vm
+  4. Profile project
+    cargo new project
+    follow tutorial blog
+
+
   Rust language
     Pattern Matching
       match guess.cmp(&secret_number) {
