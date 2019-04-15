@@ -32,14 +32,18 @@ fn main() {
         thread_pool.push(t);
     }
 
-    for i in 0..3 {
-        sleep("Main", 2000, 2001);
+    let b = thread::spawn(move || {
         let &(ref mtx, ref cnd) = &*barber_ready;
-        let mut guard = mtx.lock().unwrap();
-        guard.1 = guard.1.wrapping_add(1);
-        guard.0 = true;
-        cnd.notify_one();
-    }
+        for i in 0..3 {
+            let mut guard = mtx.lock().unwrap();
+            println!("Barber woke up {:?}", guard);
+            guard.1 = guard.1.wrapping_add(1);
+            guard.0 = true;
+            cnd.notify_one();
+            sleep("Barber", 2000, 2001);
+        }
+    });
+    thread_pool.push(b);
 
     for thread in thread_pool {
         thread.join().unwrap();
