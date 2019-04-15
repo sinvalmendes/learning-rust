@@ -25,22 +25,36 @@ fn main() {
     let barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> =
         Arc::new((Mutex::new((false, 0)), Condvar::new()));
 
+    let barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> =
+        Arc::new((Mutex::new((false, 0)), Condvar::new()));
+
     let mut thread_pool = vec![];
     for name in vec!["C1", "C2", "C3"] {
         let mut clone_barber_ready = Arc::clone(&barber_ready);
-        let t = create_customer_thread(&mut clone_barber_ready, name);
+        let mut clone_barber_done = Arc::clone(&barber_done);
+        let t = create_customer_thread(&mut clone_barber_ready, &mut clone_barber_done, name);
         thread_pool.push(t);
     }
 
     let b = thread::spawn(move || {
-        let &(ref mtx, ref cnd) = &*barber_ready;
         for i in 0..3 {
-            let mut guard = mtx.lock().unwrap();
-            println!("Barber woke up {:?}", guard);
-            guard.1 = guard.1.wrapping_add(1);
-            guard.0 = true;
-            cnd.notify_one();
-            sleep("Barber", 2000, 2001);
+            {
+                let &(ref mtx, ref cnd) = &*barber_ready;
+                let mut guard = mtx.lock().unwrap();
+                println!("Barber woke up {:?}", guard);
+                guard.1 = guard.1.wrapping_add(1);
+                guard.0 = true;
+                cnd.notify_one();
+            }
+                sleep("Barber working", 2000, 2001);
+            {
+                let &(ref mtx_barber_done, ref cnd) = &*barber_done;
+                let mut guard_done = mtx_barber_done.lock().unwrap();
+                println!("Barber is done {:?}", guard_done);
+                guard_done.1 = guard_done.1.wrapping_add(1);
+                guard_done.0 = true;
+                cnd.notify_one();
+            }
         }
     });
     thread_pool.push(b);
@@ -50,17 +64,28 @@ fn main() {
     }
 }
 
-fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
+fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
     let c_barber_ready = Arc::clone(barber_ready);
+    let c_barber_done = Arc::clone(barber_done);
 
     let t = thread::spawn(move || {
-        let &(ref mtx, ref cnd) = &*c_barber_ready;
-        let mut guard = mtx.lock().unwrap();
-        while !guard.0 {
+        {
+            let &(ref mtx, ref cnd) = &*c_barber_ready;
+            let mut guard = mtx.lock().unwrap();
             println!("Client {} guard {:?} waiting for barber", name, guard);
             guard = cnd.wait(guard).unwrap();
             println!("Client {} guard {:?} after wait", name, guard);
         }
+
+        println!("Client {} ready to hair cut", name);
+        
+        {
+            let &(ref mtx, ref cnd) = &*c_barber_done;
+            let mut guard = mtx.lock().unwrap();
+            println!("Client {} guard {:?} waiting for barber to finish the hair cut", name, guard);
+            guard = cnd.wait(guard).unwrap();
+            println!("Client {} guard {:?} finished the hair cut, I can leave now", name, guard);
+        }    
     });
     return t;
 }
