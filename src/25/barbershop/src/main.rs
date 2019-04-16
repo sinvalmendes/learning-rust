@@ -12,30 +12,35 @@ extern crate rand;
 use rand::Rng;
 use std::{thread, time};
 use std::sync::{Arc, Condvar, Mutex};
+use std::time::Duration;
 
 
 fn main() {
     println!("Hello, barber!");
-    let mut customer_done: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut barber_done: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    
 
-    let barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> =
-        Arc::new((Mutex::new((false, 0)), Condvar::new()));
-
-    let barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> =
-        Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let customer_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
 
     let mut thread_pool = vec![];
     for name in vec!["C1", "C2", "C3"] {
         let mut clone_barber_ready = Arc::clone(&barber_ready);
         let mut clone_barber_done = Arc::clone(&barber_done);
-        let t = create_customer_thread(&mut clone_barber_ready, &mut clone_barber_done, name);
+        let mut clone_customer_ready = Arc::clone(&customer_ready);
+
+        let t = create_customer_thread(&mut clone_barber_ready, &mut clone_barber_done, &mut clone_customer_ready, name);
         thread_pool.push(t);
     }
 
     let b = thread::spawn(move || {
         for i in 0..3 {
+            {
+                let &(ref mtx, ref cnd) = &*customer_ready;
+                let mut guard = mtx.lock().unwrap();
+                println!("Baber: waiting for customer {:?}", guard);
+                guard = cnd.wait(guard).unwrap();
+                println!("Baber: customer appeared {:?}", guard);
+            }
             {
                 let &(ref mtx, ref cnd) = &*barber_ready;
                 let mut guard = mtx.lock().unwrap();
@@ -44,7 +49,7 @@ fn main() {
                 guard.0 = true;
                 cnd.notify_one();
             }
-                sleep("Barber: working", 2000, 2001);
+            sleep("Barber: working", 2000, 2001);
             {
                 let &(ref mtx_barber_done, ref cnd) = &*barber_done;
                 let mut guard_done = mtx_barber_done.lock().unwrap();
@@ -62,21 +67,37 @@ fn main() {
     }
 }
 
-fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
+fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
+                          customer_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
     let c_barber_ready = Arc::clone(barber_ready);
     let c_barber_done = Arc::clone(barber_done);
+    let c_customer_ready = Arc::clone(customer_ready);
 
     let t = thread::spawn(move || {
-        {
-            let &(ref mtx, ref cnd) = &*c_barber_ready;
-            let mut guard = mtx.lock().unwrap();
-            println!("Client {}: waiting for barber {:?}", name, guard);
-            guard = cnd.wait(guard).unwrap();
-            println!("Client {}: after wait {:?}", name, guard);
+        loop {
+            {
+                let &(ref mtx, ref cnd) = &*c_customer_ready;
+                let mut guard = mtx.lock().unwrap();
+                println!("Client {}: notifying barber that I'm ready {:?}", name, guard);
+                guard.1 = guard.1.wrapping_add(1);
+                guard.0 = true;
+                cnd.notify_one();
+            }
+            {
+                let &(ref mtx, ref cnd) = &*c_barber_ready;
+                let mut guard = mtx.lock().unwrap();
+                println!("Client {}: waiting for barber {:?}", name, guard);
+                let guard = cnd.wait_timeout(
+                    guard, Duration::from_millis(1000)).unwrap();
+                if guard.1.timed_out() {
+                    println!("Client {}: timeout {:?}", name, guard);
+                    continue;
+                }
+                println!("Client {}: after wait {:?}", name, guard);
+                break;
+            }
         }
-
         println!("Client {} ready to hair cut", name);
-        
         {
             let &(ref mtx, ref cnd) = &*c_barber_done;
             let mut guard = mtx.lock().unwrap();
