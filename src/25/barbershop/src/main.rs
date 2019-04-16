@@ -9,10 +9,8 @@
 
 extern crate rand;
 
-use std::{thread, time};
-
 use rand::Rng;
-
+use std::{thread, time};
 use std::sync::{Arc, Condvar, Mutex};
 
 
@@ -41,16 +39,16 @@ fn main() {
             {
                 let &(ref mtx, ref cnd) = &*barber_ready;
                 let mut guard = mtx.lock().unwrap();
-                println!("Barber woke up {:?}", guard);
+                println!("Barber: woke up {:?}", guard);
                 guard.1 = guard.1.wrapping_add(1);
                 guard.0 = true;
                 cnd.notify_one();
             }
-                sleep("Barber working", 2000, 2001);
+                sleep("Barber: working", 2000, 2001);
             {
                 let &(ref mtx_barber_done, ref cnd) = &*barber_done;
                 let mut guard_done = mtx_barber_done.lock().unwrap();
-                println!("Barber is done {:?}", guard_done);
+                println!("Barber: is done {:?}", guard_done);
                 guard_done.1 = guard_done.1.wrapping_add(1);
                 guard_done.0 = true;
                 cnd.notify_one();
@@ -72,9 +70,9 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
         {
             let &(ref mtx, ref cnd) = &*c_barber_ready;
             let mut guard = mtx.lock().unwrap();
-            println!("Client {} guard {:?} waiting for barber", name, guard);
+            println!("Client {}: waiting for barber {:?}", name, guard);
             guard = cnd.wait(guard).unwrap();
-            println!("Client {} guard {:?} after wait", name, guard);
+            println!("Client {}: after wait {:?}", name, guard);
         }
 
         println!("Client {} ready to hair cut", name);
@@ -82,9 +80,9 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
         {
             let &(ref mtx, ref cnd) = &*c_barber_done;
             let mut guard = mtx.lock().unwrap();
-            println!("Client {} guard {:?} waiting for barber to finish the hair cut", name, guard);
+            println!("Client {}: waiting for barber to finish the hair cut {:?}", name, guard);
             guard = cnd.wait(guard).unwrap();
-            println!("Client {} guard {:?} finished the hair cut, I can leave now", name, guard);
+            println!("Client {}: finished the hair cut, I can leave now {:?}", name, guard);
         }    
     });
     return t;
@@ -92,6 +90,6 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
 
 fn sleep(thread_name: &'static str, min: u64, max: u64) {
     let random = rand::thread_rng().gen_range(min, max);
-    println!("{} sleeping for: {} milliseconds", thread_name, random);
+    println!("{}: sleeping for: {} milliseconds", thread_name, random);
     thread::sleep(time::Duration::from_millis(random));
 }
