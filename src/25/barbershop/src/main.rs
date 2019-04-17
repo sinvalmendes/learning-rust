@@ -23,6 +23,13 @@ fn main() {
     let customer_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
 
     let mut thread_pool = vec![];
+
+    let mut clone_barber_ready = Arc::clone(&barber_ready);
+    let mut clone_barber_done = Arc::clone(&barber_done);
+    let mut clone_customer_ready = Arc::clone(&customer_ready);
+    let b = create_barber_thread(&mut clone_barber_ready, &mut clone_barber_done, &mut clone_customer_ready, "Barber");
+    thread_pool.push(b);
+
     for name in vec!["C1", "C2", "C3"] {
         let mut clone_barber_ready = Arc::clone(&barber_ready);
         let mut clone_barber_done = Arc::clone(&barber_done);
@@ -32,39 +39,46 @@ fn main() {
         thread_pool.push(t);
     }
 
+    for thread in thread_pool {
+        thread.join().unwrap();
+    }
+}
+
+fn create_barber_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
+                          customer_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
+    let c_barber_ready = Arc::clone(barber_ready);
+    let c_barber_done = Arc::clone(barber_done);
+    let c_customer_ready = Arc::clone(customer_ready);
+
     let b = thread::spawn(move || {
         for i in 0..3 {
             {
-                let &(ref mtx, ref cnd) = &*customer_ready;
+                let &(ref mtx, ref cnd) = &*c_customer_ready;
                 let mut guard_customer_ready = mtx.lock().unwrap();
-                println!("Baber: waiting for customer {:?}", guard_customer_ready);
+                println!("{}: waiting for customer {:?}", name, guard_customer_ready);
                 guard_customer_ready = cnd.wait(guard_customer_ready).unwrap();
-                println!("Baber: customer appeared {:?}", guard_customer_ready);
+                println!("{}: customer appeared {:?}", name, guard_customer_ready);
             }
             {
-                let &(ref mtx, ref cnd) = &*barber_ready;
+                let &(ref mtx, ref cnd) = &*c_barber_ready;
                 let mut guard_barber_ready = mtx.lock().unwrap();
                 guard_barber_ready.1 = guard_barber_ready.1.wrapping_add(1);
                 guard_barber_ready.0 = true;
-                println!("Barber: is ready{:?}", guard_barber_ready);
+                println!("{}: is ready {:?}", name, guard_barber_ready);
                 cnd.notify_one();
             }
             sleep("Barber: working", 2000, 2001);
             {
-                let &(ref mtx_barber_done, ref cnd) = &*barber_done;
+                let &(ref mtx_barber_done, ref cnd) = &*c_barber_done;
                 let mut guard_barber_done = mtx_barber_done.lock().unwrap();
                 guard_barber_done.1 = guard_barber_done.1.wrapping_add(1);
                 guard_barber_done.0 = true;
-                println!("Barber: is finished haircut {:?}", guard_barber_done);
+                println!("{}: is finished haircut {:?}", name, guard_barber_done);
                 cnd.notify_one();
             }
         }
     });
-    thread_pool.push(b);
-
-    for thread in thread_pool {
-        thread.join().unwrap();
-    }
+    return b;
 }
 
 fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
