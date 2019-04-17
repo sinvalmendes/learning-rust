@@ -36,26 +36,26 @@ fn main() {
         for i in 0..3 {
             {
                 let &(ref mtx, ref cnd) = &*customer_ready;
-                let mut guard = mtx.lock().unwrap();
-                println!("Baber: waiting for customer {:?}", guard);
-                guard = cnd.wait(guard).unwrap();
-                println!("Baber: customer appeared {:?}", guard);
+                let mut guard_customer_ready = mtx.lock().unwrap();
+                println!("Baber: waiting for customer {:?}", guard_customer_ready);
+                guard_customer_ready = cnd.wait(guard_customer_ready).unwrap();
+                println!("Baber: customer appeared {:?}", guard_customer_ready);
             }
             {
                 let &(ref mtx, ref cnd) = &*barber_ready;
-                let mut guard = mtx.lock().unwrap();
-                println!("Barber: woke up {:?}", guard);
-                guard.1 = guard.1.wrapping_add(1);
-                guard.0 = true;
+                let mut guard_barber_ready = mtx.lock().unwrap();
+                guard_barber_ready.1 = guard_barber_ready.1.wrapping_add(1);
+                guard_barber_ready.0 = true;
+                println!("Barber: is ready{:?}", guard_barber_ready);
                 cnd.notify_one();
             }
             sleep("Barber: working", 2000, 2001);
             {
                 let &(ref mtx_barber_done, ref cnd) = &*barber_done;
-                let mut guard_done = mtx_barber_done.lock().unwrap();
-                println!("Barber: is done {:?}", guard_done);
-                guard_done.1 = guard_done.1.wrapping_add(1);
-                guard_done.0 = true;
+                let mut guard_barber_done = mtx_barber_done.lock().unwrap();
+                guard_barber_done.1 = guard_barber_done.1.wrapping_add(1);
+                guard_barber_done.0 = true;
+                println!("Barber: is finished haircut {:?}", guard_barber_done);
                 cnd.notify_one();
             }
         }
@@ -77,33 +77,33 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
         loop {
             {
                 let &(ref mtx, ref cnd) = &*c_customer_ready;
-                let mut guard = mtx.lock().unwrap();
-                println!("Client {}: notifying barber that I'm ready {:?}", name, guard);
-                guard.1 = guard.1.wrapping_add(1);
-                guard.0 = true;
+                let mut guard_customer_ready = mtx.lock().unwrap();
+                guard_customer_ready.1 = guard_customer_ready.1.wrapping_add(1);
+                guard_customer_ready.0 = true;
+                println!("{}: notifying barber that I'm ready {:?}", name, guard_customer_ready);
                 cnd.notify_one();
             }
             {
                 let &(ref mtx, ref cnd) = &*c_barber_ready;
-                let mut guard = mtx.lock().unwrap();
-                println!("Client {}: waiting for barber {:?}", name, guard);
-                let guard = cnd.wait_timeout(
-                    guard, Duration::from_millis(1000)).unwrap();
-                if guard.1.timed_out() {
-                    println!("Client {}: timeout {:?}", name, guard);
+                let mut guard_barber_ready = mtx.lock().unwrap();
+                println!("{}: waiting for barber {:?}", name, guard_barber_ready);
+                let guard_barber_ready = cnd.wait_timeout(
+                    guard_barber_ready, Duration::from_millis(1000)).unwrap();
+                if guard_barber_ready.1.timed_out() {
+                    println!("{}: timeout {:?}", name, guard_barber_ready);
                     continue;
                 }
-                println!("Client {}: after wait {:?}", name, guard);
+                println!("{}: after wait {:?}", name, guard_barber_ready);
                 break;
             }
         }
-        println!("Client {} ready to hair cut", name);
+        println!("{}: ready to get haircut", name);
         {
             let &(ref mtx, ref cnd) = &*c_barber_done;
-            let mut guard = mtx.lock().unwrap();
-            println!("Client {}: waiting for barber to finish the hair cut {:?}", name, guard);
-            guard = cnd.wait(guard).unwrap();
-            println!("Client {}: finished the hair cut, I can leave now {:?}", name, guard);
+            let mut guard_barber_done = mtx.lock().unwrap();
+            println!("{}: waiting for barber to finish my haircut {:?}", name, guard_barber_done);
+            guard_barber_done = cnd.wait(guard_barber_done).unwrap();
+            println!("{}: finished my haircut, I can leave now {:?}", name, guard_barber_done);
         }    
     });
     return t;
