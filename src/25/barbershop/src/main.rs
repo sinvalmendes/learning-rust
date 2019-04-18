@@ -44,7 +44,7 @@ fn create_barber_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber_d
     let c_customer_ready = Arc::clone(customer_ready);
 
     let b = thread::spawn(move || {
-        for i in 0..3 {
+        for _ in 0..3 {
             {
                 let &(ref mtx, ref cnd) = &*c_customer_ready;
                 let mut guard_customer_ready = mtx.lock().unwrap();
@@ -54,14 +54,14 @@ fn create_barber_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber_d
             }
             {
                 let &(ref mtx, ref cnd) = &*c_barber_ready;
-                let mut guard_barber_ready = mtx.lock().unwrap();
+                let guard_barber_ready = mtx.lock().unwrap();
                 println!("{}: is ready {:?}", name, guard_barber_ready);
                 cnd.notify_one();
             }
             sleep("Barber: working", 2000, 2001);
             {
                 let &(ref mtx_barber_done, ref cnd) = &*c_barber_done;
-                let mut guard_barber_done = mtx_barber_done.lock().unwrap();
+                let guard_barber_done = mtx_barber_done.lock().unwrap();
                 println!("{}: is finished haircut {:?}", name, guard_barber_done);
                 cnd.notify_one();
             }
@@ -80,13 +80,13 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber
         loop {
             {
                 let &(ref mtx, ref cnd) = &*c_customer_ready;
-                let mut guard_customer_ready = mtx.lock().unwrap();
+                let guard_customer_ready = mtx.lock().unwrap();
                 println!("{}: notifying barber that I'm ready {:?}", name, guard_customer_ready);
                 cnd.notify_one();
             }
             {
                 let &(ref mtx, ref cnd) = &*c_barber_ready;
-                let mut guard_barber_ready = mtx.lock().unwrap();
+                let guard_barber_ready = mtx.lock().unwrap();
                 println!("{}: waiting for barber {:?}", name, guard_barber_ready);
                 let guard_barber_ready = cnd.wait_timeout(
                     guard_barber_ready, Duration::from_millis(1000)).unwrap();
@@ -105,7 +105,7 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber
             println!("{}: waiting for barber to finish my haircut {:?}", name, guard_barber_done);
             guard_barber_done = cnd.wait(guard_barber_done).unwrap();
             println!("{}: finished my haircut, I can leave now {:?}", name, guard_barber_done);
-        }    
+        }
     });
     return t;
 }
