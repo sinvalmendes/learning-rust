@@ -18,9 +18,9 @@ use std::time::Duration;
 fn main() {
     println!("Hello, barber!");
 
-    let mut barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
-    let mut barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
-    let mut customer_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let mut barber_ready: Arc<(Mutex<bool>, Condvar)> = Arc::new((Mutex::new(false), Condvar::new()));
+    let mut barber_done: Arc<(Mutex<bool>, Condvar)> = Arc::new((Mutex::new(false), Condvar::new()));
+    let mut customer_ready: Arc<(Mutex<bool>, Condvar)> = Arc::new((Mutex::new(false), Condvar::new()));
 
     let mut thread_pool = vec![];
 
@@ -37,8 +37,8 @@ fn main() {
     }
 }
 
-fn create_barber_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
-                          customer_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
+fn create_barber_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber_done: &mut Arc<(Mutex<bool>, Condvar)>,
+                          customer_ready: &mut Arc<(Mutex<bool>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
     let c_barber_ready = Arc::clone(barber_ready);
     let c_barber_done = Arc::clone(barber_done);
     let c_customer_ready = Arc::clone(customer_ready);
@@ -55,8 +55,6 @@ fn create_barber_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, b
             {
                 let &(ref mtx, ref cnd) = &*c_barber_ready;
                 let mut guard_barber_ready = mtx.lock().unwrap();
-                guard_barber_ready.1 = guard_barber_ready.1.wrapping_add(1);
-                guard_barber_ready.0 = true;
                 println!("{}: is ready {:?}", name, guard_barber_ready);
                 cnd.notify_one();
             }
@@ -64,8 +62,6 @@ fn create_barber_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, b
             {
                 let &(ref mtx_barber_done, ref cnd) = &*c_barber_done;
                 let mut guard_barber_done = mtx_barber_done.lock().unwrap();
-                guard_barber_done.1 = guard_barber_done.1.wrapping_add(1);
-                guard_barber_done.0 = true;
                 println!("{}: is finished haircut {:?}", name, guard_barber_done);
                 cnd.notify_one();
             }
@@ -74,8 +70,8 @@ fn create_barber_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, b
     return b;
 }
 
-fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, barber_done: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
-                          customer_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
+fn create_customer_thread(barber_ready: &mut Arc<(Mutex<bool>, Condvar)>, barber_done: &mut Arc<(Mutex<bool>, Condvar)>,
+                          customer_ready: &mut Arc<(Mutex<bool>, Condvar)>, name: &'static str) -> thread::JoinHandle<()> {
     let c_barber_ready = Arc::clone(barber_ready);
     let c_barber_done = Arc::clone(barber_done);
     let c_customer_ready = Arc::clone(customer_ready);
@@ -85,8 +81,6 @@ fn create_customer_thread(barber_ready: &mut Arc<(Mutex<(bool, u16)>, Condvar)>,
             {
                 let &(ref mtx, ref cnd) = &*c_customer_ready;
                 let mut guard_customer_ready = mtx.lock().unwrap();
-                guard_customer_ready.1 = guard_customer_ready.1.wrapping_add(1);
-                guard_customer_ready.0 = true;
                 println!("{}: notifying barber that I'm ready {:?}", name, guard_customer_ready);
                 cnd.notify_one();
             }
