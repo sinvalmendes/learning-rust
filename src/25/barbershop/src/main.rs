@@ -18,24 +18,17 @@ use std::time::Duration;
 fn main() {
     println!("Hello, barber!");
 
-    let barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
-    let barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
-    let customer_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let mut barber_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let mut barber_done: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
+    let mut customer_ready: Arc<(Mutex<(bool, u16)>, Condvar)> = Arc::new((Mutex::new((false, 0)), Condvar::new()));
 
     let mut thread_pool = vec![];
 
-    let mut clone_barber_ready = Arc::clone(&barber_ready);
-    let mut clone_barber_done = Arc::clone(&barber_done);
-    let mut clone_customer_ready = Arc::clone(&customer_ready);
-    let b = create_barber_thread(&mut clone_barber_ready, &mut clone_barber_done, &mut clone_customer_ready, "Barber");
+    let b = create_barber_thread(&mut barber_ready, &mut barber_done, &mut customer_ready, "Barber");
     thread_pool.push(b);
 
     for name in vec!["C1", "C2", "C3"] {
-        let mut clone_barber_ready = Arc::clone(&barber_ready);
-        let mut clone_barber_done = Arc::clone(&barber_done);
-        let mut clone_customer_ready = Arc::clone(&customer_ready);
-
-        let t = create_customer_thread(&mut clone_barber_ready, &mut clone_barber_done, &mut clone_customer_ready, name);
+        let t = create_customer_thread(&mut barber_ready, &mut barber_done, &mut customer_ready, name);
         thread_pool.push(t);
     }
 
