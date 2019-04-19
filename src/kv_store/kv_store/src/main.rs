@@ -31,10 +31,10 @@ fn get_value(db: State<RwLock<MemoryDB>>, key: String) -> content::Json<String> 
     let result = db.get_value(&key);
     match result {
         Ok(x)  => {
-            return mount_response(key, x);
+            return mount_response(key, x.to_string());
         },
         Err(e) => {
-            return mount_response(String::from("error"), &e.to_string());
+            return mount_response(String::from("error"), e.to_string());
         }
     }
 }
