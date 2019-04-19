@@ -1,0 +1,38 @@
+# kvstore-deployment-service-1.0.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kvstore-app-1-0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kvstore-app
+      version: "1.0"
+  template:
+    metadata:
+      labels:
+        app: kvstore-app
+        version: "1.0"
+    spec:
+      containers:
+      - name: kvstore-app
+        image: sinvalvm/kvstore:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+---
+# kvstore-app-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kvstore-app
+  labels: 
+    app: kvstore-app
+spec:
+  ports:
+  - port: 8000
+    name: http
+  selector:
+    app: kvstore-app
