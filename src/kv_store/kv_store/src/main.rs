@@ -22,7 +22,6 @@ static VERSION: &str = "v1";
 
 #[get("/version")]
 fn version(db: State<RwLock<MemoryDB>>) -> String {
-    let db = db.read().unwrap();
     return format!("{}", VERSION);
 }
 
