@@ -18,6 +18,14 @@ struct KV {
     value: String,
 }
 
+static VERSION: &str = "v1";
+
+#[get("/version")]
+fn version(db: State<RwLock<MemoryDB>>) -> String {
+    let db = db.read().unwrap();
+    return format!("{}", VERSION);
+}
+
 #[get("/api")]
 fn index(db: State<RwLock<MemoryDB>>) -> String {
     let db = db.read().unwrap();
@@ -65,7 +73,7 @@ fn mount_response(key: String, result: String) -> content::Json<String> {
 fn get_rocket() -> rocket::Rocket {
     rocket::ignite()
         .manage(RwLock::new(MemoryDB::new()))
-        .mount("/", routes![index, get_value, put_kv])
+        .mount("/", routes![version, index, get_value, put_kv])
 }
 
 fn main() {
