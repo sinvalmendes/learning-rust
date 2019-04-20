@@ -29,4 +29,21 @@ docker image pull sinvalvm/kvstore:<tag-name>
 
 ## Kubernetes
 
-### Deploy
+### Deploy k8s
+```
+kubectl create namespace kvstore
+kubectl label namespace kvstore istio-injection=enabled
+kubectl apply -f k8s/kvstore-deployment-service-v1.yaml -n kvstore
+```
+
+### Deploy istio
+```
+istioctl create -f k8s/istio/kvstore-istio-1.0.yaml --namespace kvstore
+```
+
+### Get istio ingress gateway IP
+```
+kubectl get service istio-ingressgateway --namespace istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+
+The application should be running on port 80, access `http://INGRESSGATEWAY_IP`.
