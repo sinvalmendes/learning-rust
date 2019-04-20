@@ -33,7 +33,7 @@ docker image pull sinvalvm/kvstore:<tag-name>
 ```
 kubectl create namespace kvstore
 kubectl label namespace kvstore istio-injection=enabled
-kubectl apply -f k8s/kvstore-deployment-service-v1.yaml -n kvstore
+kubectl apply -f k8s/kvstore-deployment-service-1.0.yaml -n kvstore
 ```
 
 ### Deploy istio
