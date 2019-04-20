@@ -1,0 +1,32 @@
+# kvstore-app-virtualservice-2.0.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kvstore-app
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - kvstore-app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+      headers:
+        cookie:
+          regex: "^(.*?;)?(featureflag=on)(;.*)?$"
+    route:
+    - destination:
+        host: kvstore-app.kvstore.svc.cluster.local
+        subset: v2-0
+        port:
+          number: 8000
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: kvstore-app.kvstore.svc.cluster.local
+        subset: v1-0
+        port:
+          number: 8000

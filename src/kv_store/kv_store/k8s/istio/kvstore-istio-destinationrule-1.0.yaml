@@ -1,0 +1,15 @@
+# kvstore-app-destinationrule-1.0.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: kvstore-app
+spec:
+  host: kvstore-app.kvstore.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+  - name: v1-0
+    labels:
+      app: kvstore-app
+      version: "1.0"
