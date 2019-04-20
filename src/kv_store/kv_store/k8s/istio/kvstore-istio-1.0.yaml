@@ -1,0 +1,35 @@
+# kvstore-app-virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kvstore-app
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - kvstore-app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: kvstore-app.kvstore.svc.cluster.local
+        port:
+          number: 8000
+---
+# kvstore-app-gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kvstore-app-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
