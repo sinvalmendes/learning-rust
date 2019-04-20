@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: kvstore-app
-        image: sinvalvm/kvstore:v1
+        image: sinvalvm/kvstore:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
