@@ -44,8 +44,9 @@ istioctl create -f k8s/istio/kvstore-istio-destinationrule-1.0.yaml --namespace 
 ```
 
 ### Get istio ingress gateway IP
+You must wait until the external IP is assinged to the istio-ingressgateway service, it might take up until 5 minutes.
 ```sh
-kubectl get service istio-ingressgateway --namespace istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+INGRESSGATEWAY_IP=$(kubectl get service istio-ingressgateway --namespace istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 Test

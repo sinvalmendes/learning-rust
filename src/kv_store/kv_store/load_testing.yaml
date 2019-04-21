@@ -1,19 +1,24 @@
 ---
 threads: 4
-base: "http://localhost:8000"
+# base: "http://localhost:8000" #localhost
+base: "http://40.113.151.148"
 iterations: 400 # Check why 1000 causes Drill to panic, perhaps number of workers/port blow up
 # thread '<unnamed>' panicked at 'Error connecting 'http://localhost:8000/api/': Io(Os { code: 54, kind: ConnectionReset, message: "Connection reset by peer" })', /Users/sinvalvieira/.cargo/registry/src/github.com-1ecc6299db9ec823/drill-0.4.1/src/actions/request.rs:140:7
 # thread 'main' panicked at 'arrrgh', /Users/sinvalvieira/.cargo/registry/src/github.com-1ecc6299db9ec823/drill-0.4.1/src/benchmark.rs:88:19
 rampup: 1
 
 plan:
-  # - name: Fetch users
-  #   request:
-  #     url: /api/
+  - name: Get version
+    request:
+      url: /version/
 
-  # - name: Get key
-  #   request:
-  #     url: /api/kv/test_key
+  - name: Fetch users
+    request:
+      url: /api/
+
+  - name: Get key
+    request:
+      url: /api/kv/test_key
 
   - name: Store key:value
     request:
