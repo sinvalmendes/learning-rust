@@ -34,6 +34,7 @@ docker image pull sinvalvm/kvstore:<tag-name>
 kubectl create namespace kvstore
 kubectl label namespace kvstore istio-injection=enabled
 kubectl apply -f k8s/kvstore-deployment-service-1.0.yaml -n kvstore
+kubectl apply -f k8s/kvstore-deployment-service-2.0.yaml -n kvstore
 ```
 
 ### Deploy istio
@@ -69,4 +70,3 @@ Test v2 with feature flag set on the cookie
 curl http://$INGRESSGATEWAY_IP/version --cookie "featureflag=on"
 $ v2
 ```
-
