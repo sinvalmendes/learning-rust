@@ -1,5 +1,5 @@
 ---
-threads: 4
+threads: 16
 # base: "http://localhost:8000" #localhost
 base: "http://40.113.151.148"
 iterations: 400 # Check why 1000 causes Drill to panic, perhaps number of workers/port blow up
