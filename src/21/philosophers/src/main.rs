@@ -16,17 +16,11 @@ fn main() {
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(forks));
     let mut philosophers_thread_pool = vec![];
 
-    let p0 = create_philosopher_thread(&mut mutex, "P0", 0, 1);
-    let p1 = create_philosopher_thread(&mut mutex, "P1", 1, 2);
-    let p2 = create_philosopher_thread(&mut mutex, "P2", 2, 3);
-    let p3 = create_philosopher_thread(&mut mutex, "P3", 3, 4);
-    let p4 = create_philosopher_thread(&mut mutex, "P4", 4, 0);
-
-    philosophers_thread_pool.push(p0);
-    philosophers_thread_pool.push(p1);
-    philosophers_thread_pool.push(p2);
-    philosophers_thread_pool.push(p3);
-    philosophers_thread_pool.push(p4);
+    philosophers_thread_pool.push(create_philosopher_thread(&mut mutex, "P0", 0, 1));
+    philosophers_thread_pool.push(create_philosopher_thread(&mut mutex, "P1", 1, 2));
+    philosophers_thread_pool.push(create_philosopher_thread(&mut mutex, "P2", 2, 3));
+    philosophers_thread_pool.push(create_philosopher_thread(&mut mutex, "P3", 3, 4));
+    philosophers_thread_pool.push(create_philosopher_thread(&mut mutex, "P4", 4, 0));
 
     for philosopher_handle in philosophers_thread_pool {
         philosopher_handle.join().unwrap();
