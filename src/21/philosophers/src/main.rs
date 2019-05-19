@@ -33,13 +33,13 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
         println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
         let mut got_left_fork = false;
         loop {
-            if !(got_left_fork) {
+            if !got_left_fork {
                 think(name);
                 println!("{} will attempt to get left fork!", name);
                 got_left_fork = try_get_fork(&mut forks, left_fork);
             }
 
-            if (got_left_fork) {
+            if got_left_fork {
                 println!("{} got left fork!", name);
                 think(name);
                 println!("{} will attempt to get right fork!", name);
