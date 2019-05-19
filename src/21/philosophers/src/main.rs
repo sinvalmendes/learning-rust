@@ -26,34 +26,34 @@ fn main() {
     }
 }
 
-fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork: usize, right_fork: usize) -> thread::JoinHandle<()> {
+fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork_index: usize, right_fork_index: usize) -> thread::JoinHandle<()> {
     let mut forks = Arc::clone(&mutex);
     let t = thread::spawn(move || {
-        println!("{} needs left fork at '{}' and right fork at '{}'.", name, left_fork, right_fork);
+        println!("{} needs left fork at '{}' and right fork at '{}'.", name, left_fork_index, right_fork_index);
         let mut got_left_fork = false;
         loop {
             if !got_left_fork {
                 think(name);
                 println!("{} will attempt to get left fork!", name);
-                got_left_fork = try_get_fork(&mut forks, left_fork);
+                got_left_fork = try_get_fork(&mut forks, left_fork_index);
             }
 
             if got_left_fork {
                 println!("{} got left fork!", name);
                 think(name);
                 println!("{} will attempt to get right fork!", name);
-                let got_right_fork = try_get_fork(&mut forks, right_fork);
-                if (got_right_fork) {
+                let got_right_fork = try_get_fork(&mut forks, right_fork_index);
+                if got_right_fork {
                     println!("{} got right fork!", name);
                     println!("{} EATING!", name);
                     think(name);
                     let mut locked_forks = forks.lock().unwrap();
-                    locked_forks[left_fork] = FORK;
-                    locked_forks[right_fork] = FORK;
+                    locked_forks[left_fork_index] = FORK;
+                    locked_forks[right_fork_index] = FORK;
                     break;
                 }
                 let mut locked_forks = forks.lock().unwrap();
-                locked_forks[left_fork] = FORK;
+                locked_forks[left_fork_index] = FORK;
             }
         }
     });
