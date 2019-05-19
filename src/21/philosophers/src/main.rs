@@ -10,7 +10,6 @@ static FORK: &str = "fork";
 fn main() {
     println!("Hello, philosophers!");
 
-    let number_of_times = 5;
     let forks = vec![FORK, FORK, FORK, FORK, FORK];
 
     let mut mutex: Arc<Mutex<Vec<&'static str>>> = Arc::new(Mutex::new(forks));
