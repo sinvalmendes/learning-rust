@@ -26,11 +26,10 @@ fn main() {
     }
 }
 
-
 fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'static str, left_fork: usize, right_fork: usize) -> thread::JoinHandle<()> {
     let mut forks = Arc::clone(&mutex);
     let t = thread::spawn(move || {
-        println!("{} needs left fork '{}' and right fork '{}'.", name, left_fork, right_fork);
+        println!("{} needs left fork at '{}' and right fork at '{}'.", name, left_fork, right_fork);
         let mut got_left_fork = false;
         loop {
             if !got_left_fork {
