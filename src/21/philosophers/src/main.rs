@@ -33,12 +33,12 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
         let mut got_left_fork = false;
         loop {
             if !got_left_fork {
-                got_left_fork = try_get_fork(&mut forks, left_fork_index, name);
+                got_left_fork = try_get_fork(&mut forks, left_fork_index, name, "left");
             }
 
             if got_left_fork {
                 println!("{} got left fork!", name);
-                let got_right_fork = try_get_fork(&mut forks, right_fork_index, name);
+                let got_right_fork = try_get_fork(&mut forks, right_fork_index, name, "right");
                 if got_right_fork {
                     println!("{} got right fork!", name);
                     println!("{} EATING!", name);
@@ -56,9 +56,9 @@ fn create_philosopher_thread(mutex: &mut Arc<Mutex<Vec<&'static str>>>, name: &'
     return t;
 }
 
-fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize, thread_name: &'static str) -> bool {
+fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize, thread_name: &str, fork_type: &str) -> bool {
     think(thread_name);
-    println!("{} will attempt to get fork!", thread_name);
+    println!("{} will attempt to get {} fork!", thread_name, fork_type);
     let mut locked_forks = forks.lock().unwrap();
     if locked_forks[fork_index] == FORK {
         locked_forks[fork_index] = "None";
@@ -67,7 +67,7 @@ fn try_get_fork(forks: &mut Arc<Mutex<Vec<&'static str>>>, fork_index:usize, thr
     return false;
 }
 
-fn think(thread_name: &'static str) {
+fn think(thread_name: & str) {
     let mut rng = rand::thread_rng();
     let random = rng.gen_range(1000, 5000);
     println!("{} thinking for: {} milliseconds", thread_name, random);
