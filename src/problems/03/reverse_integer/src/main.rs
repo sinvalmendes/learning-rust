@@ -10,5 +10,19 @@
 // Output: -321
 
 fn main() {
-    println!("Hello, world!");
+    let result = Solution::reverse(123);
+    assert_eq!(321, result);
+
+    let result = Solution::reverse(-123);
+    assert_eq!(-321, result);
+}
+
+struct Solution {}
+
+impl Solution {
+    pub fn reverse(x: i32) -> i32 {
+        let string = x.to_string();
+        let reverse_string = string.chars().rev().collect::<String>();
+        return reverse_string.parse::<i32>().unwrap();
+    }
 }
