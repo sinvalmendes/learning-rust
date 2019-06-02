@@ -21,8 +21,14 @@ struct Solution {}
 
 impl Solution {
     pub fn reverse(x: i32) -> i32 {
+        let is_negative = x < 0;
         let string = x.to_string();
-        let reverse_string = string.chars().rev().collect::<String>();
+        let mut reverse_string = string.chars().rev().collect::<String>();
+        if is_negative {
+            reverse_string.truncate(reverse_string.len() - 1);
+            return reverse_string.parse::<i32>().unwrap() * -1;
+        }
+
         return reverse_string.parse::<i32>().unwrap();
     }
 }
