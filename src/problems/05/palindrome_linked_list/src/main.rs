@@ -20,20 +20,34 @@ struct Solution {}
 impl Solution {
   pub fn is_palindrome(head: Option<Box<ListNode>>) -> bool {
     let mut stack = vec![];
-    let mut node = head.unwrap();
+    let head_clone = head.clone();
+    let mut node = head_clone.unwrap();
 
     loop {
       stack.push(node.val);
-
       if node.next == None {
         break;
       }
-
       node = node.next.unwrap();
     }
 
     println!("{:?}", stack);
-    return false;      
+
+    let mut node = head.unwrap();
+    let mut count = 0;
+
+    loop {
+      println!("{} {}", count, node.val);
+      if *stack.get(count).unwrap() != node.val {
+        return false;
+      }
+      count += 1;
+      if node.next == None {
+        break;
+      }
+      node = node.next.unwrap();
+    }
+    return true;     
   }
 }
 
