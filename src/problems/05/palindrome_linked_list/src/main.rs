@@ -31,23 +31,19 @@ impl Solution {
       node = node.next.unwrap();
     }
 
-    println!("{:?}", stack);
-
     let mut node = head.unwrap();
-    let mut count = 0;
+    let mut count: usize = stack.len() - 1;
 
     loop {
-      println!("{} {}", count, node.val);
       if *stack.get(count).unwrap() != node.val {
         return false;
       }
-      count += 1;
       if node.next == None {
-        break;
+        return true;
       }
       node = node.next.unwrap();
+      count -= 1;
     }
-    return true;     
   }
 }
 
@@ -59,5 +55,12 @@ fn main() {
   list_a_node_3.next = Some(Box::new(list_a_node_2));
 
   let result = Solution::is_palindrome(Some(Box::new(list_a_node_3)));
-  println!("{}", result);
+  assert_eq!(true, result);
+
+  let list_a_node_1 = ListNode::new(1);
+  let mut list_a_node_2 = ListNode::new(2);
+  list_a_node_2.next = Some(Box::new(list_a_node_1));
+
+  let result = Solution::is_palindrome(Some(Box::new(list_a_node_2)));
+  assert_eq!(false, result);
 }
