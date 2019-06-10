@@ -19,9 +19,10 @@ struct Solution {}
 
 impl Solution {
   pub fn is_palindrome(head: Option<Box<ListNode>>) -> bool {
-    let mut stack = vec![];
     let head_clone = head.clone();
-    let mut node = head_clone.unwrap();
+
+    let mut stack = vec![];
+    let mut node = head.unwrap();
 
     loop {
       stack.push(node.val);
@@ -31,7 +32,7 @@ impl Solution {
       node = node.next.unwrap();
     }
 
-    let mut node = head.unwrap();
+    let mut node = head_clone.unwrap();
     let mut count: usize = stack.len() - 1;
 
     loop {
