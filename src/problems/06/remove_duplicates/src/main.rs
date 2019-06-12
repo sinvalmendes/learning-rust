@@ -18,9 +18,21 @@
 // It doesn't matter what values are set beyond the returned length.
 
 struct Solution {}
+use std::collections::HashMap;
 
 impl Solution {
     pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+        let mut existing_nums = HashMap::new();
+        for num in nums {
+            match existing_nums.get(num) {
+                Some(x) => {
+                    existing_nums.insert(num, x+1);
+
+                },
+                None => {existing_nums.insert(num, 1);}
+            }
+            println!("{:?}", existing_nums);
+        }
         return 2;
     }
 }
