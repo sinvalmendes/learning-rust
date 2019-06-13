@@ -23,17 +23,18 @@ use std::collections::HashMap;
 impl Solution {
     pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
         let mut existing_nums = HashMap::new();
+        let mut duplicates_counter = 0;
+        let len = nums.len() as i32;
         for num in nums {
             match existing_nums.get(num) {
                 Some(x) => {
                     existing_nums.insert(num, x+1);
-
+                    duplicates_counter += 1;
                 },
                 None => {existing_nums.insert(num, 1);}
             }
-            println!("{:?}", existing_nums);
         }
-        return 2;
+        return len - duplicates_counter;
     }
 }
 
@@ -43,6 +44,14 @@ fn main() {
     assert_eq!(2, result);
 
     let mut nums = vec![0,0,1,1,1,2,2,3,3,4];
+    let result = Solution::remove_duplicates(&mut nums);
+    assert_eq!(5, result);
+
+    let mut nums = vec![1,1,2,2,3,3,4];
+    let result = Solution::remove_duplicates(&mut nums);
+    assert_eq!(4, result);
+
+    let mut nums = vec![0,0,1,1,1,2,2,3,3,4,4];
     let result = Solution::remove_duplicates(&mut nums);
     assert_eq!(5, result);
 }
