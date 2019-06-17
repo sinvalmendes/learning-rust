@@ -32,6 +32,10 @@ impl Solution {
         }
         return len - duplicates_counter;
     }
+
+    pub fn remove_duplicates_no_mem(nums: &mut Vec<i32>) -> i32 {
+        return 0;
+    }
 }
 
 fn main() {
