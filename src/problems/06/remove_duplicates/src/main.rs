@@ -34,7 +34,30 @@ impl Solution {
     }
 
     pub fn remove_duplicates_no_mem(nums: &mut Vec<i32>) -> i32 {
-        return 0;
+        let mut previous_num: i32 = 99999999;
+        let mut count: usize = 0;
+        let mut duplicates = 0;
+        let len = nums.len() as i32;
+
+        loop {
+            if count == nums.len() {
+                break;
+            }
+
+            let num = nums.get(count);
+            match num {
+                Some(x) => {
+                    if *x == previous_num {
+                        duplicates += 1;
+                    } else {
+                        previous_num = *x;
+                    }
+                }
+                None => panic!(),
+            };
+            count += 1;
+        }
+        return len - duplicates;
     }
 }
 
@@ -53,5 +76,21 @@ fn main() {
 
     let mut nums = vec![0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 4];
     let result = Solution::remove_duplicates(&mut nums);
+    assert_eq!(5, result);
+
+    let mut nums = vec![1, 1, 2];
+    let result = Solution::remove_duplicates_no_mem(&mut nums);
+    assert_eq!(2, result);
+
+    let mut nums = vec![0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
+    let result = Solution::remove_duplicates_no_mem(&mut nums);
+    assert_eq!(5, result);
+
+    let mut nums = vec![1, 1, 2, 2, 3, 3, 4];
+    let result = Solution::remove_duplicates_no_mem(&mut nums);
+    assert_eq!(4, result);
+
+    let mut nums = vec![0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 4];
+    let result = Solution::remove_duplicates_no_mem(&mut nums);
     assert_eq!(5, result);
 }
