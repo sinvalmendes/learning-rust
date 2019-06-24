@@ -19,4 +19,17 @@
 
 fn main() {
     println!("Hello, world!");
+
+    let nums = vec![1,3,5,6];
+    let result = Solution::search_insert(nums, 5);
+    assert_eq!(2, result);
+}
+
+struct Solution {}
+
+impl Solution {
+    pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
+        
+        return 0;
+    }
 }
