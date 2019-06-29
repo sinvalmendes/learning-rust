@@ -83,9 +83,7 @@ impl Solution {
         let middle = (begin + end) / 2;
         println!("| begin {:?} | end {:?} | middle {:?}|", begin, end, middle);
         println!("|{:?} | target {:?} |", nums, target);
-        if middle == begin { 
-            return middle;
-        }
+
         let mut current_value: i32 = 999999999;
 
         match nums.get(middle as usize) {
@@ -97,6 +95,17 @@ impl Solution {
                 }
         };
 
+        if middle == begin {
+            if current_value == target {
+                return middle;
+            }
+            if current_value < target {
+                return middle + 1;
+            }
+            if current_value > target {
+                return middle;
+            }
+        }
 
 
         if current_value > target {
@@ -104,6 +113,7 @@ impl Solution {
             println!("{} > {}, {}:{}", current_value, target, begin, new_end);
             return Solution::recursive_search(nums, target, begin, new_end);
         } else {
+            let middle = middle + 1;
             println!("{} <= {}, {}:{}", current_value, target, middle, end);
             return Solution::recursive_search(nums, target, middle, end);
         }
