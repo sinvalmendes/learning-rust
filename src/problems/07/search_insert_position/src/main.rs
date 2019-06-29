@@ -85,12 +85,10 @@ impl Solution {
         let mut current_value: i32 = 999999999;
 
         match nums.get(middle as usize) {
-                Some(x) => {
-                    current_value = *x;
-                }
-                None => {
-                    panic!("Something is wrong.");
-                }
+            Some(x) => {
+                current_value = *x;
+            },
+            None => panic!("Something is wrong.")
         };
 
         if end == begin {
@@ -110,7 +108,6 @@ impl Solution {
                 return middle-1;
             }
         }
-
 
         if current_value > target {
             let new_end = middle - 1;
