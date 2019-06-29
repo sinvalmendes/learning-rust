@@ -19,7 +19,6 @@
 // Output: 0
 
 fn main() {
-
     let nums = vec![1,3,5,6];
     let result = Solution::search_insert(nums, 5);
     assert_eq!(2, result);
@@ -35,7 +34,6 @@ fn main() {
     let nums = vec![1,3,5,6];
     let result = Solution::search_insert(nums, 0);
     assert_eq!(0, result);
-
 
 
     let nums = vec![1,3,5,6];
@@ -95,15 +93,21 @@ impl Solution {
                 }
         };
 
-        if middle == begin {
+        if end == begin {
             if current_value == target {
+                println!("-> current_value == target {}", middle);
                 return middle;
             }
             if current_value < target {
+                println!("->c urrent_value < target {}", middle + 1);
                 return middle + 1;
             }
             if current_value > target {
-                return middle;
+                println!("-> current_value > target {}", middle);
+                if middle == 0 {
+                    return middle;
+                }
+                return middle-1;
             }
         }
 
