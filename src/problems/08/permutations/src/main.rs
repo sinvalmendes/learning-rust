@@ -30,17 +30,38 @@ impl Solution {
         let mut result = vec![];
         let mut count = 0;
         for num in &nums {
-            let mut nums_clone = nums.clone();
-            let head_num = nums_clone.remove(count);
-            println!("\n===head_num:{:?}, nums:{:?}", head_num, nums_clone);
-            Solution::recursion(&mut result, head_num, nums_clone);
+            let mut available_choices = nums.clone();
+            let head_num = available_choices.remove(count);
+            let preselected_nums = vec![head_num];
+            println!("\n===preselected_nums:{:?}, available_choices:{:?}", preselected_nums, available_choices);
+            Solution::recursion(&mut result, preselected_nums, available_choices);
 
             count += 1;
         }
-        return vec![vec![1,2,3]];
+        println!("final result: {:?}", result);
+        return result;
     }
 
-    pub fn recursion(result: &mut Vec<Vec<i32>>, head_num: i32, nums: Vec<i32>) {
-        println!("result:{:?}, head_num:{:?}, nums:{:?}", result, head_num, nums);
+    pub fn recursion(result: &mut Vec<Vec<i32>>, preselected_nums: Vec<i32>, available_choices: Vec<i32>) {
+        println!("result:{:?}, preselected_nums:{:?}, available_choices:{:?}", result, preselected_nums, available_choices);
+
+        if available_choices.len() == 0 {
+            println!("adding {:?} to result", preselected_nums);
+            result.push(preselected_nums);
+            return;
+        }
+
+        let mut count = 0;
+        for num in &available_choices {
+            let mut available_choices_clone = available_choices.clone();
+            let selected_num = available_choices_clone.remove(count);
+
+            let mut preselected_nums_clone = preselected_nums.clone();
+            preselected_nums_clone.push(selected_num);
+
+            Solution::recursion(result, preselected_nums_clone, available_choices_clone);
+
+            count += 1;
+        }
     }
 }
