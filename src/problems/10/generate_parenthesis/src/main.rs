@@ -31,14 +31,14 @@ impl Solution {
         let mut right_counter = n;
 
         let mut string = String::from("");
-        Solution::recursive(open_counter, left_counter, right_counter, string, &mut result);
+        Solution::recursive(open_counter, left_counter, right_counter, string, &mut result, n*2);
         return result;
     }
 
-    pub fn recursive(open_counter: i32, left_counter: i32, right_counter:  i32, string: String, result: &mut Vec<String>) {
+    pub fn recursive(open_counter: i32, left_counter: i32, right_counter:  i32, string: String, result: &mut Vec<String>, string_size: i32) {
         println!("\nopen_counter:{:?}, left_counter:{:?}, right_counter:{:?}, string:|{:?}|", open_counter, left_counter, right_counter, string);
 
-        if string.len() == 6 { // hardcored, but `n` must become a parameter
+        if string.len() as i32 == string_size {
             result.push(string);
             return;
         }
@@ -49,7 +49,7 @@ impl Solution {
             let new_open_counter = open_counter + 1;
             current_string.push('(');
             if new_open_counter <= right_counter {
-                Solution::recursive(new_open_counter, new_left_counter, right_counter, current_string, result);
+                Solution::recursive(new_open_counter, new_left_counter, right_counter, current_string, result, string_size);
             }
         }
 
@@ -58,7 +58,7 @@ impl Solution {
             let new_right_counter = right_counter - 1;
             let new_open_counter = open_counter - 1;
             current_string.push(')');
-            Solution::recursive(new_open_counter, left_counter, new_right_counter, current_string, result);
+            Solution::recursive(new_open_counter, left_counter, new_right_counter, current_string, result, string_size);
         }
     }
 }
