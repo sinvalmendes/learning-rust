@@ -21,6 +21,11 @@ fn main() {
     ];
     let result = Solution::permute(nums);
     assert_eq!(expected, result);
+
+    let nums = vec![1,2];
+    let expected = vec![vec![1,2], vec![2,1]];
+    let result = Solution::permute(nums);
+    assert_eq!(expected, result);
 }
 
 struct Solution {}
