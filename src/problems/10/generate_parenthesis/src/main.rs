@@ -26,11 +26,11 @@ impl Solution {
     pub fn generate_parenthesis(n: i32) -> Vec<String> {
         let mut result: Vec<String> = vec![];
 
-        let mut open_counter = 0;
-        let mut left_counter = n;
-        let mut right_counter = n;
+        let open_counter = 0;
+        let left_counter = n;
+        let right_counter = n;
 
-        let mut string = String::from("");
+        let string = String::from("");
         Solution::recursive(open_counter, left_counter, right_counter, string, &mut result, n*2);
         return result;
     }
