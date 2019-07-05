@@ -73,11 +73,9 @@ impl Solution {
         let mut count = 0;
         while count < available_choices.len() {
             let mut available_choices_clone = available_choices.clone();
-            let selected_num = available_choices_clone.remove(count);
-
             let mut preselected_nums_clone = preselected_nums.clone();
-            preselected_nums_clone.push(selected_num);
 
+            preselected_nums_clone.push(available_choices_clone.remove(count));
             Solution::recursion(result, preselected_nums_clone, available_choices_clone);
 
             count += 1;
