@@ -29,11 +29,7 @@ impl Solution {
         while count < nums.len() {
             let mut available_choices = nums.clone();
             let head_num = available_choices.remove(count);
-            // let map_head_num = hash_map.get(&head_num.to_string());
 
-            // match map_head_num {
-            //     Some(x) => println!("{} was already checked", x),
-            //     None => {
             let preselected_nums = vec![head_num];
             println!(
                 "\n===preselected_nums:{:?}, available_choices:{:?}",
@@ -45,8 +41,6 @@ impl Solution {
                 available_choices,
                 &mut hash_map,
             );
-            // }
-            // };
 
             count += 1;
         }
