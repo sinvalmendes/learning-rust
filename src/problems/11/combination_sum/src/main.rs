@@ -25,6 +25,7 @@
 //   [2,3,3],
 //   [3,5]
 // ]
+use std::collections::HashMap;
 
 fn main() {
     let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
@@ -35,6 +36,22 @@ struct Solution {}
 
 impl Solution {
     pub fn combination_sum(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut result: Vec<Vec<i32>> = vec![];
+        let mut count = 0;
+        let mut hash_map: HashMap<Vec<i32>, i32> = HashMap::new();
+
+        while count < candidates.len() {
+            let mut available_choices = candidates.clone();
+            let choice = available_choices.remove(count);
+
+            count += 1;
+        }
+
+        Solution::recursion();
         return vec![vec![0]];
+    }
+
+    pub fn recursion() {
+        println!("{}", 0);
     }
 }
