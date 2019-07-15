@@ -73,6 +73,17 @@ impl Solution {
             hash_map.insert(choices, 0);
             return;
         }
+
+        if choices_sum > target {
+            return;
+        }
+
+        if choices_sum < target {
+            for candidate in candidates {
+                let mut new_choices: Vec<i32> = choices.clone();
+                new_choices.push(candidate);
+            }
+        }
     }
 
     pub fn sum_list(list: &Vec<i32>) -> i32 {
