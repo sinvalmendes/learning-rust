@@ -47,20 +47,32 @@ impl Solution {
         while count < candidates.len() {
             let mut available_choices = candidates.clone();
             let choice = available_choices.remove(count);
-            Solution::recursion(vec![choice], candidates.clone(), target);
+            Solution::recursion(vec![choice], candidates.clone(), target, &mut hash_map);
 
             count += 1;
         }
 
+        println!("{:?}", hash_map);
+
         return vec![vec![0]];
     }
 
-    pub fn recursion(choices: Vec<i32>, candidates: Vec<i32>, target: i32) {
+    pub fn recursion(
+        choices: Vec<i32>,
+        candidates: Vec<i32>,
+        target: i32,
+        hash_map: &mut HashMap<Vec<i32>, i32>,
+    ) {
         let choices_sum = Solution::sum_list(&choices);
         println!(
             "{:?}|{:?}|{:?}|{:?}",
             choices, candidates, target, choices_sum
         );
+
+        if choices_sum == target {
+            hash_map.insert(choices, 0);
+            return;
+        }
     }
 
     pub fn sum_list(list: &Vec<i32>) -> i32 {
