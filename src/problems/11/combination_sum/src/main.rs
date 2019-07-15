@@ -28,9 +28,9 @@
 use std::collections::HashMap;
 
 fn main() {
-    assert_eq!(Solution::sum_list(vec![1, 1, 1, 1]), 4);
-    assert_eq!(Solution::sum_list(vec![]), 0);
-    assert_eq!(Solution::sum_list(vec![1, 2]), 3);
+    assert_eq!(Solution::sum_list(&vec![1, 1, 1, 1]), 4);
+    assert_eq!(Solution::sum_list(&vec![]), 0);
+    assert_eq!(Solution::sum_list(&vec![1, 2]), 3);
 
     let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
     assert_eq!(vec![vec![7], vec![2, 2, 3]], result);
@@ -56,10 +56,14 @@ impl Solution {
     }
 
     pub fn recursion(choices: Vec<i32>, candidates: Vec<i32>, target: i32) {
-        println!("{:?}|{:?}|{:?}", choices, candidates, target);
+        let choices_sum = Solution::sum_list(&choices);
+        println!(
+            "{:?}|{:?}|{:?}|{:?}",
+            choices, candidates, target, choices_sum
+        );
     }
 
-    pub fn sum_list(list: Vec<i32>) -> i32 {
+    pub fn sum_list(list: &Vec<i32>) -> i32 {
         let mut count: i32 = 0;
         for num in list {
             count += num;
