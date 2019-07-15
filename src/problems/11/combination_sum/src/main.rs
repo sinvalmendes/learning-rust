@@ -47,7 +47,7 @@ impl Solution {
         while count < candidates.len() {
             let mut available_choices = candidates.clone();
             let choice = available_choices.remove(count);
-            Solution::recursion(vec![choice], &candidates, target, &mut hash_map);
+            Solution::recursion(&mut vec![choice], &candidates, target, &mut hash_map);
 
             count += 1;
         }
@@ -58,7 +58,7 @@ impl Solution {
     }
 
     pub fn recursion(
-        choices: Vec<i32>,
+        choices: &mut Vec<i32>,
         candidates: &Vec<i32>,
         target: i32,
         hash_map: &mut HashMap<Vec<i32>, i32>,
@@ -70,7 +70,9 @@ impl Solution {
         );
 
         if choices_sum == target {
-            hash_map.insert(choices, 0);
+            println!("Found {:?} as solution!", choices);
+            choices.sort_unstable();
+            hash_map.insert(choices.to_vec(), 0);
             return;
         }
 
@@ -82,7 +84,7 @@ impl Solution {
             for candidate in candidates.clone() {
                 let mut new_choices: Vec<i32> = choices.clone();
                 new_choices.push(candidate);
-                Solution::recursion(new_choices, candidates, target, hash_map);
+                Solution::recursion(&mut new_choices, candidates, target, hash_map);
             }
         }
     }
