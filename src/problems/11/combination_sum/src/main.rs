@@ -47,16 +47,16 @@ impl Solution {
         while count < candidates.len() {
             let mut available_choices = candidates.clone();
             let choice = available_choices.remove(count);
+            Solution::recursion(vec![choice], candidates.clone(), target);
 
             count += 1;
         }
 
-        Solution::recursion();
         return vec![vec![0]];
     }
 
-    pub fn recursion() {
-        println!("{}", 0);
+    pub fn recursion(choices: Vec<i32>, candidates: Vec<i32>, target: i32) {
+        println!("{:?}|{:?}|{:?}", choices, candidates, target);
     }
 
     pub fn sum_list(list: Vec<i32>) -> i32 {
