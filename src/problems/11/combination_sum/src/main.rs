@@ -34,6 +34,9 @@ fn main() {
 
     let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
     assert_eq!(vec![vec![7], vec![2, 2, 3]], result);
+
+    let result = Solution::combination_sum(vec![2, 3, 5], 8);
+    assert_eq!(vec![vec![2, 2, 2, 2], vec![2, 3, 3], vec![3, 5]], result);
 }
 
 struct Solution {}
@@ -51,10 +54,12 @@ impl Solution {
 
             count += 1;
         }
+        for key in hash_map.keys() {
+            result.push(key.to_vec());
+        }
+        println!("{:?}", result);
 
-        println!("{:?}", hash_map);
-
-        return vec![vec![0]];
+        return result;
     }
 
     pub fn recursion(
@@ -72,7 +77,9 @@ impl Solution {
         if choices_sum == target {
             println!("Found {:?} as solution!", choices);
             choices.sort_unstable();
-            hash_map.insert(choices.to_vec(), 0);
+            if !hash_map.contains_key(choices) {
+                hash_map.insert(choices.to_vec(), 0);
+            }
             return;
         }
 
