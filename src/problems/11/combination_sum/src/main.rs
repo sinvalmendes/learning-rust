@@ -86,10 +86,7 @@ impl Solution {
             println!("Found {:?} as solution!", choices);
             choices.sort_unstable();
             hash_map.insert(choices.to_vec(), 0);
-            return;
-        }
-
-        if choices_sum < target {
+        } else if choices_sum < target {
             for candidate in candidates.clone() {
                 let mut new_choices: Vec<i32> = choices.clone();
                 new_choices.push(candidate);
