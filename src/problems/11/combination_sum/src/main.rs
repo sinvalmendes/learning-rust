@@ -32,14 +32,26 @@ fn main() {
     assert_eq!(Solution::sum_list(&vec![]), 0);
     assert_eq!(Solution::sum_list(&vec![1, 2]), 3);
 
-    // let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
-    // assert_eq!(vec![vec![7], vec![2, 2, 3]], result);
+    let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
+    let expected = vec![vec![7], vec![2, 2, 3]];
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 
-    // let result = Solution::combination_sum(vec![2, 3, 5], 8);
-    // assert_eq!(vec![vec![2, 2, 2, 2], vec![2, 3, 3], vec![3, 5]], result);
+    let result = Solution::combination_sum(vec![2, 3, 5], 8);
+    let expected = vec![vec![2, 2, 2, 2], vec![2, 3, 3], vec![3, 5]];
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 
     let result = Solution::combination_sum(vec![7, 3, 9, 6], 6);
-    assert_eq!(vec![vec![6], vec![3, 3]], result);
+    let expected = vec![vec![6], vec![3, 3]];
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 }
 
 struct Solution {}
