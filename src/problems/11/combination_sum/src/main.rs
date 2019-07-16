@@ -51,6 +51,7 @@ impl Solution {
         let mut hash_map: HashMap<Vec<i32>, i32> = HashMap::new();
         let mut sorted_candidates = candidates;
         sorted_candidates.sort_unstable();
+
         while count < sorted_candidates.len() {
             let mut available_choices = sorted_candidates.clone();
             let choice = available_choices.remove(count);
@@ -84,9 +85,7 @@ impl Solution {
         if choices_sum == target {
             println!("Found {:?} as solution!", choices);
             choices.sort_unstable();
-            if !hash_map.contains_key(choices) {
-                hash_map.insert(choices.to_vec(), 0);
-            }
+            hash_map.insert(choices.to_vec(), 0);
             return;
         }
 
