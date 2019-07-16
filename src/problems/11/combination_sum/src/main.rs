@@ -32,11 +32,14 @@ fn main() {
     assert_eq!(Solution::sum_list(&vec![]), 0);
     assert_eq!(Solution::sum_list(&vec![1, 2]), 3);
 
-    let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
-    assert_eq!(vec![vec![7], vec![2, 2, 3]], result);
+    // let result = Solution::combination_sum(vec![2, 3, 6, 7], 7);
+    // assert_eq!(vec![vec![7], vec![2, 2, 3]], result);
 
-    let result = Solution::combination_sum(vec![2, 3, 5], 8);
-    assert_eq!(vec![vec![2, 2, 2, 2], vec![2, 3, 3], vec![3, 5]], result);
+    // let result = Solution::combination_sum(vec![2, 3, 5], 8);
+    // assert_eq!(vec![vec![2, 2, 2, 2], vec![2, 3, 3], vec![3, 5]], result);
+
+    let result = Solution::combination_sum(vec![7, 3, 9, 6], 6);
+    assert_eq!(vec![vec![6], vec![3, 3]], result);
 }
 
 struct Solution {}
@@ -46,11 +49,15 @@ impl Solution {
         let mut result: Vec<Vec<i32>> = vec![];
         let mut count = 0;
         let mut hash_map: HashMap<Vec<i32>, i32> = HashMap::new();
-
-        while count < candidates.len() {
-            let mut available_choices = candidates.clone();
+        let mut sorted_candidates = candidates;
+        sorted_candidates.sort_unstable();
+        while count < sorted_candidates.len() {
+            let mut available_choices = sorted_candidates.clone();
             let choice = available_choices.remove(count);
-            Solution::recursion(&mut vec![choice], &candidates, target, &mut hash_map);
+            if choice > target {
+                break;
+            }
+            Solution::recursion(&mut vec![choice], &sorted_candidates, target, &mut hash_map);
 
             count += 1;
         }
