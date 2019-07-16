@@ -89,10 +89,6 @@ impl Solution {
             return;
         }
 
-        if choices_sum > target {
-            return;
-        }
-
         if choices_sum < target {
             for candidate in candidates.clone() {
                 let mut new_choices: Vec<i32> = choices.clone();
