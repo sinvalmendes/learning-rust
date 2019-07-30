@@ -1,5 +1,4 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use std::sync::Mutex;
 
 // This struct represents state
 struct AppState {
@@ -11,12 +10,12 @@ fn index(info: web::Path<(u32, String)>) -> impl Responder {
 }
 
 fn index2(data: web::Data<AppState>) -> impl Responder {
-    let app_name = &data.app_name; // <- get app_name
+    let app_name = &data.app_name;
     HttpResponse::Ok().body(format!("Hello {}!", app_name))
 }
 
 fn index3(data: web::Data<AppState>) -> impl Responder {
-    let app_name = &data.app_name; // <- get app_name
+    let app_name = &data.app_name;
     HttpResponse::Ok().body(format!("Hello again {}!", app_name))
 }
 
