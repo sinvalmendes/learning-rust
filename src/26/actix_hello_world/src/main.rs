@@ -13,8 +13,12 @@ struct AppStateWithCounter {
 fn _index(data: web::Data<AppStateWithCounter>) -> String {
     let mut counter = data.counter.lock().unwrap(); // <- get counter's MutexGuard
     *counter += 1; // <- access counter inside MutexGuard
-
     format!("Request number: {}", counter) // <- response with count
+}
+
+fn _index2(data: web::Data<AppStateWithCounter>) -> String {
+    let mut counter = data.counter.lock().unwrap();
+    format!("Request number: {}", counter)
 }
 
 fn index(info: web::Path<(u32, String)>) -> impl Responder {
@@ -43,6 +47,7 @@ fn main() -> std::io::Result<()> {
             })
             .register_data(counter.clone()) // <- register the created data
             .service(web::resource("/counter").to(_index))
+            .service(web::resource("/read/counter").to(_index2))
             .service(web::resource("/{id}/{name}/index.html").to(index))
             .service(web::resource("/index2").to(index2))
             .service(web::resource("/index3").to(index3))
