@@ -1,5 +1,11 @@
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{error, web, App, FromRequest, HttpResponse, HttpServer, Responder};
+use serde::Deserialize;
 use std::sync::Mutex;
+
+#[derive(Deserialize)]
+struct Info {
+    app_name: String,
+}
 
 // This struct represents state
 struct AppState {
@@ -35,6 +41,10 @@ fn index3(data: web::Data<AppState>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello again {}!", app_name))
 }
 
+fn index_json(info: web::Json<Info>) -> impl Responder {
+    format!("Hello (json) {}!", info.app_name)
+}
+
 fn main() -> std::io::Result<()> {
     let counter = web::Data::new(AppStateWithCounter {
         counter: Mutex::new(0),
@@ -51,10 +61,26 @@ fn main() -> std::io::Result<()> {
             .service(web::resource("/{id}/{name}/index.html").to(index))
             .service(web::resource("/index2").to(index2))
             .service(web::resource("/index3").to(index3))
+            .service(
+                web::resource("/")
+                    .data(
+                        // change json extractor configuration
+                        web::Json::<Info>::configure(|cfg| {
+                            cfg.limit(4096).error_handler(|err, _req| {
+                                // create custom error response
+                                error::InternalError::from_response(
+                                    err,
+                                    HttpResponse::Conflict().finish(),
+                                )
+                                .into()
+                            })
+                        }),
+                    )
+                    .route(web::post().to(index_json)),
+            )
     })
     .bind("0.0.0.0:8080")?
     .run()
 }
 
-// Implement shared state with set (url based) and get
 // Change set to receive JSON post
