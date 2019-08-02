@@ -23,7 +23,7 @@ fn _index(data: web::Data<AppStateWithCounter>) -> String {
 }
 
 fn _index2(data: web::Data<AppStateWithCounter>) -> String {
-    let mut counter = data.counter.lock().unwrap();
+    let counter = data.counter.lock().unwrap();
     format!("Counter: {}", counter)
 }
 
@@ -82,7 +82,6 @@ fn main() -> std::io::Result<()> {
     .bind("0.0.0.0:8080")?
     .run()
 }
-
 
 // fn main() {
 //     println!("Hello world!")
