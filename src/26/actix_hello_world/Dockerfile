@@ -7,13 +7,14 @@ RUN apt-get update
 RUN apt-get install musl-tools -y
 RUN rustup target add x86_64-unknown-linux-musl
 
-# build the project to run 
 WORKDIR /app
 ADD . /app
+
 RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-linux-musl
-RUN rm -f target/x86_64-unknown-linux-musl/release/deps/app*
+RUN rm -f target/x86_64-unknown-linux-musl/release/deps/actix_hello_world*
 COPY . .
-EXPOSE 8080
+RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-linux-musl
+
 
 # final base image for the runtime container with only the binary built by the previous image
 FROM alpine:latest

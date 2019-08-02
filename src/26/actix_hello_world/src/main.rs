@@ -28,17 +28,17 @@ fn _index2(data: web::Data<AppStateWithCounter>) -> String {
 }
 
 fn index(info: web::Path<(u32, String)>) -> impl Responder {
-    format!("Hello {}! id:{}", info.1, info.0)
+    format!("Hello {}! - index id:{}", info.1, info.0)
 }
 
 fn index2(data: web::Data<AppState>) -> impl Responder {
     let app_name = &data.app_name;
-    HttpResponse::Ok().body(format!("Hello {}!", app_name))
+    HttpResponse::Ok().body(format!("Hello {}! - index2", app_name))
 }
 
 fn index3(data: web::Data<AppState>) -> impl Responder {
     let app_name = &data.app_name;
-    HttpResponse::Ok().body(format!("Hello again {}!", app_name))
+    HttpResponse::Ok().body(format!("Hello again {}! - index3", app_name))
 }
 
 fn index_json(info: web::Json<Info>) -> impl Responder {
