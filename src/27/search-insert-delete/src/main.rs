@@ -8,6 +8,8 @@
 // any number of searches. Finally, deleters remove items from anywhere in the list. At most one deleter process can access the list at
 // a time, and deletion must also be mutually exclusive with searches and insertions.
 use std::collections::LinkedList;
+use std::ops::Deref;
+use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
@@ -16,15 +18,29 @@ fn main() {
     list.push_back(2);
     list.push_back(3);
 
-    let searcher_thread = create_searcher_thread("ST1");
-    searcher_thread.join().unwrap();
+    let mut mutex: Arc<Mutex<LinkedList<u32>>> = Arc::new(Mutex::new(list));
 
-    println!("{:?}", list);
+    let mut searches = vec![];
+
+    searches.push(create_searcher_thread(&mut mutex, "ST1"));
+    searches.push(create_searcher_thread(&mut mutex, "ST2"));
+
+    for handle in searches {
+        handle.join().unwrap();
+    }
 }
 
-fn create_searcher_thread(name: &'static str) -> thread::JoinHandle<()> {
+fn create_searcher_thread(
+    mutex: &mut Arc<Mutex<LinkedList<u32>>>,
+    name: &'static str,
+) -> thread::JoinHandle<()> {
+    let list = mutex.clone();
     let t = thread::spawn(move || {
-        println!("Searcher thread {}", name);
+        let locked_list = list.lock().unwrap();
+        println!("Searcher thread {}: {:?}", name, *locked_list);
+        for item in locked_list.deref() {
+            println!("Searcher thread {}: {}", name, item);
+        }
     });
 
     return t;
