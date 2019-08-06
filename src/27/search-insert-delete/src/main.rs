@@ -20,16 +20,14 @@ fn main() {
 
     let mut mutex: Arc<Mutex<LinkedList<u32>>> = Arc::new(Mutex::new(list));
 
-    let mut searches = vec![];
+    let mut threads = vec![];
+    threads.push(create_searcher_thread(&mut mutex, "ST1"));
+    threads.push(create_searcher_thread(&mut mutex, "ST2"));
+    threads.push(create_inserter_thread(&mut mutex, "IT1"));
+    threads.push(create_inserter_thread(&mut mutex, "IT2"));
 
-    searches.push(create_searcher_thread(&mut mutex, "ST1"));
-    searches.push(create_searcher_thread(&mut mutex, "ST2"));
-
-    searches.push(create_inserter_thread(&mut mutex, "IT1"));
-    searches.push(create_inserter_thread(&mut mutex, "IT2"));
-
-    for handle in searches {
-        handle.join().unwrap();
+    for thread in threads {
+        thread.join().unwrap();
     }
 
     let list = mutex.clone();
