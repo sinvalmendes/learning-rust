@@ -25,9 +25,30 @@ fn main() {
     searches.push(create_searcher_thread(&mut mutex, "ST1"));
     searches.push(create_searcher_thread(&mut mutex, "ST2"));
 
+    searches.push(create_inserter_thread(&mut mutex, "IT1"));
+    searches.push(create_inserter_thread(&mut mutex, "IT2"));
+
     for handle in searches {
         handle.join().unwrap();
     }
+
+    let list = mutex.clone();
+    let locked_list = list.lock().unwrap();
+    println!("{:?}", *locked_list)
+}
+
+fn create_inserter_thread(
+    mutex: &mut Arc<Mutex<LinkedList<u32>>>,
+    name: &'static str,
+) -> thread::JoinHandle<()> {
+    let list = mutex.clone();
+    let t = thread::spawn(move || {
+        let mut locked_list = list.lock().unwrap();
+        println!("Inserter thread {}: {:?}", name, *locked_list);
+        locked_list.push_back(999);
+    });
+
+    return t;
 }
 
 fn create_searcher_thread(
