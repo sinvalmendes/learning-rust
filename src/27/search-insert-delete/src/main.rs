@@ -7,10 +7,13 @@
 // the same time. However, one insert can proceed in parallel with
 // any number of searches. Finally, deleters remove items from anywhere in the list. At most one deleter process can access the list at
 // a time, and deletion must also be mutually exclusive with searches and insertions.
+extern crate rand;
+
+use rand::Rng;
 use std::collections::LinkedList;
 use std::ops::Deref;
 use std::sync::{Arc, Mutex};
-use std::thread;
+use std::{thread, time};
 
 fn main() {
     let mut list: LinkedList<u32> = LinkedList::new();
@@ -43,6 +46,7 @@ fn create_deleter_thread(
 ) -> thread::JoinHandle<()> {
     let list = mutex.clone();
     let t = thread::spawn(move || {
+        sleep(name);
         let mut locked_list = list.lock().unwrap();
         println!("Deleter thread {}: {:?}", name, *locked_list);
         locked_list.pop_back();
@@ -57,6 +61,7 @@ fn create_inserter_thread(
 ) -> thread::JoinHandle<()> {
     let list = mutex.clone();
     let t = thread::spawn(move || {
+        sleep(name);
         let mut locked_list = list.lock().unwrap();
         println!("Inserter thread {}: {:?}", name, *locked_list);
         locked_list.push_back(999);
@@ -71,6 +76,7 @@ fn create_searcher_thread(
 ) -> thread::JoinHandle<()> {
     let list = mutex.clone();
     let t = thread::spawn(move || {
+        sleep(name);
         let locked_list = list.lock().unwrap();
         println!("Searcher thread {}: {:?}", name, *locked_list);
         for item in locked_list.deref() {
@@ -79,4 +85,12 @@ fn create_searcher_thread(
     });
 
     return t;
+}
+
+fn sleep(thread_name: &str) {
+    let mut rng = rand::thread_rng();
+    let random = rng.gen_range(1000, 5000);
+    println!("{} sleeping for: {} milliseconds", thread_name, random);
+    let sleep = time::Duration::from_millis(random);
+    thread::sleep(sleep);
 }
