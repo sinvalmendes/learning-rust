@@ -25,6 +25,8 @@ fn main() {
     threads.push(create_searcher_thread(&mut mutex, "ST2"));
     threads.push(create_inserter_thread(&mut mutex, "IT1"));
     threads.push(create_inserter_thread(&mut mutex, "IT2"));
+    threads.push(create_deleter_thread(&mut mutex, "DT1"));
+    threads.push(create_deleter_thread(&mut mutex, "DT2"));
 
     for thread in threads {
         thread.join().unwrap();
@@ -33,6 +35,20 @@ fn main() {
     let list = mutex.clone();
     let locked_list = list.lock().unwrap();
     println!("{:?}", *locked_list)
+}
+
+fn create_deleter_thread(
+    mutex: &mut Arc<Mutex<LinkedList<u32>>>,
+    name: &'static str,
+) -> thread::JoinHandle<()> {
+    let list = mutex.clone();
+    let t = thread::spawn(move || {
+        let mut locked_list = list.lock().unwrap();
+        println!("Deleter thread {}: {:?}", name, *locked_list);
+        locked_list.pop_back();
+    });
+
+    return t;
 }
 
 fn create_inserter_thread(
