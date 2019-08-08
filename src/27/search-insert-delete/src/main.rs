@@ -24,12 +24,12 @@ fn main() {
     let mut mutex: Arc<Mutex<LinkedList<u32>>> = Arc::new(Mutex::new(list));
 
     let mut threads = vec![];
-    threads.push(create_searcher_thread(&mut mutex, "ST1"));
-    threads.push(create_searcher_thread(&mut mutex, "ST2"));
-    threads.push(create_inserter_thread(&mut mutex, "IT1"));
-    threads.push(create_inserter_thread(&mut mutex, "IT2"));
-    threads.push(create_deleter_thread(&mut mutex, "DT1"));
-    threads.push(create_deleter_thread(&mut mutex, "DT2"));
+    threads.push(create_thread(&mut mutex, "ST1", "searcher"));
+    threads.push(create_thread(&mut mutex, "ST2", "searcher"));
+    threads.push(create_thread(&mut mutex, "IT1", "inserter"));
+    threads.push(create_thread(&mut mutex, "IT2", "inserter"));
+    threads.push(create_thread(&mut mutex, "DT1", "deleter"));
+    threads.push(create_thread(&mut mutex, "DT2", "deleter"));
 
     for thread in threads {
         thread.join().unwrap();
@@ -40,47 +40,44 @@ fn main() {
     println!("{:?}", *locked_list)
 }
 
-fn create_deleter_thread(
+fn delete(
+    locked_list: &mut std::sync::MutexGuard<'_, std::collections::LinkedList<u32>>,
+    name: &'static str,
+) {
+    println!("Deleter thread {}: {:?}", name, *locked_list);
+    locked_list.pop_back();
+}
+
+fn search(locked_list: &std::collections::LinkedList<u32>, name: &'static str) {
+    for item in locked_list {
+        println!("Searcher thread {}: {}", name, item);
+    }
+}
+
+fn insert(
+    locked_list: &mut std::sync::MutexGuard<'_, std::collections::LinkedList<u32>>,
+    name: &'static str,
+) {
+    println!("Inserter thread {}: {:?}", name, *locked_list);
+    locked_list.push_back(999);
+}
+
+fn create_thread(
     mutex: &mut Arc<Mutex<LinkedList<u32>>>,
     name: &'static str,
+    thread_type: &'static str,
 ) -> thread::JoinHandle<()> {
     let list = mutex.clone();
     let t = thread::spawn(move || {
         sleep(name);
         let mut locked_list = list.lock().unwrap();
-        println!("Deleter thread {}: {:?}", name, *locked_list);
-        locked_list.pop_back();
-    });
-
-    return t;
-}
-
-fn create_inserter_thread(
-    mutex: &mut Arc<Mutex<LinkedList<u32>>>,
-    name: &'static str,
-) -> thread::JoinHandle<()> {
-    let list = mutex.clone();
-    let t = thread::spawn(move || {
-        sleep(name);
-        let mut locked_list = list.lock().unwrap();
-        println!("Inserter thread {}: {:?}", name, *locked_list);
-        locked_list.push_back(999);
-    });
-
-    return t;
-}
-
-fn create_searcher_thread(
-    mutex: &mut Arc<Mutex<LinkedList<u32>>>,
-    name: &'static str,
-) -> thread::JoinHandle<()> {
-    let list = mutex.clone();
-    let t = thread::spawn(move || {
-        sleep(name);
-        let locked_list = list.lock().unwrap();
-        println!("Searcher thread {}: {:?}", name, *locked_list);
-        for item in locked_list.deref() {
-            println!("Searcher thread {}: {}", name, item);
+        if thread_type == "searcher" {
+            let readable_list = locked_list.deref();
+            search(&readable_list, name);
+        } else if thread_type == "deleter" {
+            delete(&mut locked_list, name);
+        } else if thread_type == "inserter" {
+            insert(&mut locked_list, name);
         }
     });
 
