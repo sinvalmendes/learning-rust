@@ -12,32 +12,48 @@ extern crate rand;
 use rand::Rng;
 use std::collections::LinkedList;
 use std::ops::Deref;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 use std::{thread, time};
 
 fn main() {
-    let mut list: LinkedList<u32> = LinkedList::new();
-    list.push_back(1);
-    list.push_back(2);
-    list.push_back(3);
+    let mut mutex_list: LinkedList<u32> = LinkedList::new();
+    mutex_list.push_back(1);
+    mutex_list.push_back(2);
+    mutex_list.push_back(3);
 
-    let mut mutex: Arc<Mutex<LinkedList<u32>>> = Arc::new(Mutex::new(list));
+    let mut mutex: Arc<Mutex<LinkedList<u32>>> = Arc::new(Mutex::new(mutex_list));
+    let mut rw_list: LinkedList<i32> = LinkedList::new();
+    rw_list.push_back(-1);
+    rw_list.push_back(-2);
+    rw_list.push_back(-3);
+    let mut rw_lock = Arc::new(RwLock::new(rw_list));
 
     let mut threads = vec![];
-    threads.push(create_thread(&mut mutex, "ST1", "searcher"));
-    threads.push(create_thread(&mut mutex, "ST2", "searcher"));
-    threads.push(create_thread(&mut mutex, "IT1", "inserter"));
-    threads.push(create_thread(&mut mutex, "IT2", "inserter"));
-    threads.push(create_thread(&mut mutex, "DT1", "deleter"));
-    threads.push(create_thread(&mut mutex, "DT2", "deleter"));
+    threads.push(create_thread_mutex(&mut mutex, "ST1", "searcher"));
+    threads.push(create_thread_mutex(&mut mutex, "ST2", "searcher"));
+    threads.push(create_thread_mutex(&mut mutex, "IT1", "inserter"));
+    threads.push(create_thread_mutex(&mut mutex, "IT2", "inserter"));
+    threads.push(create_thread_mutex(&mut mutex, "DT1", "deleter"));
+    threads.push(create_thread_mutex(&mut mutex, "DT2", "deleter"));
+
+    threads.push(create_thread_rw(&mut rw_lock, "ST1", "searcher"));
+    threads.push(create_thread_rw(&mut rw_lock, "ST2", "searcher"));
+    threads.push(create_thread_rw(&mut rw_lock, "IT1", "inserter"));
+    threads.push(create_thread_rw(&mut rw_lock, "IT2", "inserter"));
+    threads.push(create_thread_rw(&mut rw_lock, "DT1", "deleter"));
+    threads.push(create_thread_rw(&mut rw_lock, "DT2", "deleter"));
 
     for thread in threads {
         thread.join().unwrap();
     }
 
-    let list = mutex.clone();
-    let locked_list = list.lock().unwrap();
-    println!("{:?}", *locked_list)
+    let mutex_list = mutex.clone();
+    let mutext_locked_list = mutex_list.lock().unwrap();
+    println!("{:?}", *mutext_locked_list);
+
+    let rw_list = rw_lock.clone();
+    let rw_locked_list = rw_list.read().unwrap();
+    println!("{:?}", *rw_locked_list);
 }
 
 fn delete(
@@ -62,7 +78,37 @@ fn insert(
     locked_list.push_back(999);
 }
 
-fn create_thread(
+fn create_thread_rw(
+    lock: &mut Arc<RwLock<LinkedList<i32>>>,
+    name: &'static str,
+    thread_type: &'static str,
+) -> thread::JoinHandle<()> {
+    let list = lock.clone();
+
+    let t = thread::spawn(move || {
+        sleep(name);
+        // let mut locked_list = list.lock().unwrap();
+        if thread_type == "searcher" {
+            let readable_list = list.read().unwrap();
+            let readable_list = readable_list.deref();
+            for item in readable_list {
+                println!("Searcher thread {}: {}", name, item);
+            }
+        } else if thread_type == "deleter" {
+            let mut writable_list = list.write().unwrap();
+            println!("Deleter thread {}: {:?}", name, *writable_list);
+            writable_list.pop_back();
+        } else if thread_type == "inserter" {
+            let mut writable_list = list.write().unwrap();
+            println!("Inserter thread {}: {:?}", name, *writable_list);
+            writable_list.push_back(999);
+        }
+    });
+
+    return t;
+}
+
+fn create_thread_mutex(
     mutex: &mut Arc<Mutex<LinkedList<u32>>>,
     name: &'static str,
     thread_type: &'static str,
