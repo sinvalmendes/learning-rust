@@ -78,36 +78,6 @@ fn insert(
     locked_list.push_back(999);
 }
 
-fn create_thread_rw(
-    lock: &mut Arc<RwLock<LinkedList<i32>>>,
-    name: &'static str,
-    thread_type: &'static str,
-) -> thread::JoinHandle<()> {
-    let list = lock.clone();
-
-    let t = thread::spawn(move || {
-        sleep(name);
-        // let mut locked_list = list.lock().unwrap();
-        if thread_type == "searcher" {
-            let readable_list = list.read().unwrap();
-            let readable_list = readable_list.deref();
-            for item in readable_list {
-                println!("Searcher thread {}: {}", name, item);
-            }
-        } else if thread_type == "deleter" {
-            let mut writable_list = list.write().unwrap();
-            println!("Deleter thread {}: {:?}", name, *writable_list);
-            writable_list.pop_back();
-        } else if thread_type == "inserter" {
-            let mut writable_list = list.write().unwrap();
-            println!("Inserter thread {}: {:?}", name, *writable_list);
-            writable_list.push_back(999);
-        }
-    });
-
-    return t;
-}
-
 fn create_thread_mutex(
     mutex: &mut Arc<Mutex<LinkedList<u32>>>,
     name: &'static str,
@@ -124,6 +94,35 @@ fn create_thread_mutex(
             delete(&mut locked_list, name);
         } else if thread_type == "inserter" {
             insert(&mut locked_list, name);
+        }
+    });
+
+    return t;
+}
+
+fn create_thread_rw(
+    lock: &mut Arc<RwLock<LinkedList<i32>>>,
+    name: &'static str,
+    thread_type: &'static str,
+) -> thread::JoinHandle<()> {
+    let list = lock.clone();
+
+    let t = thread::spawn(move || {
+        sleep(name);
+        if thread_type == "searcher" {
+            let readable_list = list.read().unwrap();
+            let readable_list = readable_list.deref();
+            for item in readable_list {
+                println!("Searcher thread {}: {}", name, item);
+            }
+        } else if thread_type == "deleter" {
+            let mut writable_list = list.write().unwrap();
+            println!("Deleter thread {}: {:?}", name, *writable_list);
+            writable_list.pop_back();
+        } else if thread_type == "inserter" {
+            let mut writable_list = list.write().unwrap();
+            println!("Inserter thread {}: {:?}", name, *writable_list);
+            writable_list.push_back(999);
         }
     });
 
