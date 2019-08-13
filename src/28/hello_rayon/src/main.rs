@@ -14,12 +14,12 @@ fn main() {
     assert_eq!(15, result);
 }
 
-fn sum_array_parallel(input: &mut Vec<i32>) -> i32 {
+pub fn sum_array_parallel(input: &mut Vec<i32>) -> i32 {
     let result: i32 = input.par_iter_mut().map(|&mut p| p).sum();
     result
 }
 
-fn sum_array_iterative(input: Vec<u32>) -> u32 {
+pub fn sum_array_iterative(input: Vec<u32>) -> u32 {
     let mut counter: u32 = 0;
     for num in input {
         counter += num;
