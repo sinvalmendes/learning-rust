@@ -8,7 +8,7 @@ use hello_rayon::sum_array_parallel;
 
 fn create() -> Vec<i32> {
     let mut input: Vec<i32> = vec![];
-    for n in 1..100000001 {
+    for n in 0..1000000 {
         input.push(n);
     }
     return input;
