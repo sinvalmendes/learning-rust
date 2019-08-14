@@ -4,7 +4,6 @@ use rayon::prelude::*;
 
 fn main() {
     println!("Hello, world!");
-
     let input = vec![1, 2, 3, 4, 5];
     let result = sum_array_iterative(input);
     assert_eq!(15, result);
