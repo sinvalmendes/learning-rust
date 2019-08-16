@@ -19,8 +19,10 @@ pub fn join_test(input: &mut Vec<i32>) -> i32 {
 }
 
 fn sum(v: &mut Vec<i32>) -> i32 {
-    let mut a = vec![1, 2, 3];
-    let mut b = vec![4, 5, 6];
+    let (mut a, b) = v.split_at(v.len()/2);
+    let mut a = a.to_vec();
+    let mut b = b.to_vec();
+
     let mut count_a = 0;
     let mut count_b = 0;
     rayon::join(
@@ -28,6 +30,5 @@ fn sum(v: &mut Vec<i32>) -> i32 {
         || count_b = sum_array_iterative(&mut b),
     );
 
-    println!("{} {}", count_a, count_b);
     return count_a + count_b;
 }
