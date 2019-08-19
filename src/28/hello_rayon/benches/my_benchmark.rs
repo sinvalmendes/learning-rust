@@ -30,11 +30,14 @@ fn criterion_benchmark2(c: &mut Criterion) {
 }
 
 fn criterion_benchmark3(c: &mut Criterion) {
-    // let mut input: Vec<i32> = create();
-    let mut input = vec![1, 2, 3, 4, 5, 6];
+    let mut input: Vec<i32> = create();
     c.bench_function("join_test", move |b| b.iter(|| join_test(&mut input)));
 }
 
-// criterion_group!(benches, criterion_benchmark, criterion_benchmark2);
-criterion_group!(benches, criterion_benchmark3);
+criterion_group!(
+    benches,
+    criterion_benchmark,
+    criterion_benchmark2,
+    criterion_benchmark3
+);
 criterion_main!(benches);

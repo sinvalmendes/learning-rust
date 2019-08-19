@@ -13,13 +13,12 @@ pub fn sum_array_iterative(input: &mut Vec<i32>) -> i32 {
 }
 
 pub fn join_test(input: &mut Vec<i32>) -> i32 {
-    let result = sum(input);
-    // assert_eq!(result, 21);
+    let result = rayon_sum(input);
     result
 }
 
-fn sum(v: &mut Vec<i32>) -> i32 {
-    let (mut a, b) = v.split_at(v.len()/2);
+fn rayon_sum(v: &mut Vec<i32>) -> i32 {
+    let (a, b) = v.split_at(v.len() / 2);
     let mut a = a.to_vec();
     let mut b = b.to_vec();
 
