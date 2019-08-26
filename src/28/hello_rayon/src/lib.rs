@@ -12,13 +12,7 @@ pub fn sum_array_iterative(input: &mut Vec<i64>) -> i64 {
     result
 }
 
-pub fn join_test(a: &mut Vec<i64>, b: &mut Vec<i64>) -> i64 {
-    let result = rayon_sum(a, b);
-    result
-}
-
-fn rayon_sum(mut a: &mut Vec<i64>, mut b: &mut Vec<i64>) -> i64 {
-
+pub fn rayon_join_sum(mut a: &mut Vec<i64>, mut b: &mut Vec<i64>) -> i64 {
     let mut count_a = 0;
     let mut count_b = 0;
     rayon::join(
