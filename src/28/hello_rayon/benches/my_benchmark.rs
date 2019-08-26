@@ -4,8 +4,10 @@ extern crate hello_rayon;
 
 use criterion::Criterion;
 use hello_rayon::sum_array_iterative;
+use hello_rayon::sum_vec_iterative;
 use hello_rayon::sum_array_parallel;
 use hello_rayon::rayon_join_sum;
+use hello_rayon::rayon_join_sum2;
 
 fn create() -> Vec<i64> {
     let mut input: Vec<i64> = vec![];
@@ -17,8 +19,8 @@ fn create() -> Vec<i64> {
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut input: Vec<i64> = create();
-    c.bench_function("sum_array_iterative", move |b| {
-        b.iter(|| sum_array_iterative(&mut input))
+    c.bench_function("sum_vec_iterative", move |b| {
+        b.iter(|| sum_vec_iterative(&mut input))
     });
 }
 
@@ -37,10 +39,16 @@ fn criterion_benchmark3(c: &mut Criterion) {
     c.bench_function("rayon_join_sum", move |b| b.iter(|| rayon_join_sum(&mut first_part, &mut second_part)));
 }
 
+fn criterion_benchmark4(c: &mut Criterion) {
+    let mut input: Vec<i64> = create();
+    c.bench_function("rayon_join_sum2", move |b| b.iter(|| rayon_join_sum2(&mut input)));
+}
+
 criterion_group!(
     benches,
     criterion_benchmark,
     criterion_benchmark2,
-    criterion_benchmark3
+    criterion_benchmark3,
+    criterion_benchmark4
 );
 criterion_main!(benches);

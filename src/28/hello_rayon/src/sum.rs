@@ -7,7 +7,15 @@ pub fn sum_array_parallel(input: &mut Vec<i64>) -> i64 {
     result
 }
 
-pub fn sum_array_iterative(input: &mut Vec<i64>) -> i64 {
+pub fn sum_vec_iterative(input: &Vec<i64>) -> i64 {
+    let mut counter: i64 = 0;
+    for num in input {
+        counter += *num;
+    }
+    counter
+}
+
+pub fn sum_array_iterative(input: &[i64]) -> i64 {
     let mut counter: i64 = 0;
     for num in input {
         counter += *num;
