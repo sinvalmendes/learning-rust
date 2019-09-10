@@ -3,11 +3,11 @@ extern crate criterion;
 extern crate hello_rayon;
 
 use criterion::Criterion;
-use hello_rayon::sum_array_iterative;
-use hello_rayon::sum_vec_iterative;
-use hello_rayon::sum_array_parallel;
 use hello_rayon::rayon_join_sum;
 use hello_rayon::rayon_join_sum2;
+use hello_rayon::sum_array_iterative;
+use hello_rayon::sum_array_parallel;
+use hello_rayon::sum_vec_iterative;
 
 fn create() -> Vec<i64> {
     let mut input: Vec<i64> = vec![];
@@ -36,12 +36,16 @@ fn criterion_benchmark3(c: &mut Criterion) {
     let (first_part, second_part) = input.split_at(input.len() / 2);
     let mut first_part = first_part.to_vec();
     let mut second_part = second_part.to_vec();
-    c.bench_function("rayon_join_sum", move |b| b.iter(|| rayon_join_sum(&mut first_part, &mut second_part)));
+    c.bench_function("rayon_join_sum", move |b| {
+        b.iter(|| rayon_join_sum(&mut first_part, &mut second_part))
+    });
 }
 
 fn criterion_benchmark4(c: &mut Criterion) {
     let mut input: Vec<i64> = create();
-    c.bench_function("rayon_join_sum2", move |b| b.iter(|| rayon_join_sum2(&mut input)));
+    c.bench_function("rayon_join_sum2", move |b| {
+        b.iter(|| rayon_join_sum2(&mut input))
+    });
 }
 
 criterion_group!(
