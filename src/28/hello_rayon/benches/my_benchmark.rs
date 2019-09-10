@@ -5,7 +5,6 @@ extern crate hello_rayon;
 use criterion::Criterion;
 use hello_rayon::rayon_join_sum;
 use hello_rayon::rayon_join_sum2;
-use hello_rayon::sum_array_iterative;
 use hello_rayon::sum_array_parallel;
 use hello_rayon::sum_vec_iterative;
 
