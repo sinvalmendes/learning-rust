@@ -27,10 +27,8 @@
 // ]
 
 fn main() {
-    println!("Hello, world!");
-
-    let result = Solution::combination_sum2(vec![2, 3, 6, 7], 7);
-    let expected = vec![vec![7], vec![2, 2, 3]];
+    let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
+    let expected = vec![vec![1, 2, 2]];
     assert_eq!(expected.len(), result.len());
     for value in expected {
         assert_eq!(true, result.contains(&value));
