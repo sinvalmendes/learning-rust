@@ -39,14 +39,55 @@ struct Solution {}
 
 impl Solution {
     pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
-        let result: Vec<Vec<i32>> = vec![];
+        let mut result: Vec<Vec<i32>> = vec![];
         println!("candidates {:?}, target {:?}", candidates, target);
         let candidates_clone = candidates.clone();
-        Solution::recursion(&candidates_clone, target, &result);
+        let mut selected: Vec<i32> = vec![];
+        let mut count: i32 = 0;
+        Solution::recursion(
+            &candidates_clone,
+            &mut selected,
+            &mut count,
+            target,
+            &mut result,
+        );
+        println!("result {:?}", result);
         return result;
     }
 
-    pub fn recursion(candidates: &Vec<i32>, target: i32, result: &Vec<Vec<i32>>) {
-        println!("candidates {:?}, target {:?}", candidates, target);
+    pub fn recursion(
+        candidates: &Vec<i32>,
+        selected: &mut Vec<i32>,
+        count: &mut i32,
+        target: i32,
+        result: &mut Vec<Vec<i32>>,
+    ) {
+        println!(
+            "candidates {:?}, selected {:?}, count {:?}, target {:?}",
+            candidates, selected, count, target
+        );
+
+        let current_selected = candidates[*count as usize];
+        let selected_sum = Solution::sum_list(&selected);
+        if (selected_sum + current_selected) == target {
+            selected.push(current_selected);
+            result.push(selected.to_vec());
+            return;
+        }
+        if (selected_sum + current_selected) < target {
+            selected.push(current_selected);
+        }
+
+        *count += 1;
+
+        Solution::recursion(&candidates, selected, count, target, result)
+    }
+
+    pub fn sum_list(list: &Vec<i32>) -> i32 {
+        let mut count: i32 = 0;
+        for num in list {
+            count += num;
+        }
+        return count;
     }
 }
