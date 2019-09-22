@@ -33,6 +33,13 @@ fn main() {
     for value in expected {
         assert_eq!(true, result.contains(&value));
     }
+
+    let result = Solution::combination_sum2(vec![10, 1, 2, 7, 6, 1, 5], 8);
+    let expected = vec![vec![1, 7], vec![1, 2, 5], vec![2, 6], vec![1, 1, 6]];
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 }
 
 struct Solution {}
