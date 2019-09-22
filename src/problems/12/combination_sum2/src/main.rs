@@ -71,6 +71,7 @@ impl Solution {
         let selected_sum = Solution::sum_list(&selected);
         if (selected_sum + current_selected) == target {
             selected.push(current_selected);
+            selected.sort();
             result.push(selected.to_vec());
             return;
         }
