@@ -40,6 +40,13 @@ struct Solution {}
 impl Solution {
     pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
         let result: Vec<Vec<i32>> = vec![];
+        println!("candidates {:?}, target {:?}", candidates, target);
+        let candidates_clone = candidates.clone();
+        Solution::recursion(&candidates_clone, target, &result);
         return result;
+    }
+
+    pub fn recursion(candidates: &Vec<i32>, target: i32, result: &Vec<Vec<i32>>) {
+        println!("candidates {:?}, target {:?}", candidates, target);
     }
 }
