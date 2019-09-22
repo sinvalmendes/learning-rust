@@ -28,7 +28,7 @@
 
 fn main() {
     let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
-    let expected = vec![vec![1, 2, 2]];
+    let expected = vec![vec![1, 2, 2], vec![5]];
     assert_eq!(expected.len(), result.len());
     for value in expected {
         assert_eq!(true, result.contains(&value));
@@ -40,10 +40,10 @@ struct Solution {}
 impl Solution {
     pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
         let mut result: Vec<Vec<i32>> = vec![];
-        println!("candidates {:?}, target {:?}", candidates, target);
         let candidates_clone = candidates.clone();
         let mut selected: Vec<i32> = vec![];
         let mut count: i32 = 0;
+
         Solution::recursion(
             &candidates_clone,
             &mut selected,
@@ -51,6 +51,7 @@ impl Solution {
             target,
             &mut result,
         );
+
         println!("result {:?}", result);
         return result;
     }
@@ -69,6 +70,10 @@ impl Solution {
 
         let current_selected = candidates[*count as usize];
         let selected_sum = Solution::sum_list(&selected);
+
+        if current_selected == target {
+            result.push(vec![current_selected]);
+        }
         if (selected_sum + current_selected) == target {
             selected.push(current_selected);
             selected.sort();
@@ -77,11 +82,13 @@ impl Solution {
         }
         if (selected_sum + current_selected) < target {
             selected.push(current_selected);
+            *count += 1;
+            Solution::recursion(&candidates, selected, count, target, result)
         }
-
-        *count += 1;
-
-        Solution::recursion(&candidates, selected, count, target, result)
+        if (selected_sum + current_selected) > target {
+            *count += 1;
+            Solution::recursion(&candidates, selected, count, target, result)
+        }
     }
 
     pub fn sum_list(list: &Vec<i32>) -> i32 {
