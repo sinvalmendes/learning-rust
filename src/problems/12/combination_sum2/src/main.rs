@@ -71,14 +71,17 @@ impl Solution {
         let string_offset = String::from(string) + "---->";
         let mut internal_result = vec![];
 
-        if count as usize >= candidates.len() {
-            return internal_result;
-        }
-
         let selected_sum = Solution::sum_list(&selected);
+        println!("{:?} selected_sum {:?}", string, selected_sum);
+
         if selected_sum == target {
             selected.sort();
             internal_result.push(selected.to_vec());
+            println!("{:?} internal result match {:?}", string, internal_result);
+            return internal_result;
+        }
+
+        if count as usize >= candidates.len() {
             return internal_result;
         }
 
@@ -86,6 +89,7 @@ impl Solution {
         println!("{:?} current candidate {:?}", string, candidate);
 
         if selected_sum < target {
+            println!("{:?} ignored candidate {:?}", string, candidate);
             let mut selected_clone = selected.clone();
             let result1 = Solution::recursion(
                 &candidates,
@@ -98,6 +102,7 @@ impl Solution {
                 internal_result.push(result);
             }
 
+            println!("{:?} included candidate {:?}", string, candidate);
             let mut selected_clone2 = selected.clone();
             selected_clone2.push(candidate);
             let result2 = Solution::recursion(
