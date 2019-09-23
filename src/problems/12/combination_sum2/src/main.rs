@@ -53,7 +53,7 @@ impl Solution {
         let string = String::from(">");
         let result = Solution::recursion(&candidates_clone, &mut selected, 0, target, &string);
 
-        println!("result {:?}", result);
+        // println!("result {:?}", result);
         return result;
     }
 
@@ -64,20 +64,20 @@ impl Solution {
         target: i32,
         string: &String,
     ) -> Vec<Vec<i32>> {
-        println!(
-            "{:?} candidates {:?}, selected {:?}, count {:?}, target {:?}",
-            string, candidates, selected, count, target
-        );
+        // println!(
+        //     "{:?} candidates {:?}, selected {:?}, count {:?}, target {:?}",
+        //     string, candidates, selected, count, target
+        // );
         let string_offset = String::from(string) + "---->";
         let mut internal_result = vec![];
 
         let selected_sum = Solution::sum_list(&selected);
-        println!("{:?} selected_sum {:?}", string, selected_sum);
+        // println!("{:?} selected_sum {:?}", string, selected_sum);
 
         if selected_sum == target {
             selected.sort();
             internal_result.push(selected.to_vec());
-            println!("{:?} internal result match {:?}", string, internal_result);
+            // println!("{:?} internal result match {:?}", string, internal_result);
             return internal_result;
         }
 
@@ -86,10 +86,10 @@ impl Solution {
         }
 
         let candidate = candidates[count as usize];
-        println!("{:?} current candidate {:?}", string, candidate);
+        // println!("{:?} current candidate {:?}", string, candidate);
 
         if selected_sum < target {
-            println!("{:?} ignored candidate {:?}", string, candidate);
+            // println!("{:?} ignored candidate {:?}", string, candidate);
             let mut selected_clone = selected.clone();
             let result1 = Solution::recursion(
                 &candidates,
@@ -99,10 +99,12 @@ impl Solution {
                 &string_offset,
             );
             for result in result1 {
-                internal_result.push(result);
+                if !internal_result.contains(&result) {
+                    internal_result.push(result);
+                }
             }
 
-            println!("{:?} included candidate {:?}", string, candidate);
+            // println!("{:?} included candidate {:?}", string, candidate);
             let mut selected_clone2 = selected.clone();
             selected_clone2.push(candidate);
             let result2 = Solution::recursion(
@@ -113,7 +115,9 @@ impl Solution {
                 &string_offset,
             );
             for result in result2 {
-                internal_result.push(result);
+                if !internal_result.contains(&result) {
+                    internal_result.push(result);
+                }
             }
         }
         return internal_result;
