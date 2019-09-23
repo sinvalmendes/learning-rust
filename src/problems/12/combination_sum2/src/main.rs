@@ -27,12 +27,12 @@
 // ]
 
 fn main() {
-    let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
-    let expected = vec![vec![1, 2, 2], vec![5]];
-    assert_eq!(expected.len(), result.len());
-    for value in expected {
-        assert_eq!(true, result.contains(&value));
-    }
+    // let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
+    // let expected = vec![vec![1, 2, 2], vec![5]];
+    // assert_eq!(expected.len(), result.len());
+    // for value in expected {
+    //     assert_eq!(true, result.contains(&value));
+    // }
 
     let result = Solution::combination_sum2(vec![10, 1, 2, 7, 6, 1, 5], 8);
     let expected = vec![vec![1, 7], vec![1, 2, 5], vec![2, 6], vec![1, 1, 6]];
@@ -50,6 +50,12 @@ impl Solution {
         let candidates_clone = candidates.clone();
         let mut selected: Vec<i32> = vec![];
         let mut count: i32 = 0;
+
+        let mut position = 0;
+        for candidate in candidates {
+            println!("initial candidate {:?}, position {:?}", candidate, position);
+            position += 1;
+        }
 
         Solution::recursion(
             &candidates_clone,
@@ -74,6 +80,10 @@ impl Solution {
             "candidates {:?}, selected {:?}, count {:?}, target {:?}",
             candidates, selected, count, target
         );
+
+        if *count as usize >= candidates.len() {
+            return;
+        }
 
         let current_selected = candidates[*count as usize];
         let selected_sum = Solution::sum_list(&selected);
