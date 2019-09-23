@@ -51,20 +51,16 @@ impl Solution {
         let mut selected: Vec<i32> = vec![];
         let mut count: i32 = 0;
 
-        let mut position = 0;
         for candidate in candidates {
-            println!("initial candidate {:?}, position {:?}", candidate, position);
-            position += 1;
+            Solution::recursion(
+                &candidates_clone,
+                &mut selected,
+                &mut count,
+                target,
+                &mut result,
+            );
+            count += 1;
         }
-
-        Solution::recursion(
-            &candidates_clone,
-            &mut selected,
-            &mut count,
-            target,
-            &mut result,
-        );
-
         println!("result {:?}", result);
         return result;
     }
@@ -86,25 +82,39 @@ impl Solution {
         }
 
         let current_selected = candidates[*count as usize];
-        let selected_sum = Solution::sum_list(&selected);
+        println!("current selected {:?}", current_selected);
 
-        if current_selected == target {
-            result.push(vec![current_selected]);
+        let mut selected = vec![];
+        selected.push(current_selected);
+
+        let mut loop_count: i32 = 0;
+        for candidate in candidates {
+            println!("current selected {:?}", current_selected);
+            if loop_count != *count {
+                let selected_sum = Solution::sum_list(&selected);
+                println!(
+                    "current selected {:?}, selected_sum {:?}, candidate {:?}",
+                    current_selected, selected_sum, candidate
+                );
+
+                if (selected_sum + candidate) == target {
+                    selected.push(*candidate);
+                    selected.sort();
+                    if !result.contains(&selected) {
+                        result.push(selected.to_vec());
+                    }
+                    selected.remove(selected.len() - 1);
+                }
+
+                if (selected_sum + candidate) < target {
+                    selected.push(*candidate);
+                }
+            }
+            loop_count += 1;
         }
-        if (selected_sum + current_selected) == target {
-            selected.push(current_selected);
+        if Solution::sum_list(&selected) == target {
             selected.sort();
             result.push(selected.to_vec());
-            return;
-        }
-        if (selected_sum + current_selected) < target {
-            selected.push(current_selected);
-            *count += 1;
-            Solution::recursion(&candidates, selected, count, target, result)
-        }
-        if (selected_sum + current_selected) > target {
-            *count += 1;
-            Solution::recursion(&candidates, selected, count, target, result)
         }
     }
 
