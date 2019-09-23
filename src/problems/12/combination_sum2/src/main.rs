@@ -57,7 +57,6 @@ impl Solution {
                 &mut count,
                 target,
                 &mut result,
-                candidate,
             );
             count += 1;
         }
@@ -71,11 +70,10 @@ impl Solution {
         count: &mut i32,
         target: i32,
         result: &mut Vec<Vec<i32>>,
-        ignore: i32,
     ) {
         println!(
-            "candidates {:?}, selected {:?}, count {:?}, target {:?}, ignore {:?}",
-            candidates, selected, count, target, ignore
+            "candidates {:?}, selected {:?}, count {:?}, target {:?}",
+            candidates, selected, count, target
         );
 
         if *count >= candidates.len() as i32 {
@@ -88,10 +86,15 @@ impl Solution {
         let mut selected = vec![];
         selected.push(current_selected);
 
-        let mut loop_count = 0;
+        let mut loop_count: i32 = 0;
         for candidate in candidates {
-            if loop_count != ignore {
+            println!("current selected {:?}", current_selected);
+            if loop_count != *count {
                 let selected_sum = Solution::sum_list(&selected);
+                println!(
+                    "current selected {:?}, selected_sum {:?}, candidate {:?}",
+                    current_selected, selected_sum, candidate
+                );
 
                 if (selected_sum + candidate) == target {
                     selected.push(*candidate);
