@@ -27,15 +27,17 @@
 // ]
 
 fn main() {
-    // let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
-    // let expected = vec![vec![1, 2, 2], vec![5]];
-    // assert_eq!(expected.len(), result.len());
-    // for value in expected {
-    //     assert_eq!(true, result.contains(&value));
-    // }
+    let result = Solution::combination_sum2(vec![2, 5, 2, 1, 2], 5);
+    let expected = vec![vec![1, 2, 2], vec![5]];
+    println!("expected {:?}", expected);
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 
     let result = Solution::combination_sum2(vec![10, 1, 2, 7, 6, 1, 5], 8);
     let expected = vec![vec![1, 7], vec![1, 2, 5], vec![2, 6], vec![1, 1, 6]];
+    println!("expected {:?}", expected);
     assert_eq!(expected.len(), result.len());
     for value in expected {
         assert_eq!(true, result.contains(&value));
@@ -66,7 +68,7 @@ impl Solution {
             "{:?} candidates {:?}, selected {:?}, count {:?}, target {:?}",
             string, candidates, selected, count, target
         );
-
+        let string_offset = String::from(string) + "---->";
         let mut internal_result = vec![];
 
         if count as usize >= candidates.len() {
@@ -85,14 +87,16 @@ impl Solution {
 
         if selected_sum < target {
             let mut selected_clone = selected.clone();
-            let string2 = String::from(string) + "---->";
             let result1 = Solution::recursion(
                 &candidates,
                 &mut selected_clone,
                 count + 1,
                 target,
-                &string2,
+                &string_offset,
             );
+            for result in result1 {
+                internal_result.push(result);
+            }
 
             let mut selected_clone2 = selected.clone();
             selected_clone2.push(candidate);
@@ -101,12 +105,8 @@ impl Solution {
                 &mut selected_clone2,
                 count + 1,
                 target,
-                &string2,
+                &string_offset,
             );
-
-            for result in result1 {
-                internal_result.push(result);
-            }
             for result in result2 {
                 internal_result.push(result);
             }
