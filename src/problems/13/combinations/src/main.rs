@@ -14,7 +14,20 @@
 // ]
 
 fn main() {
-    println!("Hello, world!");
+    let result = Solution::combine(4, 2);
+    let expected = vec![
+        vec![2, 4],
+        vec![3, 4],
+        vec![2, 3],
+        vec![1, 2],
+        vec![1, 3],
+        vec![1, 4],
+    ];
+    println!("expected {:?}", expected);
+    assert_eq!(expected.len(), result.len());
+    for value in expected {
+        assert_eq!(true, result.contains(&value));
+    }
 }
 
 struct Solution {}
