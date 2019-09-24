@@ -57,16 +57,15 @@ impl Solution {
         for i in 0..candidates.len() {
             let mut selected_clone = selected.clone();
             let mut candidates_clone = candidates.clone();
-            let mut candidates_clone2 = candidates.clone();
-            let current_candidate = candidates_clone.get(i).unwrap();
+            let current_candidate = candidates.get(i).unwrap();
             selected_clone.push(*current_candidate);
-            candidates_clone2.remove(i);
+            candidates_clone.remove(i);
 
             println!(
                 "current_candidate {:?}, selected {:?}, candidates_clone {:?}",
-                current_candidate, selected, candidates_clone2
+                current_candidate, selected, candidates_clone
             );
-            Solution::recursion(candidates_clone2, k, &mut selected_clone);
+            Solution::recursion(candidates_clone, k, &mut selected_clone);
         }
         // let mut selected_clone = selected.clone();
         // for candidate in candidates_clone {
