@@ -68,7 +68,7 @@ impl Solution {
         //     "{:?} candidates {:?}, selected {:?}, count {:?}, target {:?}",
         //     string, candidates, selected, count, target
         // );
-        let string_offset = String::from(string) + "---->";
+        let string_offset = format!("{}{}", string, "---->");
         let mut internal_result = vec![];
 
         let selected_sum = Solution::sum_list(&selected);
