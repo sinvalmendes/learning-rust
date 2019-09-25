@@ -38,9 +38,8 @@ impl Solution {
         for i in 1..n + 1 {
             candidates.push(i);
         }
-        println!("{:?}", candidates);
-        Solution::recursion(candidates, k, &mut vec![]);
-        return vec![];
+        let result = Solution::recursion(candidates, k, &mut vec![]);
+        return result;
     }
 
     pub fn recursion(candidates: Vec<i32>, k: i32, selected: &mut Vec<i32>) -> Vec<Vec<i32>> {
@@ -53,7 +52,6 @@ impl Solution {
             return internal_result;
         }
 
-        let mut results = vec![];
         for i in 0..candidates.len() {
             let mut selected_clone = selected.clone();
             let mut candidates_clone = candidates.clone();
@@ -61,17 +59,19 @@ impl Solution {
             selected_clone.push(*current_candidate);
             candidates_clone.remove(i);
 
-            println!(
-                "current_candidate {:?}, selected {:?}, candidates_clone {:?}",
-                current_candidate, selected, candidates_clone
-            );
+            // println!(
+            //     "current_candidate {:?}, selected {:?}, candidates_clone {:?}",
+            //     current_candidate, selected, candidates_clone
+            // );
             let recursion_results = Solution::recursion(candidates_clone, k, &mut selected_clone);
 
             for result in recursion_results {
-                results.push(result);
+                if !internal_result.contains(&result) {
+                    internal_result.push(result);
+                }
             }
         }
-        println!("{:?}", results);
+        // println!("{:?}", internal_result);
         return internal_result;
     }
 }
