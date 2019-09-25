@@ -28,50 +28,37 @@ fn main() {
     for value in expected {
         assert_eq!(true, result.contains(&value));
     }
+
+    Solution::combine(13, 10);
 }
 
 struct Solution {}
 
 impl Solution {
     pub fn combine(n: i32, k: i32) -> Vec<Vec<i32>> {
-        let mut candidates = vec![];
-        for i in 1..n + 1 {
-            candidates.push(i);
-        }
-        let result = Solution::recursion(candidates, k, &mut vec![]);
-        return result;
+        let mut all_solutions: Vec<Vec<i32>> = vec![];
+        Self::combine_help(n, k, 1, &mut Vec::new(), &mut all_solutions);
+        all_solutions
     }
 
-    pub fn recursion(candidates: Vec<i32>, k: i32, selected: &mut Vec<i32>) -> Vec<Vec<i32>> {
-        let mut internal_result: Vec<Vec<i32>> = vec![];
-
-        if selected.len() == k as usize {
-            selected.sort();
-            // println!("--> {:?}", selected);
-            internal_result.push(selected.to_vec());
-            return internal_result;
+    fn combine_help(
+        n: i32,
+        k: i32,
+        index: i32,
+        one_solution: &mut Vec<i32>,
+        all_solutions: &mut Vec<Vec<i32>>,
+    ) {
+        // println!("--{:?} {:?}", k, index);
+        if k == 0 {
+            // println!("==>{:?}", one_solution);
+            all_solutions.push(one_solution.to_vec());
+            return;
         }
 
-        for i in 0..candidates.len() {
-            let mut selected_clone = selected.clone();
-            let mut candidates_clone = candidates.clone();
-            let current_candidate = candidates.get(i).unwrap();
-            selected_clone.push(*current_candidate);
-            candidates_clone.remove(i);
-
-            // println!(
-            //     "current_candidate {:?}, selected {:?}, candidates_clone {:?}",
-            //     current_candidate, selected, candidates_clone
-            // );
-            let recursion_results = Solution::recursion(candidates_clone, k, &mut selected_clone);
-
-            for result in recursion_results {
-                if !internal_result.contains(&result) {
-                    internal_result.push(result);
-                }
-            }
+        for i in index..=n - k + 1 {
+            one_solution.push(i);
+            Self::combine_help(n, k - 1, i + 1, one_solution, all_solutions);
+            one_solution.pop();
         }
-        // println!("{:?}", internal_result);
-        return internal_result;
     }
 }
