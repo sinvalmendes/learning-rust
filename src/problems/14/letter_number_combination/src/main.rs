@@ -1,38 +1,18 @@
-// Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sums to target.
+// Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
 
-// Each number in candidates may only be used once in the combination.
+// A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-// Note:
+// Example:
 
-// All numbers (including target) will be positive integers.
-// The solution set must not contain duplicate combinations.
-// Example 1:
-
-// Input: candidates = [10,1,2,7,6,1,5], target = 8,
-// A solution set is:
-// [
-//   [1, 7],
-//   [1, 2, 5],
-//   [2, 6],
-//   [1, 1, 6]
-// ]
-// Example 2:
-
-// Input: candidates = [2,5,2,1,2], target = 5,
-// A solution set is:
-// [
-//   [1,2,2],
-//   [5]
-// ]
+// Input: "23"
+// Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 
 fn main() {}
 
 struct Solution {}
 
 impl Solution {
-    pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
-        return vec![];
-    }
+    pub fn letter_combinations(digits: String) -> Vec<String> {}
 }
 
 fn _main() {
