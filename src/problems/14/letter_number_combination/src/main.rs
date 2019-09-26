@@ -15,16 +15,21 @@ struct Solution {}
 
 impl Solution {
     pub fn letter_combinations(digits: String) -> Vec<String> {
+        let mut candidates = Solution::get_candidates(&digits);
+        println!("{:?}", candidates);
+
+        return vec![];
+    }
+
+    pub fn get_candidates(digits: &String) -> Vec<Vec<&'static str>> {
         let mut candidates = vec![];
+
         for c in digits.chars() {
             println!("{}", c);
             let letters = Solution::get_letters(c.to_string());
             candidates.push(letters);
         }
-
-        println!("{:?}", candidates);
-
-        return vec![];
+        return candidates;
     }
 
     pub fn helper() {}
