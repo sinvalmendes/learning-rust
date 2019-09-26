@@ -7,12 +7,41 @@
 // Input: "23"
 // Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 
-fn main() {}
+fn main() {
+    Solution::letter_combinations(String::from("23"));
+}
 
 struct Solution {}
 
 impl Solution {
-    pub fn letter_combinations(digits: String) -> Vec<String> {}
+    pub fn letter_combinations(digits: String) -> Vec<String> {
+        let mut candidates = vec![];
+        for c in digits.chars() {
+            println!("{}", c);
+            let letters = Solution::get_letters(c.to_string());
+            candidates.push(letters);
+        }
+
+        println!("{:?}", candidates);
+
+        return vec![];
+    }
+
+    pub fn helper() {}
+
+    pub fn get_letters(digit: String) -> Vec<&'static str> {
+        if String::from("2").eq(&digit) {
+            return vec!["a", "b", "c"];
+        } else if String::from("3").eq(&digit) {
+            return vec!["d", "e", "f"];
+        } else if String::from("4").eq(&digit) {
+            return vec!["g", "h", "i"];
+        } else if String::from("5").eq(&digit) {
+            return vec!["j", "k", "l"];
+        }
+
+        return vec![];
+    }
 }
 
 fn _main() {
