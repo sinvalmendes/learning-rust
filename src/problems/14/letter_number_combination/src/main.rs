@@ -9,7 +9,6 @@
 
 fn main() {
     Solution::letter_combinations(String::from("23"));
-    _main();
 }
 
 struct Solution {}
@@ -17,18 +16,35 @@ struct Solution {}
 impl Solution {
     pub fn letter_combinations(digits: String) -> Vec<String> {
         let mut candidates = Solution::get_candidates(&digits);
-        Solution::helper(&mut candidates);
-        return vec![];
+        let current_candidates = candidates.remove(0);
+        let result_one = append_to_string(&current_candidates, String::from(""));
+
+        let final_result = Solution::helper(&mut candidates, result_one);
+        println!("final_result {:?}", final_result);
+        return final_result;
     }
 
-    pub fn helper(candidates: &mut Vec<Vec<&'static str>>) {
-        println!("{:?}", candidates);
+    pub fn helper(
+        candidates: &mut Vec<Vec<&'static str>>,
+        combinations: Vec<String>,
+    ) -> Vec<String> {
+        println!("candidates {:?}, result {:?}", candidates, combinations);
         if candidates.len() == 0 {
-            return;
+            return combinations;
         }
-        candidates.remove(0);
-        Solution::helper(candidates);
-        return;
+
+        let current_candidates = candidates.remove(0);
+        let mut result = vec![];
+
+        for combination in combinations {
+            let result_append = append_to_string(&current_candidates, combination);
+            for i in result_append {
+                result.push(i);
+            }
+        }
+
+        let final_result = Solution::helper(candidates, result);
+        return final_result;
     }
 
     pub fn get_candidates(digits: &String) -> Vec<Vec<&'static str>> {
@@ -67,7 +83,7 @@ fn _main() {
     // let nine = vec!["d", "e", "f"];
 
     let result_one = append_to_string(&one, String::from(""));
-    println!("{:?}", result_one);
+    println!("result_one {:?}", result_one);
 
     let mut result_two = vec![];
     for result in result_one {
@@ -76,7 +92,7 @@ fn _main() {
             result_two.push(i);
         }
     }
-    println!("{:?}", result_two);
+    println!("result_two {:?}", result_two);
 
     let mut result_three = vec![];
     for result in result_two {
@@ -85,7 +101,7 @@ fn _main() {
             result_three.push(i);
         }
     }
-    println!("{:?}", result_three);
+    println!("result_three {:?}", result_three);
 }
 
 fn append_to_string(vec: &Vec<&'static str>, string: String) -> Vec<String> {
