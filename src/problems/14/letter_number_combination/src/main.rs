@@ -8,7 +8,7 @@
 // Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 
 fn main() {
-    Solution::letter_combinations(String::from("23"));
+    Solution::letter_combinations(String::from("23456789"));
 }
 
 struct Solution {}
@@ -28,7 +28,7 @@ impl Solution {
         candidates: &mut Vec<Vec<&'static str>>,
         combinations: Vec<String>,
     ) -> Vec<String> {
-        println!("candidates {:?}, result {:?}", candidates, combinations);
+        // println!("candidates {:?}, result {:?}", candidates, combinations);
         if candidates.len() == 0 {
             return combinations;
         }
@@ -65,6 +65,14 @@ impl Solution {
             return vec!["g", "h", "i"];
         } else if String::from("5").eq(&digit) {
             return vec!["j", "k", "l"];
+        } else if String::from("6").eq(&digit) {
+            return vec!["m", "n", "lo"];
+        } else if String::from("7").eq(&digit) {
+            return vec!["p", "q", "r", "s"];
+        } else if String::from("8").eq(&digit) {
+            return vec!["t", "u", "v"];
+        } else if String::from("9").eq(&digit) {
+            return vec!["w", "x", "y", "z"];
         }
 
         return vec![];
