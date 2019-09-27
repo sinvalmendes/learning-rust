@@ -9,6 +9,7 @@
 
 fn main() {
     Solution::letter_combinations(String::from("23"));
+    _main();
 }
 
 struct Solution {}
@@ -16,23 +17,28 @@ struct Solution {}
 impl Solution {
     pub fn letter_combinations(digits: String) -> Vec<String> {
         let mut candidates = Solution::get_candidates(&digits);
-        println!("{:?}", candidates);
-
+        Solution::helper(&mut candidates);
         return vec![];
+    }
+
+    pub fn helper(candidates: &mut Vec<Vec<&'static str>>) {
+        println!("{:?}", candidates);
+        if candidates.len() == 0 {
+            return;
+        }
+        candidates.remove(0);
+        Solution::helper(candidates);
+        return;
     }
 
     pub fn get_candidates(digits: &String) -> Vec<Vec<&'static str>> {
         let mut candidates = vec![];
-
         for c in digits.chars() {
-            println!("{}", c);
             let letters = Solution::get_letters(c.to_string());
             candidates.push(letters);
         }
         return candidates;
     }
-
-    pub fn helper() {}
 
     pub fn get_letters(digit: String) -> Vec<&'static str> {
         if String::from("2").eq(&digit) {
@@ -50,8 +56,6 @@ impl Solution {
 }
 
 fn _main() {
-    println!("Hello, world!");
-
     let one: Vec<&'static str> = vec!["a", "b", "c"];
     let two: Vec<&'static str> = vec!["d", "e", "f"];
     let three: Vec<&'static str> = vec!["g", "h", "i"];
