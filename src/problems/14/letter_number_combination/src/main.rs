@@ -16,10 +16,14 @@ struct Solution {}
 impl Solution {
     pub fn letter_combinations(digits: String) -> Vec<String> {
         let mut candidates = Solution::get_candidates(&digits);
+        if candidates.len() == 0 {
+            return vec![];
+        }
         let current_candidates = candidates.remove(0);
-        let result_one = append_to_string(&current_candidates, String::from(""));
+        let first_iteration_result =
+            Solution::append_to_string(&current_candidates, String::from(""));
 
-        let final_result = Solution::helper(&mut candidates, result_one);
+        let final_result = Solution::helper(&mut candidates, first_iteration_result);
         println!("final_result {:?}", final_result);
         return final_result;
     }
@@ -34,16 +38,16 @@ impl Solution {
         }
 
         let current_candidates = candidates.remove(0);
-        let mut result = vec![];
+        let mut iteration_result = vec![];
 
         for combination in combinations {
-            let result_append = append_to_string(&current_candidates, combination);
+            let result_append = Solution::append_to_string(&current_candidates, combination);
             for i in result_append {
-                result.push(i);
+                iteration_result.push(i);
             }
         }
 
-        let final_result = Solution::helper(candidates, result);
+        let final_result = Solution::helper(candidates, iteration_result);
         return final_result;
     }
 
@@ -66,7 +70,7 @@ impl Solution {
         } else if String::from("5").eq(&digit) {
             return vec!["j", "k", "l"];
         } else if String::from("6").eq(&digit) {
-            return vec!["m", "n", "lo"];
+            return vec!["m", "n", "o"];
         } else if String::from("7").eq(&digit) {
             return vec!["p", "q", "r", "s"];
         } else if String::from("8").eq(&digit) {
@@ -74,49 +78,57 @@ impl Solution {
         } else if String::from("9").eq(&digit) {
             return vec!["w", "x", "y", "z"];
         }
-
         return vec![];
     }
-}
 
-fn _main() {
-    let one: Vec<&'static str> = vec!["a", "b", "c"];
-    let two: Vec<&'static str> = vec!["d", "e", "f"];
-    let three: Vec<&'static str> = vec!["g", "h", "i"];
-    // let four = vec!["d", "e", "f"];
-    // let five = vec!["d", "e", "f"];
-    // let six = vec!["d", "e", "f"];
-    // let seven = vec!["d", "e", "f"];
-    // let eight = vec!["d", "e", "f"];
-    // let nine = vec!["d", "e", "f"];
+    fn append_to_string(vec: &Vec<&'static str>, string: String) -> Vec<String> {
+        let mut result = vec![];
 
-    let result_one = append_to_string(&one, String::from(""));
-    println!("result_one {:?}", result_one);
-
-    let mut result_two = vec![];
-    for result in result_one {
-        let result_append = append_to_string(&two, result);
-        for i in result_append {
-            result_two.push(i);
+        for i in vec {
+            result.push(format!("{}{}", string, i));
         }
+        return result;
     }
-    println!("result_two {:?}", result_two);
-
-    let mut result_three = vec![];
-    for result in result_two {
-        let result_append = append_to_string(&three, result);
-        for i in result_append {
-            result_three.push(i);
-        }
-    }
-    println!("result_three {:?}", result_three);
 }
 
-fn append_to_string(vec: &Vec<&'static str>, string: String) -> Vec<String> {
-    let mut result = vec![];
+// fn _main() {
+//     let one: Vec<&'static str> = vec!["a", "b", "c"];
+//     let two: Vec<&'static str> = vec!["d", "e", "f"];
+//     let three: Vec<&'static str> = vec!["g", "h", "i"];
+//     // let four = vec!["d", "e", "f"];
+//     // let five = vec!["d", "e", "f"];
+//     // let six = vec!["d", "e", "f"];
+//     // let seven = vec!["d", "e", "f"];
+//     // let eight = vec!["d", "e", "f"];
+//     // let nine = vec!["d", "e", "f"];
 
-    for i in vec {
-        result.push(format!("{}{}", string, i));
-    }
-    return result;
-}
+//     let result_one = append_to_string(&one, String::from(""));
+//     println!("result_one {:?}", result_one);
+
+//     let mut result_two = vec![];
+//     for result in result_one {
+//         let result_append = append_to_string(&two, result);
+//         for i in result_append {
+//             result_two.push(i);
+//         }
+//     }
+//     println!("result_two {:?}", result_two);
+
+//     let mut result_three = vec![];
+//     for result in result_two {
+//         let result_append = append_to_string(&three, result);
+//         for i in result_append {
+//             result_three.push(i);
+//         }
+//     }
+//     println!("result_three {:?}", result_three);
+// }
+
+// fn append_to_string(vec: &Vec<&'static str>, string: String) -> Vec<String> {
+//     let mut result = vec![];
+
+//     for i in vec {
+//         result.push(format!("{}{}", string, i));
+//     }
+//     return result;
+// }
