@@ -17,10 +17,17 @@
 
 fn main() {
     println!("Hello, world!");
+
     let nums = vec![1, 2, 2];
     let result = Solution::subsets_with_dup(nums);
-    let expected: Vec<Vec<i32>> = vec![vec![2], vec![1], vec![1, 2, 2], vec![2, 2], vec![1, 2]];
-    assert_eq!(expected, result);
+    let expected_result: Vec<Vec<i32>> =
+        vec![vec![2], vec![1], vec![1, 2, 2], vec![2, 2], vec![1, 2]];
+
+    assert_eq!(expected_result.len(), result.len());
+
+    for expected in &expected_result {
+        assert_eq!(true, expected_result.contains(&expected));
+    }
 }
 
 struct Solution {}
