@@ -14,14 +14,20 @@
 //   [1,2],
 //   []
 // ]
+
 fn main() {
     println!("Hello, world!");
+    let nums = vec![1, 2, 2];
+    let result = Solution::subsets_with_dup(nums);
+    let expected: Vec<Vec<i32>> = vec![vec![2], vec![1], vec![1, 2, 2], vec![2, 2], vec![1, 2]];
+    assert_eq!(expected, result);
 }
 
 struct Solution {}
 
 impl Solution {
     pub fn subsets_with_dup(nums: Vec<i32>) -> Vec<Vec<i32>> {
+        println!("nums {:?}", nums);
         return vec![];
     }
 }
