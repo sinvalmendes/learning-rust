@@ -63,6 +63,9 @@ impl Solution {
                 "{:?} nums.len() == 0, combination {:?}",
                 string, combination
             );
+            if result.contains(combination) {
+                return;
+            };
             result.push(combination.clone());
             return;
         }
