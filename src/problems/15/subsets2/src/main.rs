@@ -34,6 +34,27 @@ fn main() {
     for expected in &expected_result {
         assert_eq!(true, expected_result.contains(&expected));
     }
+
+    let nums = vec![4, 4, 4, 1, 4];
+    let result = Solution::subsets_with_dup(nums);
+    let expected_result: Vec<Vec<i32>> = vec![
+        vec![],
+        vec![1],
+        vec![1, 4],
+        vec![1, 4, 4],
+        vec![1, 4, 4, 4],
+        vec![1, 4, 4, 4, 4],
+        vec![4],
+        vec![4, 4],
+        vec![4, 4, 4],
+        vec![4, 4, 4, 4],
+    ];
+
+    assert_eq!(expected_result.len(), result.len());
+
+    for expected in &expected_result {
+        assert_eq!(true, expected_result.contains(&expected));
+    }
 }
 
 struct Solution {}
