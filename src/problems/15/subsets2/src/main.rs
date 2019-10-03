@@ -20,8 +20,14 @@ fn main() {
 
     let nums = vec![1, 2, 2];
     let result = Solution::subsets_with_dup(nums);
-    let expected_result: Vec<Vec<i32>> =
-        vec![vec![2], vec![1], vec![1, 2, 2], vec![2, 2], vec![1, 2]];
+    let expected_result: Vec<Vec<i32>> = vec![
+        vec![2],
+        vec![1],
+        vec![1, 2, 2],
+        vec![2, 2],
+        vec![1, 2],
+        vec![],
+    ];
 
     assert_eq!(expected_result.len(), result.len());
 
@@ -38,6 +44,7 @@ impl Solution {
         let mut result: Vec<Vec<i32>> = vec![vec![]];
 
         Solution::helper(nums, &mut vec![], &mut result, "---");
+        println!("final result => {:?}", result);
         return result;
     }
 
