@@ -75,6 +75,8 @@ impl Solution {
         result: &mut Vec<Vec<i32>>,
         string: &str,
     ) {
+        combination.sort();
+
         // println!(
         //     "{:?} nums {:?}, combination {:?}, result {:?}",
         //     string, nums, combination, result
