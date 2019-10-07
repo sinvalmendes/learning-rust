@@ -80,10 +80,9 @@ impl Solution {
         // println!("{:?} nums {:?}, combination {:?}, result {:?}", string, nums, combination, result);
         if nums.len() == 0 {
             // println!("{:?} nums.len() == 0, combination {:?}", string, combination);
-            if result.contains(combination) {
-                return;
-            };
-            result.push(combination.clone());
+            if !result.contains(combination) {
+                result.push(combination.clone());
+            }
             return;
         }
 
