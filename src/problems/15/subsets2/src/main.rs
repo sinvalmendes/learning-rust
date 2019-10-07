@@ -62,42 +62,42 @@ impl Solution {
     pub fn subsets_with_dup(nums: Vec<i32>) -> Vec<Vec<i32>> {
         // println!("nums {:?}", nums);
         let mut result: Vec<Vec<i32>> = vec![vec![]];
+        let mut nums_clone = nums.clone();
 
-        Solution::helper(nums, &mut vec![], &mut result, "---");
+        Solution::helper(&mut nums_clone, &mut vec![], &mut result, "---");
         // println!("final result => {:?}", result);
         return result;
     }
 
     #[rustfmt::skip]
     pub fn helper(
-        nums: Vec<i32>,
+        nums: &mut Vec<i32>,
         combination: &mut Vec<i32>,
         result: &mut Vec<Vec<i32>>,
         string: &str,
     ) {
+        let mut nums = nums.clone();
+        let mut combination = combination.clone();
         combination.sort();
+
+        let new_string = format!("---{}", string);
 
         // println!("{:?} nums {:?}, combination {:?}, result {:?}", string, nums, combination, result);
         if nums.len() == 0 {
             // println!("{:?} nums.len() == 0, combination {:?}", string, combination);
-            if !result.contains(combination) {
-                result.push(combination.clone());
+            if !result.contains(&combination) {
+                result.push(combination);
             }
             return;
         }
 
-        let mut nums_clone = nums.clone();
-        let selected = nums_clone.remove(0);
-        // println!("{:?} selected {:?}", string, selected);
+        let selected = nums.remove(0);
+        // println!("string {:?} selected {:?}", string, selected);
 
-        let new_string = format!("---{}", string);
-
-        Solution::helper(nums_clone.clone(), &mut combination.clone(), result, &new_string);
-        // println!("{:?} result1 {:?}", string, result1);
+        Solution::helper(&mut nums, &mut combination, result, &new_string);
 
         combination.push(selected);
-        Solution::helper(nums_clone.clone(),  &mut combination.clone(), result, &new_string,);
-        // println!("{:?} result2 {:?}", string, result2);
+        Solution::helper(&mut nums,  &mut combination, result, &new_string);
 
         return;
     }
