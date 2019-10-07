@@ -17,7 +17,6 @@
 
 fn main() {
     //println!("Hello, world!");
-
     let nums = vec![1, 2, 2];
     let result = Solution::subsets_with_dup(nums);
     let expected_result: Vec<Vec<i32>> = vec![
@@ -94,22 +93,12 @@ impl Solution {
 
         let new_string = format!("---{}", string);
 
-        Solution::helper(
-            nums_clone.clone(),
-            &mut combination.clone(),
-            result,
-            &new_string,
-        );
+        Solution::helper(nums_clone.clone(), &mut combination.clone(), result, &new_string);
         // println!("{:?} result1 {:?}", string, result1);
 
         combination.push(selected);
-        Solution::helper(
-            nums_clone.clone(),
-            &mut combination.clone(),
-            result,
-            &new_string,
-        );
-        //println!("{:?} result2 {:?}", string, result2);
+        Solution::helper(nums_clone.clone(),  &mut combination.clone(), result, &new_string,);
+        // println!("{:?} result2 {:?}", string, result2);
 
         return;
     }
