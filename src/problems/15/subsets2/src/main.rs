@@ -62,9 +62,7 @@ impl Solution {
     pub fn subsets_with_dup(nums: Vec<i32>) -> Vec<Vec<i32>> {
         // println!("nums {:?}", nums);
         let mut result: Vec<Vec<i32>> = vec![vec![]];
-        let mut nums_clone = nums.clone();
-
-        Solution::helper(&mut nums_clone, &mut vec![], &mut result, "---");
+        Solution::helper(&mut nums.clone(), &mut vec![], &mut result, "---");
         // println!("final result => {:?}", result);
         return result;
     }
@@ -76,8 +74,6 @@ impl Solution {
         result: &mut Vec<Vec<i32>>,
         string: &str,
     ) {
-        let mut nums = nums.clone();
-        let mut combination = combination.clone();
         combination.sort();
 
         let new_string = format!("---{}", string);
@@ -85,19 +81,18 @@ impl Solution {
         // println!("{:?} nums {:?}, combination {:?}, result {:?}", string, nums, combination, result);
         if nums.len() == 0 {
             // println!("{:?} nums.len() == 0, combination {:?}", string, combination);
-            if !result.contains(&combination) {
-                result.push(combination);
+            if !result.contains(combination) {
+                result.push(combination.to_vec());
             }
             return;
         }
 
         let selected = nums.remove(0);
-        // println!("string {:?} selected {:?}", string, selected);
 
-        Solution::helper(&mut nums, &mut combination, result, &new_string);
+        Solution::helper(&mut nums.clone(), &mut combination.clone(), result, &new_string);
 
         combination.push(selected);
-        Solution::helper(&mut nums,  &mut combination, result, &new_string);
+        Solution::helper(&mut nums.clone(), &mut combination.clone(), result, &new_string);
 
         return;
     }
