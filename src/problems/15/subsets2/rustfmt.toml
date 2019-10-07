@@ -1,0 +1,3 @@
+indent_style = "Visual"
+reorder_imports = false
+struct_lit_single_line = false
