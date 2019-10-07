@@ -69,6 +69,7 @@ impl Solution {
         return result;
     }
 
+    #[rustfmt::skip]
     pub fn helper(
         nums: Vec<i32>,
         combination: &mut Vec<i32>,
@@ -77,15 +78,9 @@ impl Solution {
     ) {
         combination.sort();
 
-        // println!(
-        //     "{:?} nums {:?}, combination {:?}, result {:?}",
-        //     string, nums, combination, result
-        // );
+        // println!("{:?} nums {:?}, combination {:?}, result {:?}", string, nums, combination, result);
         if nums.len() == 0 {
-            // println!(
-            //     "{:?} nums.len() == 0, combination {:?}",
-            //     string, combination
-            // );
+            // println!("{:?} nums.len() == 0, combination {:?}", string, combination);
             if result.contains(combination) {
                 return;
             };
