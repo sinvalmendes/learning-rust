@@ -80,11 +80,9 @@ impl Solution {
         }
 
         if selected_sum < target {
-            // println!("{:?} ignored candidate {:?}", string, candidate);
-            let mut selected_clone = selected.clone();
             let result1 = Solution::recursion(
                 &candidates,
-                &mut selected_clone,
+                &mut selected.clone(),
                 count + 1,
                 target,
                 &string_offset,
@@ -96,18 +94,9 @@ impl Solution {
             }
 
             let candidate = candidates[count];
-            // println!("{:?} current candidate {:?}", string, candidate);
-
-            // println!("{:?} included candidate {:?}", string, candidate);
-            let mut selected_clone2 = selected.clone();
-            selected_clone2.push(candidate);
-            let result2 = Solution::recursion(
-                &candidates,
-                &mut selected_clone2,
-                count + 1,
-                target,
-                &string_offset,
-            );
+            selected.push(candidate);
+            let result2 =
+                Solution::recursion(&candidates, selected, count + 1, target, &string_offset);
             for result in result2 {
                 if !internal_result.contains(&result) {
                     internal_result.push(result);
@@ -117,6 +106,7 @@ impl Solution {
         return internal_result;
     }
 
+    // TODO: change implementation to be a one-liner iteration sum
     pub fn sum_list(list: &Vec<i32>) -> i32 {
         let mut sum: i32 = 0;
         for num in list {
