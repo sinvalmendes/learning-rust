@@ -48,13 +48,9 @@ struct Solution {}
 
 impl Solution {
     pub fn combination_sum2(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
-        let candidates_clone = candidates.clone();
         let mut selected: Vec<i32> = vec![];
         let string = String::from(">");
-        let result = Solution::recursion(&candidates_clone, &mut selected, 0, target, &string);
-
-        // println!("result {:?}", result);
-        return result;
+        return Solution::recursion(&candidates, &mut selected, 0, target, &string);
     }
 
     pub fn recursion(
