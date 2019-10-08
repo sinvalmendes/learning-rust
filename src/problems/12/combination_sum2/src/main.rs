@@ -79,9 +79,6 @@ impl Solution {
             return internal_result;
         }
 
-        let candidate = candidates[count];
-        // println!("{:?} current candidate {:?}", string, candidate);
-
         if selected_sum < target {
             // println!("{:?} ignored candidate {:?}", string, candidate);
             let mut selected_clone = selected.clone();
@@ -97,6 +94,9 @@ impl Solution {
                     internal_result.push(result);
                 }
             }
+
+            let candidate = candidates[count];
+            // println!("{:?} current candidate {:?}", string, candidate);
 
             // println!("{:?} included candidate {:?}", string, candidate);
             let mut selected_clone2 = selected.clone();
