@@ -62,7 +62,7 @@ impl Solution {
         //     "{:?} candidates {:?}, selected {:?}, count {:?}, target {:?}",
         //     string, candidates, selected, count, target
         // );
-        let string_offset = format!("{}{}", string, "---->");
+        // let string_offset = format!("{}{}", string, "---->");
         let mut internal_result = vec![];
 
         let selected_sum: i32 = selected.iter().sum();
@@ -83,7 +83,7 @@ impl Solution {
                 &mut selected.clone(),
                 count + 1,
                 target,
-                &string_offset,
+                &string,
             );
             for result in result1 {
                 if !internal_result.contains(&result) {
@@ -93,8 +93,7 @@ impl Solution {
 
             let candidate = candidates[count];
             selected.push(candidate);
-            let result2 =
-                Solution::recursion(&candidates, selected, count + 1, target, &string_offset);
+            let result2 = Solution::recursion(&candidates, selected, count + 1, target, &string);
             for result in result2 {
                 if !internal_result.contains(&result) {
                     internal_result.push(result);
