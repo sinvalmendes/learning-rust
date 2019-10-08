@@ -65,9 +65,7 @@ impl Solution {
         let string_offset = format!("{}{}", string, "---->");
         let mut internal_result = vec![];
 
-        let selected_sum = Solution::sum_list(&selected);
-        // println!("{:?} selected_sum {:?}", string, selected_sum);
-
+        let selected_sum: i32 = selected.iter().sum();
         if selected_sum == target {
             selected.sort();
             internal_result.push(selected.to_vec());
@@ -104,14 +102,5 @@ impl Solution {
             }
         }
         return internal_result;
-    }
-
-    // TODO: change implementation to be a one-liner iteration sum
-    pub fn sum_list(list: &Vec<i32>) -> i32 {
-        let mut sum: i32 = 0;
-        for num in list {
-            sum += num;
-        }
-        sum
     }
 }
