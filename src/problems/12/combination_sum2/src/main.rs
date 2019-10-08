@@ -54,7 +54,7 @@ impl Solution {
     pub fn recursion(
         candidates: &Vec<i32>,
         selected: &mut Vec<i32>,
-        count: i32,
+        count: usize,
         target: i32,
         string: &String,
     ) -> Vec<Vec<i32>> {
@@ -75,11 +75,11 @@ impl Solution {
             return internal_result;
         }
 
-        if count as usize >= candidates.len() {
+        if count >= candidates.len() {
             return internal_result;
         }
 
-        let candidate = candidates[count as usize];
+        let candidate = candidates[count];
         // println!("{:?} current candidate {:?}", string, candidate);
 
         if selected_sum < target {
@@ -118,10 +118,10 @@ impl Solution {
     }
 
     pub fn sum_list(list: &Vec<i32>) -> i32 {
-        let mut count: i32 = 0;
+        let mut sum: i32 = 0;
         for num in list {
-            count += num;
+            sum += num;
         }
-        return count;
+        sum
     }
 }
