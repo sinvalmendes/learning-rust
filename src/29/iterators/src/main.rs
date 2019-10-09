@@ -1,4 +1,18 @@
-fn main() {}
+// Run `cargo run` to execute the basic example
+// Run `cargo test` to execute a different example
+
+fn main() {
+    let a = [1, 2, 3];
+
+    let doubled: Vec<i32> = a.iter().map(|&x| x * 2).collect();
+    let v_cloned: Vec<i32> = a.iter().cloned().collect();
+    // let v_copied: Vec<_> = a.iter().copied().collect(); // works only from rustc 1.36.0+
+    let v_mapped_copy: Vec<i32> = a.iter().map(|&x| x).collect();
+
+    assert_eq!(vec![2, 4, 6], doubled);
+    assert_eq!(vec![1, 2, 3], v_cloned);
+    assert_eq!(vec![1, 2, 3], v_mapped_copy);
+}
 
 #[derive(PartialEq, Debug)]
 struct Shoe {
