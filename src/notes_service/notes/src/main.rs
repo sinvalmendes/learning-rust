@@ -15,7 +15,7 @@ fn main() {
             .route("/health", web::get().to(health))
 
     })
-    .bind("127.0.0.1:8000")
+    .bind("0.0.0.0:8000")
     .expect("Can not bind to port 8000")
     .run()
     .unwrap();
