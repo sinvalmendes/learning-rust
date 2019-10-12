@@ -9,5 +9,12 @@ fn index2() -> impl Responder {
 }
 
 fn main() {
-    println!("Hello, world!");
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(index))
+    })
+    .bind("127.0.0.1:8000")
+    .expect("Can not bind to port 8000")
+    .run()
+    .unwrap();
 }
