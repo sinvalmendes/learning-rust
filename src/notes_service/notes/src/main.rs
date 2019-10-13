@@ -1,11 +1,13 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use serde::{Serialize, Deserialize};
 
-#[derive(Deserialize, Serialize, Debug)]
-struct Note {
-    title: String,
-    content: String,
-}
+#[macro_use]
+extern crate diesel;
+
+mod db;
+mod schema;
+mod model;
+
+use crate::model::Note;
 
 fn create_note(note: web::Json<Note>) -> impl Responder {
     println!("capture_note: {:?}", note);
@@ -21,6 +23,8 @@ fn health() -> impl Responder {
 }
 
 fn main() {
+    let pool = db::init_pool("postgres://postgres:docker@localhost/notes").expect("Failed to create pool");
+
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
