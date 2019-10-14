@@ -15,14 +15,18 @@ fn create_note(note: web::Json<Note>) -> impl Responder {
 }
 
 fn get_note(req: HttpRequest) -> impl Responder {
+    println!("get_note: {:?}", req);
     HttpResponse::Ok().body(format!("{:?}", req));
 }
 
 fn index() -> impl Responder {
+    println!("index");
+
     HttpResponse::Ok().body("Hello world!");
 }
 
 fn health() -> impl Responder {
+    println!("health");
     HttpResponse::Ok().body("{'status': 'ok'}");
 }
 
@@ -34,8 +38,8 @@ fn main() {
         App::new()
             .route("/", web::get().to(index))
             .route("/health", web::get().to(health))
-            .route("/notes", web::post().to(create_note))
             .route("/notes/{title}", web::get().to(get_note))
+            .route("/notes", web::post().to(create_note))
     })
     .bind("0.0.0.0:8000")
     .expect("Can not bind to port 8000")
