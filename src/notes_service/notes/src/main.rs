@@ -1,12 +1,13 @@
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::middleware::Logger;
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
+use futures::Future;
 use std::env;
 
 #[macro_use]
-extern crate diesel;
-
+extern crate serde_derive;
 #[macro_use]
-extern crate log;
+extern crate diesel;
 
 mod db;
 mod model;
@@ -43,8 +44,10 @@ fn main() {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
+            .data(pool.clone())
+            .wrap(Logger::default())
             .route("/", web::get().to(index))
             .route("/health", web::get().to(health))
             .route("/notes/{title}", web::get().to(get_note))
