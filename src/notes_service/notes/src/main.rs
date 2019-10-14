@@ -1,11 +1,9 @@
+use crate::model::NewNote;
 use actix_web::middleware::Logger;
-use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
-use futures::Future;
 use std::env;
 
-#[macro_use]
-extern crate serde_derive;
 #[macro_use]
 extern crate diesel;
 
@@ -13,10 +11,14 @@ mod db;
 mod model;
 mod schema;
 
-use crate::model::Note;
-
-fn create_note(note: web::Json<Note>) -> impl Responder {
-    println!("capture_note: {:?}", note);
+fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> impl Responder {
+    println!("create_note: {:?}", note);
+    let new_note = NewNote {
+        title: note.title.clone(),
+        content: note.content.clone(),
+    };
+    let result = db::create_note(new_note, &pool);
+    println!("create_note result: {:?}", result)
     // let new_note = store_in_db(note.timestamp, &note.title, &note.content);
 }
 

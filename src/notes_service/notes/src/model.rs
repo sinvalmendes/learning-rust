@@ -2,11 +2,11 @@ use diesel;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::schema::notes;
 
-#[derive(Debug, Insertable)]
+#[derive(Deserialize, Serialize, Debug, Queryable, Insertable)]
 #[table_name = "notes"]
 pub struct NewNote {
     pub title: String,
