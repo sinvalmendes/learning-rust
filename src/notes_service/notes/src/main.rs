@@ -1,7 +1,12 @@
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use dotenv::dotenv;
+use std::env;
 
 #[macro_use]
 extern crate diesel;
+
+#[macro_use]
+extern crate log;
 
 mod db;
 mod model;
@@ -21,7 +26,6 @@ fn get_note(req: HttpRequest) -> impl Responder {
 
 fn index() -> impl Responder {
     println!("index");
-
     HttpResponse::Ok().body("Hello world!");
 }
 
@@ -31,8 +35,13 @@ fn health() -> impl Responder {
 }
 
 fn main() {
-    let pool =
-        db::init_pool("postgres://postgres:docker@localhost/notes").expect("Failed to create pool");
+    dotenv().ok();
+
+    env::set_var("RUST_LOG", "actix_todo=debug,actix_web=info");
+    env_logger::init();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
     HttpServer::new(|| {
         App::new()
