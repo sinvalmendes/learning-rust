@@ -19,11 +19,12 @@ fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> impl Re
     };
     let result = db::create_note(new_note, &pool);
     println!("create_note result: {:?}", result)
-    // let new_note = store_in_db(note.timestamp, &note.title, &note.content);
 }
 
-fn get_note(req: HttpRequest) -> impl Responder {
-    println!("get_note: {:?}", req);
+fn get_all_notes(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Responder {
+    println!("get_all_notes: {:?}", req);
+    let result = db::get_all_notes(&pool);
+    println!("get_all_notes result {:?}", result);
     HttpResponse::Ok().body(format!("{:?}", req));
 }
 
@@ -52,7 +53,7 @@ fn main() {
             .wrap(Logger::default())
             .route("/", web::get().to(index))
             .route("/health", web::get().to(health))
-            .route("/notes/{title}", web::get().to(get_note))
+            .route("/notes", web::get().to(get_all_notes))
             .route("/notes", web::post().to(create_note))
     })
     .bind("0.0.0.0:8000")
