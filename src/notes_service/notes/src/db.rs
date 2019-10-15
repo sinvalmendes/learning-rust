@@ -30,3 +30,7 @@ pub fn create_note(note: NewNote, pool: &PgPool) -> Result<(), &'static str> {
 pub fn get_all_notes(pool: &PgPool) -> Result<Vec<Note>, &'static str> {
     Note::all(get_conn(pool)?.deref()).map_err(|_| "Error getting all notes")
 }
+
+pub fn select_by_title(pool: &PgPool) -> Result<Vec<Note>, &'static str> {
+    Note::select_by_title(get_conn(pool)?.deref()).map_err(|_| "Error getting all notes")
+}

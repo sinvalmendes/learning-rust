@@ -27,6 +27,7 @@ fn main() {
             .route("/", web::get().to(api::index))
             .route("/health", web::get().to(api::health))
             .route("/notes", web::get().to(api::get_all_notes))
+            .route("/notes/title", web::get().to(api::get_notes_by_title))
             .route("/notes", web::post().to(api::create_note))
     })
     .bind("0.0.0.0:8000")

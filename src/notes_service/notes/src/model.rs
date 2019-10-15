@@ -30,4 +30,8 @@ impl Note {
     pub fn all(conn: &PgConnection) -> QueryResult<Vec<Note>> {
         all_notes.order(notes::id.desc()).load::<Note>(conn)
     }
+
+    pub fn select_by_title(conn: &PgConnection) -> QueryResult<Vec<Note>> {
+        all_notes.filter(notes::title.eq("abc")).load::<Note>(conn)
+    }
 }
