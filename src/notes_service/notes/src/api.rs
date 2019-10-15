@@ -1,5 +1,6 @@
 use crate::model::NewNote;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
+use serde::Deserialize;
 
 use crate::db;
 
@@ -21,12 +22,21 @@ pub fn get_all_notes(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Resp
     }
 }
 
-pub fn get_notes_by_title(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Responder {
-    let result = db::select_by_title(String::from("abc"), &pool);
+pub fn get_notes_by_title(
+    params: web::Path<TitleGetParams>,
+    req: HttpRequest,
+    pool: web::Data<db::PgPool>,
+) -> impl Responder {
+    let result = db::select_by_title(params.title.clone(), &pool);
     match result {
         Ok(x) => HttpResponse::Ok().json(x),
         Err(_) => HttpResponse::Ok().json("Error"),
     }
+}
+
+#[derive(Deserialize)]
+pub struct TitleGetParams {
+    title: String,
 }
 
 pub fn index() -> impl Responder {
