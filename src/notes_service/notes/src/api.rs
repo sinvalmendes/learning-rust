@@ -22,7 +22,7 @@ pub fn get_all_notes(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Resp
 }
 
 pub fn get_notes_by_title(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Responder {
-    let result = db::select_by_title(&pool);
+    let result = db::select_by_title(String::from("abc"), &pool);
     match result {
         Ok(x) => HttpResponse::Ok().json(x),
         Err(_) => HttpResponse::Ok().json("Error"),
