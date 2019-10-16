@@ -6,6 +6,9 @@ use std::env;
 #[macro_use]
 extern crate diesel;
 
+#[macro_use]
+extern crate log;
+
 mod api;
 mod db;
 mod model;
@@ -13,9 +16,9 @@ mod schema;
 
 fn main() {
     dotenv().ok();
-
-    env::set_var("RUST_LOG", "actix_todo=debug,actix_web=info");
+    env::set_var("RUST_LOG", "info,actix_todo=debug,actix_web=info");
     env_logger::init();
+    info!("started!");
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
