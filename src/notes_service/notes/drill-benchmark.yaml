@@ -5,6 +5,10 @@ iterations: 3
 rampup: 2
 
 plan:
+  - name: Root
+    request:
+      url: /
+
   - name: Healthcheck endpoint
     request:
       url: /health
