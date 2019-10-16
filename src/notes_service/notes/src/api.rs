@@ -1,5 +1,5 @@
 use crate::model::NewNote;
-use actix_web::{web, HttpRequest, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder};
 use serde::Deserialize;
 
 use crate::db;
@@ -14,7 +14,7 @@ pub fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> imp
     debug!("create_note result: {:?}", result);
 }
 
-pub fn get_all_notes(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Responder {
+pub fn get_all_notes(pool: web::Data<db::PgPool>) -> impl Responder {
     info!("get_all_notes");
     let result = db::get_all_notes(&pool);
     match result {
@@ -25,7 +25,6 @@ pub fn get_all_notes(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Resp
 
 pub fn get_notes_by_title(
     params: web::Path<TitleGetParams>,
-    req: HttpRequest,
     pool: web::Data<db::PgPool>,
 ) -> impl Responder {
     info!("get_notes_by_title: {:?}", params);
