@@ -16,3 +16,11 @@ plan:
   - name: Get all notes
     request:
       url: /api/notes
+
+  - name: Post notes
+    request:
+      url: /api/notes
+      headers:
+        Content-Type: application/json
+      method: POST
+      body: '{ "title": "a", "content": "b" }'
