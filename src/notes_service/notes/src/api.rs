@@ -41,9 +41,13 @@ pub struct TitleGetParams {
 }
 
 pub fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!");
+    HttpResponse::Ok()
+        .content_type("plain/text")
+        .body("Hello world!");
 }
 
 pub fn health() -> impl Responder {
-    HttpResponse::Ok().body("{'status': 'ok'}");
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body("{'status': 'ok'}");
 }
