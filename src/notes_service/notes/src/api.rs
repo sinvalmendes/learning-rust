@@ -1,6 +1,7 @@
 use crate::model::NewNote;
 use actix_web::{web, HttpResponse, Responder};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json;
 
 use crate::db;
 
@@ -41,13 +42,13 @@ pub struct TitleGetParams {
 }
 
 pub fn index() -> impl Responder {
-    HttpResponse::Ok()
+    return HttpResponse::Ok()
         .content_type("plain/text")
         .body("Hello world!");
 }
 
 pub fn health() -> impl Responder {
-    HttpResponse::Ok()
+    return HttpResponse::Ok()
         .content_type("application/json")
-        .body("{'status': 'ok'}");
+        .body("{\"status\": \"ok\"}");
 }

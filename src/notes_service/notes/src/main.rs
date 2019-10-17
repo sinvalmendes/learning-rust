@@ -37,7 +37,8 @@ fn main() {
             .route("/api/notes", web::post().to(api::create_note))
     })
     .bind("0.0.0.0:8000")
-    .expect("Can not bind to port 8000")
+    .unwrap()
+    // .expect("Can not bind to port 8000")
     .run()
     .unwrap();
 }
