@@ -2,6 +2,8 @@ use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
+#[cfg(test)]
+mod tests;
 
 #[macro_use]
 extern crate diesel;
