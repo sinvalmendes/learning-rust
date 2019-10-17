@@ -1,7 +1,6 @@
 use crate::model::NewNote;
 use actix_web::{web, HttpResponse, Responder};
-use serde::{Deserialize, Serialize};
-use serde_json;
+use serde::Deserialize;
 
 use crate::db;
 
