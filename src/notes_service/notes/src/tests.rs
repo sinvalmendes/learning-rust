@@ -2,7 +2,6 @@
 mod tests {
     use crate::api::{create_note, get_all_notes, health, index};
     use crate::db::*;
-    use crate::model::NewNote;
     use actix_service::Service;
     use actix_web::middleware::Logger;
     use actix_web::{http::StatusCode, test, web, App};
@@ -59,24 +58,18 @@ mod tests {
                 .service(web::resource("/notes").to(create_note)),
         );
 
-        let data = NewNote {
-            title: String::from("abc"),
-            content: String::from("bla"),
-        };
-        let serialized = serde_json::to_string(&data).unwrap();
-
         // Create request object
         let req = test::TestRequest::post()
-            .set_json(&serialized)
+            .set_payload(Bytes::from_static(
+                b"{\"title\": \"abc\",\"content\": \"bla\"}",
+            ))
+            .header("Content-Type", "application/json")
             .uri("/notes")
             .to_request();
 
         // Execute application
         let resp = test::block_on(app.call(req)).unwrap();
-        let result = test::read_body(resp);
-        println!("{:?}", result);
-        // assert_eq!(resp.status(), StatusCode::OK);
-        // let result = test::read_body(resp);
+        assert_eq!(resp.status(), StatusCode::OK);
     }
 
     #[test]
@@ -101,6 +94,5 @@ mod tests {
         // Execute application
         let resp = test::block_on(app.call(req)).unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
-        // let result = test::read_body(resp);
     }
 }
