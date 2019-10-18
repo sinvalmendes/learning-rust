@@ -38,8 +38,6 @@ mod tests {
         // Execute application
         let resp = test::block_on(app.call(req)).unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
-        // let body = resp.take_body();
-        // println!("{:?}", body.as_ref().unwrap());
         let result = test::read_body(resp);
         assert_eq!(result, Bytes::from_static(b"{\"status\": \"ok\"}"));
     }
