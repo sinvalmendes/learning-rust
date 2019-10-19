@@ -8,6 +8,7 @@ mod tests {
     use bytes::Bytes;
     use dotenv::dotenv;
     use std::env;
+
     #[test]
     fn test_add() {
         assert_eq!(4, 2 + 2);
