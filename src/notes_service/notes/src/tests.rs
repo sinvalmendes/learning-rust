@@ -8,9 +8,9 @@ mod tests {
     use bytes::Bytes;
     use dotenv::dotenv;
     use std::env;
-    use std::sync::{Once, ONCE_INIT};
+    use std::sync::Once;
 
-    static INIT: Once = ONCE_INIT;
+    static INIT: Once = Once::new();
     fn setup() {
         dotenv().ok();
 
