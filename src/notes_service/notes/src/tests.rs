@@ -8,24 +8,48 @@ mod tests {
     use bytes::Bytes;
     use dotenv::dotenv;
     use std::env;
+    use std::sync::{Once, ONCE_INIT};
+
+    static INIT: Once = ONCE_INIT;
+    fn setup() {
+        dotenv().ok();
+
+        env::set_var("RUST_LOG", "debug,actix_todo=debug,actix_web=info");
+        INIT.call_once(|| {
+            env_logger::init();
+        });
+    }
+
+    fn run_test<T>(test: T) -> ()
+    where
+        T: FnOnce() -> (),
+    {
+        setup();
+
+        test();
+    }
 
     #[test]
     fn test_add() {
-        assert_eq!(4, 2 + 2);
+        run_test(|| {
+            assert_eq!(4, 2 + 2);
+        })
     }
 
     #[test]
     fn test_index_endpoint() {
-        let mut app = test::init_service(App::new().service(web::resource("/").to(index)));
+        run_test(|| {
+            let mut app = test::init_service(App::new().service(web::resource("/").to(index)));
 
-        // Create request object
-        let req = test::TestRequest::with_uri("/").to_request();
+            // Create request object
+            let req = test::TestRequest::with_uri("/").to_request();
 
-        // Execute application
-        let resp = test::block_on(app.call(req)).unwrap();
-        assert_eq!(resp.status(), StatusCode::OK);
-        let result = test::read_body(resp);
-        assert_eq!(result, Bytes::from_static(b"Hello world!"));
+            // Execute application
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
+            let result = test::read_body(resp);
+            assert_eq!(result, Bytes::from_static(b"Hello world!"));
+        })
     }
 
     #[test]
@@ -44,11 +68,6 @@ mod tests {
 
     #[test]
     fn test_create_notes_endpoint() {
-        dotenv().ok();
-
-        env::set_var("RUST_LOG", "debug,actix_todo=debug,actix_web=info");
-        env_logger::init();
-
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool = init_pool(&database_url).expect("Failed to create pool");
 
@@ -75,10 +94,6 @@ mod tests {
 
     #[test]
     fn test_get_all_notes_endpoint() {
-        dotenv().ok();
-
-        env::set_var("RUST_LOG", "debug,actix_todo=debug,actix_web=info");
-
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool = init_pool(&database_url).expect("Failed to create pool");
 
