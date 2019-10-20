@@ -5,4 +5,4 @@ WORKDIR /app
 ADD . /app
 RUN cargo build --release
 EXPOSE 8000
-CMD [ "./target/release/notes_service" ]
+CMD [ "./target/release/notes" ]
