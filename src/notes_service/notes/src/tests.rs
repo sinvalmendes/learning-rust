@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::api::{create_note, get_all_notes, health, index};
+    use crate::api::{create_note, get_all_notes, get_notes_by_title, health, index};
     use crate::db::*;
     use actix_service::Service;
     use actix_web::middleware::Logger;
@@ -112,6 +112,28 @@ mod tests {
 
             // Create request object
             let req = test::TestRequest::with_uri("/notes").to_request();
+
+            // Execute application
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
+        })
+    }
+
+    #[test]
+    fn test_get_note_by_title_endpoint() {
+        run_test(|| {
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            let pool = init_pool(&database_url).expect("Failed to create pool");
+
+            let mut app = test::init_service(
+                App::new()
+                    .data(pool.clone())
+                    .wrap(Logger::default())
+                    .service(web::resource("/api/notes/{title}").to(get_notes_by_title)),
+            );
+
+            // Create request object
+            let req = test::TestRequest::with_uri("/api/notes/abc").to_request();
 
             // Execute application
             let resp = test::block_on(app.call(req)).unwrap();
