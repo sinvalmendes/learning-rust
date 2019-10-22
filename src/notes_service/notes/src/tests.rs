@@ -7,7 +7,10 @@ mod tests {
     use actix_web::{http::StatusCode, test, web, App};
     use bytes::Bytes;
     use dotenv::dotenv;
+    use rand::distributions::Alphanumeric;
+    use rand::{thread_rng, Rng};
     use std::env;
+    use std::iter;
     use std::sync::Once;
 
     static INIT: Once = Once::new();
@@ -124,6 +127,34 @@ mod tests {
         run_test(|| {
             let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
             let pool = init_pool(&database_url).expect("Failed to create pool");
+
+            let mut app = test::init_service(
+                App::new()
+                    .data(pool.clone())
+                    .wrap(Logger::default())
+                    .service(web::resource("/notes").to(create_note)),
+            );
+
+            let note_name: String = iter::repeat(())
+                .map(|()| thread_rng().sample(Alphanumeric))
+                .take(7)
+                .collect();
+
+            let payload = format!("{{\"title\": \"{}\",\"content\": \"bla\"}}", note_name);
+            println!("{}", payload);
+
+            // Create note
+            let req = test::TestRequest::post()
+                .set_payload(Bytes::from_static(
+                    b"{\"title\": \"abc\",\"content\": \"bla\"}",
+                ))
+                .header("Content-Type", "application/json")
+                .uri("/notes")
+                .to_request();
+
+            // Execute application
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
 
             let mut app = test::init_service(
                 App::new()
