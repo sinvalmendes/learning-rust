@@ -124,41 +124,46 @@ mod tests {
 
     #[test]
     fn test_get_note_by_title_endpoint() {
-        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let pool = init_pool(&database_url).expect("Failed to create pool");
+        run_test(|| {
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            let pool = init_pool(&database_url).expect("Failed to create pool");
 
-        let mut app = test::init_service(
-            App::new()
-                .data(pool.clone())
-                .wrap(Logger::default())
-                .service(web::resource("/notes").to(create_note)),
-        );
+            let mut app = test::init_service(
+                App::new()
+                    .data(pool.clone())
+                    .wrap(Logger::default())
+                    .service(web::resource("/notes").to(create_note)),
+            );
 
-        let note_name: String = iter::repeat(())
-            .map(|()| thread_rng().sample(Alphanumeric))
-            .take(7)
-            .collect();
-        let payload: String = format!("{{\"title\": \"{}\",\"content\": \"bla\"}}", note_name);
+            let note_name: String = iter::repeat(())
+                .map(|()| thread_rng().sample(Alphanumeric))
+                .take(7)
+                .collect();
+            let payload: String = format!("{{\"title\": \"{}\",\"content\": \"bla\"}}", note_name);
 
-        // Create note
-        let req = test::TestRequest::post()
-            .set_payload(payload)
-            .header("Content-Type", "application/json")
-            .uri("/notes")
-            .to_request();
-        let resp = test::block_on(app.call(req)).unwrap();
-        assert_eq!(resp.status(), StatusCode::OK);
+            // Create note
+            let req = test::TestRequest::post()
+                .set_payload(payload)
+                .header("Content-Type", "application/json")
+                .uri("/notes")
+                .to_request();
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
 
-        // Get note by title
-        let mut app = test::init_service(
-            App::new()
-                .data(pool.clone())
-                .wrap(Logger::default())
-                .service(web::resource("/api/notes/{title}").to(get_notes_by_title)),
-        );
-        let uri = format!("/api/notes/{}", note_name);
-        let req = test::TestRequest::with_uri(uri.as_str()).to_request();
-        let resp = test::block_on(app.call(req)).unwrap();
-        assert_eq!(resp.status(), StatusCode::OK);
+            // Get note by title
+            let mut app = test::init_service(
+                App::new()
+                    .data(pool.clone())
+                    .wrap(Logger::default())
+                    .service(web::resource("/api/notes/{title}").to(get_notes_by_title)),
+            );
+            let uri = format!("/api/notes/{}", note_name);
+            let req = test::TestRequest::with_uri(uri.as_str()).to_request();
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
+
+            let result = test::read_body(resp);
+            println!("{:?}", result);
+        })
     }
 }
