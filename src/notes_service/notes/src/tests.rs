@@ -45,10 +45,9 @@ mod tests {
         run_test(|| {
             let mut app = test::init_service(App::new().service(web::resource("/").to(index)));
 
-            // Create request object
+            // GET root endpoint
             let req = test::TestRequest::with_uri("/").to_request();
 
-            // Execute application
             let resp = test::block_on(app.call(req)).unwrap();
             assert_eq!(resp.status(), StatusCode::OK);
             let result = test::read_body(resp);
@@ -62,10 +61,9 @@ mod tests {
             let mut app =
                 test::init_service(App::new().service(web::resource("/health").to(health)));
 
-            // Create request object
+            // GET health endpoint
             let req = test::TestRequest::with_uri("/health").to_request();
 
-            // Execute application
             let resp = test::block_on(app.call(req)).unwrap();
             assert_eq!(resp.status(), StatusCode::OK);
             let result = test::read_body(resp);
@@ -86,7 +84,7 @@ mod tests {
                     .service(web::resource("/notes").to(create_note)),
             );
 
-            // Create request object
+            // Create note
             let req = test::TestRequest::post()
                 .set_payload(Bytes::from_static(
                     b"{\"title\": \"abc\",\"content\": \"bla\"}",
@@ -95,7 +93,6 @@ mod tests {
                 .uri("/notes")
                 .to_request();
 
-            // Execute application
             let resp = test::block_on(app.call(req)).unwrap();
             assert_eq!(resp.status(), StatusCode::OK);
         })
@@ -114,10 +111,7 @@ mod tests {
                     .service(web::resource("/notes").to(get_all_notes)),
             );
 
-            // Create request object
             let req = test::TestRequest::with_uri("/notes").to_request();
-
-            // Execute application
             let resp = test::block_on(app.call(req)).unwrap();
             assert_eq!(resp.status(), StatusCode::OK);
         })
