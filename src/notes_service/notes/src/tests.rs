@@ -2,6 +2,7 @@
 mod tests {
     use crate::api::{create_note, get_all_notes, get_notes_by_title, health, index};
     use crate::db::*;
+    use crate::model::NewNote;
     use actix_service::Service;
     use actix_web::middleware::Logger;
     use actix_web::{http::StatusCode, test, web, App};
@@ -139,7 +140,11 @@ mod tests {
                 .map(|()| thread_rng().sample(Alphanumeric))
                 .take(7)
                 .collect();
-            let payload: String = format!("{{\"title\": \"{}\",\"content\": \"bla\"}}", note_name);
+            let content = "bla";
+            let payload: String = format!(
+                "{{\"title\": \"{}\",\"content\": \"{}\"}}",
+                note_name, content
+            );
 
             // Create note
             let req = test::TestRequest::post()
@@ -159,11 +164,11 @@ mod tests {
             );
             let uri = format!("/api/notes/{}", note_name);
             let req = test::TestRequest::with_uri(uri.as_str()).to_request();
-            let resp = test::block_on(app.call(req)).unwrap();
-            assert_eq!(resp.status(), StatusCode::OK);
+            let result: Vec<NewNote> = test::read_response_json(&mut app, req);
 
-            let result = test::read_body(resp);
-            println!("{:?}", result);
+            let new_note_result = result.get(0).unwrap();
+            assert_eq!(note_name, new_note_result.title);
+            assert_eq!(content, new_note_result.content);
         })
     }
 }
