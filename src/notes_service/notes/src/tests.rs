@@ -74,27 +74,7 @@ mod tests {
     #[test]
     fn test_create_notes_endpoint() {
         run_test(|| {
-            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-            let pool = init_pool(&database_url).expect("Failed to create pool");
-
-            let mut app = test::init_service(
-                App::new()
-                    .data(pool.clone())
-                    .wrap(Logger::default())
-                    .service(web::resource("/notes").to(create_note)),
-            );
-
-            // Create note
-            let req = test::TestRequest::post()
-                .set_payload(Bytes::from_static(
-                    b"{\"title\": \"abc\",\"content\": \"bla\"}",
-                ))
-                .header("Content-Type", "application/json")
-                .uri("/notes")
-                .to_request();
-
-            let resp = test::block_on(app.call(req)).unwrap();
-            assert_eq!(resp.status(), StatusCode::OK);
+            create_note_post_request();
         })
     }
 
