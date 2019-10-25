@@ -74,7 +74,7 @@ mod tests {
     #[test]
     fn test_create_notes_endpoint() {
         run_test(|| {
-            create_note_post_request();
+            create_note_post_request("bla");
         })
     }
 
@@ -97,7 +97,7 @@ mod tests {
         })
     }
 
-    fn create_note_post_request() -> NewNote {
+    fn create_note_post_request(note_content: &str) -> NewNote {
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool = init_pool(&database_url).expect("Failed to create pool");
 
@@ -111,7 +111,6 @@ mod tests {
             .map(|()| thread_rng().sample(Alphanumeric))
             .take(7)
             .collect();
-        let note_content = "bla";
 
         let payload: String = format!(
             "{{\"title\": \"{}\",\"content\": \"{}\"}}",
@@ -140,7 +139,7 @@ mod tests {
             let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
             let pool = init_pool(&database_url).expect("Failed to create pool");
 
-            let note_created = create_note_post_request();
+            let note_created = create_note_post_request("bla");
 
             let mut app = test::init_service(
                 App::new()
