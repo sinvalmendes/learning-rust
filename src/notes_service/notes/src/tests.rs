@@ -120,7 +120,7 @@ mod tests {
             .uri("/notes")
             .to_request();
         let resp = test::block_on(app.call(req)).unwrap();
-        assert_eq!(resp.status(), StatusCode::OK);
+        assert_eq!(resp.status(), StatusCode::CREATED);
 
         let note_created = NewNote {
             title: note_name.to_string(),
