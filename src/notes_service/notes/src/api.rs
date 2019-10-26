@@ -12,6 +12,10 @@ pub fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> imp
     };
     let result = db::create_note(new_note, &pool);
     debug!("create_note result: {:?}", result);
+    match result {
+        Ok(x) => HttpResponse::Created().json(x),
+        Err(_) => HttpResponse::Ok().json("Error"),
+    }
 }
 
 pub fn get_all_notes(pool: web::Data<db::PgPool>) -> impl Responder {
