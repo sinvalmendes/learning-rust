@@ -75,6 +75,8 @@ mod tests {
     fn test_create_notes_endpoint() {
         run_test(|| {
             create_note_post_request("note_name", "bla");
+            create_note_post_request("note_name", "");
+            create_note_post_request("", "");
         })
     }
 
