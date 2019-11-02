@@ -21,7 +21,8 @@ fn main() {
     env_logger::init();
     info!("started!");
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    // let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = "postgres://postgres:docker@localhost/notes";
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
     HttpServer::new(move || {
