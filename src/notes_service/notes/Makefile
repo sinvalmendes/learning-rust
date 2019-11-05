@@ -3,7 +3,7 @@ This makefile requires GNU Make.
 endif
 
 .EXPORT_ALL_VARIABLES:
-DATABASE_URL=postgres://postgres:docker@localhost/notes 
+DATABASE_URL=postgres://postgres:docker@localhost/notes
 
 cargo-run:
 	cargo run
