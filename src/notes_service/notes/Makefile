@@ -11,7 +11,6 @@ clean:
 	docker network rm isolated_nw || true
 .PHONY: clean
 
-
 drill-run: clean
 	docker network create --driver bridge isolated_nw
 	docker run -itd --network=isolated_nw --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v ${HOME}/docker/volumes/postgres:/var/lib/postgresql/data postgres
