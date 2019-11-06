@@ -5,11 +5,14 @@ endif
 .EXPORT_ALL_VARIABLES:
 DATABASE_URL=postgres://postgres:docker@localhost/notes
 
-drill-run:
+clean:
 	docker stop pg-docker || true
 	docker stop notes-server || true
 	docker network rm isolated_nw || true
+.PHONY: clean
 
+
+drill-run: clean
 	docker network create --driver bridge isolated_nw
 	docker run -itd --network=isolated_nw --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v ${HOME}/docker/volumes/postgres:/var/lib/postgresql/data postgres
 	sleep 5
