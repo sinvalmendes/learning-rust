@@ -31,8 +31,7 @@ cargo-test: run-postgres-local-db
 	cargo test -- --nocapture
 .PHONY: cargo-test
 
-run-postgres-local-db:
-	docker stop pg-docker || true
+run-postgres-local-db: clean
 	docker run -itd --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v ${HOME}/docker/volumes/postgres:/var/lib/postgresql/data postgres
 	sleep 5
 .PHONY: run-postgres-local-db
