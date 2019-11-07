@@ -18,6 +18,18 @@ pub fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> imp
     }
 }
 
+pub fn delete_by_title(
+    params: web::Path<TitleGetParams>,
+    pool: web::Data<db::PgPool>,
+) -> impl Responder {
+    info!("delete_by_title: {:?}", params);
+    let result = db::delete_note_by_title(params.title.clone(), &pool);
+    match result {
+        Ok(x) => HttpResponse::Ok().json(x),
+        Err(_) => HttpResponse::Ok().json("Error"),
+    }
+}
+
 pub fn get_all_notes(pool: web::Data<db::PgPool>) -> impl Responder {
     info!("get_all_notes");
     let result = db::get_all_notes(&pool);
