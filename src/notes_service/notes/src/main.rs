@@ -33,6 +33,10 @@ fn main() {
             .route("/health", web::get().to(api::health))
             .route("/api/notes", web::get().to(api::get_all_notes))
             .route("/api/notes/{title}", web::get().to(api::get_notes_by_title))
+            .route(
+                "/api/delete/notes/{title}",
+                web::get().to(api::delete_by_title),
+            )
             .route("/api/notes", web::post().to(api::create_note))
     })
     .bind("0.0.0.0:8000")
