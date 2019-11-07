@@ -27,6 +27,10 @@ pub fn create_note(note: NewNote, pool: &PgPool) -> Result<(), &'static str> {
         .map_err(|_| "Error inserting task")
 }
 
+pub fn delete_note_by_title(title: String, pool: &PgPool) -> Result<usize, &'static str> {
+    return Note::delete(title, get_conn(pool)?.deref()).map_err(|_| "Error getting all notes");
+}
+
 pub fn get_all_notes(pool: &PgPool) -> Result<Vec<Note>, &'static str> {
     Note::all(get_conn(pool)?.deref()).map_err(|_| "Error getting all notes")
 }
