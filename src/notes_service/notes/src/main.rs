@@ -34,7 +34,7 @@ fn main() {
             .route("/api/notes", web::get().to(api::get_all_notes))
             .route("/api/notes/{title}", web::get().to(api::get_notes_by_title))
             .route(
-                "/api/delete/notes/{title}",
+                "/api/notes/delete/{title}",
                 web::get().to(api::delete_by_title),
             )
             .route("/api/notes", web::post().to(api::create_note))
