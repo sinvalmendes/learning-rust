@@ -34,4 +34,9 @@ impl Note {
     pub fn select_by_title(title: String, conn: &PgConnection) -> QueryResult<Vec<Note>> {
         all_notes.filter(notes::title.eq(&title)).load::<Note>(conn)
     }
+
+    pub fn delete(title: String, conn: &PgConnection) -> QueryResult<usize> {
+        let result = diesel::delete(notes::table.filter(notes::title.eq(&title))).execute(conn);
+        return result;
+    }
 }
