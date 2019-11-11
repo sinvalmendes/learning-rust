@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::api::{create_note, get_all_notes, get_notes_by_title, health, index};
+    use crate::api::{
+        create_note, delete_by_title, get_all_notes, get_notes_by_title, health, index,
+    };
     use crate::db::*;
     use crate::model::NewNote;
     use actix_service::Service;
@@ -181,17 +183,23 @@ mod tests {
                 App::new()
                     .data(pool.clone())
                     .wrap(Logger::default())
-                    .service(web::resource("/api/notes/delete/{title}").to(get_notes_by_title)),
+                    .service(web::resource("/api/notes/delete/{title}").to(delete_by_title))
+                    .service(web::resource("/api/notes/{title}").to(get_notes_by_title)),
             );
             let uri = format!("/api/notes/delete/{}", note_created.title);
             let req = test::TestRequest::with_uri(uri.as_str()).to_request();
             let resp = test::block_on(app.call(req)).unwrap();
             assert_eq!(resp.status(), StatusCode::OK);
-            // let result: Vec<NewNote> = test::read_response_json(&mut app, req);
 
-            // let new_note_result = result.get(0).unwrap();
-            // assert_eq!(note_created.title, new_note_result.title);
-            // assert_eq!(note_created.content, new_note_result.content);
+            let uri = format!("/api/notes/{}", note_created.title);
+            let req = test::TestRequest::with_uri(uri.as_str()).to_request();
+            let result: Vec<NewNote> = test::read_response_json(&mut app, req);
+
+            let new_note_result = result.get(0).unwrap();
+            assert_eq!(note_created.title, new_note_result.title);
+            assert_eq!(note_created.content, new_note_result.content);
+
+            println!("----");
         })
     }
 }
