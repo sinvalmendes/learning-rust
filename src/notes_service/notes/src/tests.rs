@@ -165,4 +165,33 @@ mod tests {
             assert_eq!(note_created.content, new_note_result.content);
         })
     }
+
+    #[test]
+    fn test_delete_note_by_title_endpoint() {
+        run_test(|| {
+            let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+            let pool = init_pool(&database_url).expect("Failed to create pool");
+            let note_name: String = iter::repeat(())
+                .map(|()| thread_rng().sample(Alphanumeric))
+                .take(7)
+                .collect();
+            let note_created = create_note_post_request(&note_name, "bla");
+
+            let mut app = test::init_service(
+                App::new()
+                    .data(pool.clone())
+                    .wrap(Logger::default())
+                    .service(web::resource("/api/notes/delete/{title}").to(get_notes_by_title)),
+            );
+            let uri = format!("/api/notes/delete/{}", note_created.title);
+            let req = test::TestRequest::with_uri(uri.as_str()).to_request();
+            let resp = test::block_on(app.call(req)).unwrap();
+            assert_eq!(resp.status(), StatusCode::OK);
+            // let result: Vec<NewNote> = test::read_response_json(&mut app, req);
+
+            // let new_note_result = result.get(0).unwrap();
+            // assert_eq!(note_created.title, new_note_result.title);
+            // assert_eq!(note_created.content, new_note_result.content);
+        })
+    }
 }
