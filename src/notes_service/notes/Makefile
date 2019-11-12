@@ -26,6 +26,10 @@ cargo-run:
 	cargo run
 .PHONY: cargo-run
 
+quick-cargo-test:
+	cargo test -- --nocapture
+.PHONY: cargo-test
+
 cargo-test: run-postgres-local-db
 	cargo test -- --nocapture
 .PHONY: cargo-test
