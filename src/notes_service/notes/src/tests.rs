@@ -193,8 +193,8 @@ mod tests {
 
             let uri = format!("/api/notes/{}", note_created.title);
             let req = test::TestRequest::with_uri(uri.as_str()).to_request();
-            let resp = test::block_on(app.call(req)).unwrap();
-            assert_eq!(resp.status(), StatusCode::OK);
+            let result: Vec<NewNote> = test::read_response_json(&mut app, req);
+            assert_eq!(0, result.len());
         })
     }
 }
