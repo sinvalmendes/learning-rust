@@ -47,10 +47,9 @@ mod tests {
         run_test(|| {
             let mut app = test::init_service(App::new().service(web::resource("/").to(index)));
 
-            // GET root endpoint
             let req = test::TestRequest::with_uri("/").to_request();
-
             let resp = test::block_on(app.call(req)).unwrap();
+
             assert_eq!(resp.status(), StatusCode::OK);
             let result = test::read_body(resp);
             assert_eq!(result, Bytes::from_static(b"Hello world!"));
@@ -63,7 +62,6 @@ mod tests {
             let mut app =
                 test::init_service(App::new().service(web::resource("/health").to(health)));
 
-            // GET health endpoint
             let req = test::TestRequest::with_uri("/health").to_request();
 
             let resp = test::block_on(app.call(req)).unwrap();
