@@ -63,8 +63,8 @@ mod tests {
                 test::init_service(App::new().service(web::resource("/health").to(health)));
 
             let req = test::TestRequest::with_uri("/health").to_request();
-
             let resp = test::block_on(app.call(req)).unwrap();
+
             assert_eq!(resp.status(), StatusCode::OK);
             let result = test::read_body(resp);
             assert_eq!(result, Bytes::from_static(b"{\"status\": \"ok\"}"));
@@ -123,7 +123,6 @@ mod tests {
             note_name, note_content
         );
 
-        // Create note
         let req = test::TestRequest::post()
             .set_payload(payload)
             .header("Content-Type", "application/json")
