@@ -36,7 +36,6 @@ impl Note {
     }
 
     pub fn delete(title: String, conn: &PgConnection) -> QueryResult<usize> {
-        let result = diesel::delete(notes::table.filter(notes::title.eq(&title))).execute(conn);
-        return result;
+        diesel::delete(notes::table.filter(notes::title.eq(&title))).execute(conn)
     }
 }
