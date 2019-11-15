@@ -18,10 +18,9 @@ pub fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> imp
     }
 }
 
-pub fn delete_by_title(
-    params: web::Path<TitleGetParams>,
-    pool: web::Data<db::PgPool>,
-) -> impl Responder {
+pub fn delete_by_title(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Responder {
+    let params = web::Path::<TitleGetParams>::extract(&req).unwrap();
+
     info!("delete_by_title: {:?}", params);
     let result = db::delete_note_by_title(params.title.clone(), &pool);
     match result {
