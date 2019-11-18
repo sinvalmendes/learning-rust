@@ -9,8 +9,7 @@ pub fn create_note(note: web::Json<NewNote>, pool: web::Data<db::PgPool>) -> imp
         title: note.title.clone(),
         content: note.content.clone(),
     };
-    let result = db::create_note(new_note, &pool);
-    match result {
+    match db::create_note(new_note, &pool) {
         Ok(x) => HttpResponse::Created().json(x),
         Err(_) => HttpResponse::Ok().json("Error"),
     }
@@ -27,8 +26,7 @@ pub fn delete_by_title(req: HttpRequest, pool: web::Data<db::PgPool>) -> impl Re
 }
 
 pub fn get_all_notes(pool: web::Data<db::PgPool>) -> impl Responder {
-    let result = db::get_all_notes(&pool);
-    match result {
+    match db::get_all_notes(&pool) {
         Ok(x) => HttpResponse::Ok().json(x),
         Err(_) => HttpResponse::Ok().json("Error"),
     }
