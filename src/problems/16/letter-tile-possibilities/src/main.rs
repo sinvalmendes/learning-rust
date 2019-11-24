@@ -26,12 +26,13 @@ struct Solution {}
 
 impl Solution {
     pub fn num_tile_possibilities(tiles: String) -> i32 {
+        println!("num_tile_possibilities: {}", tiles);
         Solution::get_unique_letters(tiles);
         return 0;
     }
 
     pub fn get_unique_letters(string: String) -> Vec<String> {
-        println!("{}", string);
+        println!("get_unique_letters: {}", string);
         return vec![];
     }
 }
