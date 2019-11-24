@@ -5,19 +5,19 @@
 
 // Input: "AAB"
 // Output: 8
-// Explanation: The possible sequences are "A", "B", "AA", "AB", "BA", "AAB", "ABA", "BAA".
+// Explanation: The possible sequences are
+// "A", "B", "AA", "AB", "BA", "AAB", "ABA", "BAA".
 // Example 2:
 
 // Input: "AAABBC"
 // Output: 188
 
 // Note:
-
 // 1 <= tiles.length <= 7
 // tiles consists of uppercase English letters.
 
 fn main() {
-    println!("Hello, world!");
+    println!("Letter Tiles Possibilities");
 }
 
 struct Solution {}
