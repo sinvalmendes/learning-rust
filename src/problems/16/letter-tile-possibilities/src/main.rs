@@ -27,12 +27,16 @@ struct Solution {}
 impl Solution {
     pub fn num_tile_possibilities(tiles: String) -> i32 {
         println!("num_tile_possibilities: {}", tiles);
-        Solution::get_unique_letters(tiles);
+        let selected = tiles.chars().nth(0).unwrap().to_string();
+        println!("num_tile_possibilities, selected: {}", selected);
+        Solution::append(&mut tiles.clone(), &selected);
         return 0;
     }
 
-    pub fn get_unique_letters(string: String) -> Vec<String> {
-        println!("get_unique_letters: {}", string);
-        return vec![];
+    pub fn append(string: &mut String, letter: &String) -> String {
+        println!("append: {} in {}", letter, string);
+        string.push_str(letter);
+        println!("append result: {}", string);
+        return string.clone();
     }
 }
