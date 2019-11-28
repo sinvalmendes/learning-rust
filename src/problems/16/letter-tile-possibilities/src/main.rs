@@ -29,43 +29,26 @@ impl Solution {
     pub fn num_tile_possibilities(tiles: String) -> i32 {
         println!("num_tile_possibilities: {}", tiles);
         let mut result: Vec<String> = vec![];
-        Solution::helper("", &mut tiles.clone(), &mut result);
+        let combinations = Solution::rotate(tiles.clone());
+        println!("num_tile_possibilities, combinations: {:?}", combinations);
         return result.len() as i32;
     }
 
-    pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) {
-        // println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
-        // thread::sleep_ms(1000);
-        if combination.len() > 3 {
-            return;
+    pub fn rotate(string: String) -> Vec<String> {
+        let mut result: Vec<String> = vec![];
+        let mut count = 0;
+        let mut mutable_string = string.clone();
+        while count < string.len() {
+            result.push(mutable_string.clone());
+            let selected = string.chars().nth(0).unwrap().to_string();
+            mutable_string.remove(0);
+            mutable_string.push_str(&selected);
+            count += 1;
         }
-
-        if result.contains(&String::from(combination)) {
-            return;
-        }
-
-        if combination.len() > 0 {
-            result.push(String::from(combination));
-            println!("pushed, > result: {:?}", result);
-        }
-
-        if tiles.len() == 0 {
-            return;
-        }
-
-        let selected = tiles.chars().nth(0).unwrap().to_string();
-        tiles.remove(0);
-        println!(
-            "helper, selected: {:?}, tiles: {:?}, result: {:?}",
-            selected, tiles, result
-        );
-
-        let new_combination = Solution::append(&mut String::from(combination), &selected);
-        Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
-
-        let new_tiles = Solution::append(&mut tiles.clone(), &selected);
-        Solution::helper(combination, &mut new_tiles.clone(), &mut result.clone());
+        return result;
     }
+
+    pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) {}
 
     pub fn append(string: &mut String, letter: &String) -> String {
         //println!("append: {} in {}", letter, string);
