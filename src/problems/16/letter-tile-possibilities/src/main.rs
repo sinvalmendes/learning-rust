@@ -34,10 +34,15 @@ impl Solution {
 
     pub fn helper(combination: &str, tiles: String, result: &mut Vec<String>) {
         println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
+        if combination.len() >= 3 {
+            return;
+        }
         let selected = tiles.chars().nth(0).unwrap().to_string();
         println!("helper, selected: {:?}", selected);
         result.push(String::from(combination));
+
         let new_combination = Solution::append(&mut String::from(combination), &selected);
+        Solution::helper(&new_combination, tiles.clone(), &mut result.clone());
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
