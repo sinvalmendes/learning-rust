@@ -15,6 +15,7 @@
 // Note:
 // 1 <= tiles.length <= 7
 // tiles consists of uppercase English letters.
+use std::thread;
 
 fn main() {
     println!("Letter Tiles Possibilities");
@@ -33,25 +34,43 @@ impl Solution {
     }
 
     pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) {
-        println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
-
-        if combination.len() >= 3 {
+        // println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
+        // thread::sleep_ms(1000);
+        if combination.len() > 3 {
             return;
         }
-        result.push(String::from(combination));
+
+        if result.contains(&String::from(combination)) {
+            return;
+        }
+
+        if combination.len() > 0 {
+            result.push(String::from(combination));
+            println!("pushed, > result: {:?}", result);
+        }
+
+        if tiles.len() == 0 {
+            return;
+        }
 
         let selected = tiles.chars().nth(0).unwrap().to_string();
         tiles.remove(0);
-        println!("helper, selected: {:?}, tiles: {:?}", selected, tiles);
+        println!(
+            "helper, selected: {:?}, tiles: {:?}, result: {:?}",
+            selected, tiles, result
+        );
 
         let new_combination = Solution::append(&mut String::from(combination), &selected);
         Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
+
+        let new_tiles = Solution::append(&mut tiles.clone(), &selected);
+        Solution::helper(combination, &mut new_tiles.clone(), &mut result.clone());
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
-        println!("append: {} in {}", letter, string);
+        //println!("append: {} in {}", letter, string);
         string.push_str(letter);
-        println!("append result: {}", string);
+        //println!("append result: {}", string);
         return string.clone();
     }
 }
