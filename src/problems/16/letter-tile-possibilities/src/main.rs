@@ -33,11 +33,11 @@ impl Solution {
     }
 
     pub fn helper(combination: &str, tiles: String, result: &mut Vec<String>) {
-        println!("helper: {}", tiles);
+        println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
         let selected = tiles.chars().nth(0).unwrap().to_string();
-        println!("helper, selected: {}", selected);
+        println!("helper, selected: {:?}", selected);
         result.push(String::from(combination));
-        Solution::append(&mut String::from(combination), &selected);
+        let new_combination = Solution::append(&mut String::from(combination), &selected);
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
