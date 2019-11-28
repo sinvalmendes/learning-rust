@@ -28,21 +28,24 @@ impl Solution {
     pub fn num_tile_possibilities(tiles: String) -> i32 {
         println!("num_tile_possibilities: {}", tiles);
         let mut result: Vec<String> = vec![];
-        Solution::helper("", tiles, &mut result);
+        Solution::helper("", &mut tiles.clone(), &mut result);
         return result.len() as i32;
     }
 
-    pub fn helper(combination: &str, tiles: String, result: &mut Vec<String>) {
+    pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) {
         println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
+
         if combination.len() >= 3 {
             return;
         }
-        let selected = tiles.chars().nth(0).unwrap().to_string();
-        println!("helper, selected: {:?}", selected);
         result.push(String::from(combination));
 
+        let selected = tiles.chars().nth(0).unwrap().to_string();
+        tiles.remove(0);
+        println!("helper, selected: {:?}, tiles: {:?}", selected, tiles);
+
         let new_combination = Solution::append(&mut String::from(combination), &selected);
-        Solution::helper(&new_combination, tiles.clone(), &mut result.clone());
+        Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
