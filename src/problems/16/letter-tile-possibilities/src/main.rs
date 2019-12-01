@@ -32,9 +32,9 @@ impl Solution {
         let combinations = Solution::rotate(tiles.clone());
         println!("num_tile_possibilities, combinations: {:?}", combinations);
         for combination in combinations {
-            // println!("num_tile_possibilities, combination: {:?}", &combination);
             let mut result: Vec<String> = vec![];
-            Solution::helper("", &mut combination.clone(), &mut result);
+            result = Solution::helper("", &mut combination.clone(), &mut result.clone());
+            result.push(combination);
         }
         return result.len() as i32;
     }
@@ -53,14 +53,28 @@ impl Solution {
         return result;
     }
 
-    pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) {
+    pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) -> Vec<String> {
         println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
+        thread::sleep_ms(1000);
+
+        if tiles.len() == 0 {
+            return result.clone();
+        }
+
+        let selected = tiles.chars().nth(0).unwrap().to_string();
+        tiles.remove(0);
+
+        if combination.len() > 0 {
+            result.push(String::from(combination));
+            println!("pushed {:?}", combination);
+        }
+
+        let new_combination = Solution::append(&mut String::from(combination), &selected);
+        return Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
-        //println!("append: {} in {}", letter, string);
         string.push_str(letter);
-        //println!("append result: {}", string);
         return string.clone();
     }
 }
