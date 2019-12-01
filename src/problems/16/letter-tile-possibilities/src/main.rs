@@ -32,9 +32,11 @@ impl Solution {
         let combinations = Solution::rotate(tiles.clone());
         println!("num_tile_possibilities, combinations: {:?}", combinations);
         for combination in combinations {
+            println!("num_tile_possibilities, combination: {:?}", &combination);
             let mut result: Vec<String> = vec![];
             result = Solution::helper("", &mut combination.clone(), &mut result.clone());
             result.push(combination);
+            println!("num_tile_possibilities, result: {:?}", result);
         }
         return result.len() as i32;
     }
@@ -74,7 +76,9 @@ impl Solution {
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
+        println!("append: {} in {}", letter, string);
         string.push_str(letter);
+        println!("append result: {}", string);
         return string.clone();
     }
 }
