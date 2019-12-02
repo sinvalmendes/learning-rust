@@ -19,8 +19,10 @@ use std::thread;
 
 fn main() {
     println!("Letter Tiles Possibilities");
-    Solution::num_tile_possibilities(String::from("AAB"));
-    // Solution::num_tile_possibilities(String::from("AAABBC"));
+    let result = Solution::num_tile_possibilities(String::from("AAB"));
+    println!("result: {}", result);
+    let result = Solution::num_tile_possibilities(String::from("AAABBC"));
+    println!("result: {}", result);
 }
 
 struct Solution {}
@@ -28,7 +30,7 @@ struct Solution {}
 impl Solution {
     pub fn num_tile_possibilities(tiles: String) -> i32 {
         println!("num_tile_possibilities: {}", tiles);
-        let mut result: Vec<String> = vec![];
+        let mut general_result: Vec<String> = vec![];
         let combinations = Solution::rotate(tiles.clone());
         println!("num_tile_possibilities, combinations: {:?}", combinations);
         for combination in combinations {
@@ -37,8 +39,11 @@ impl Solution {
             result = Solution::helper("", &mut combination.clone(), &mut result.clone());
             result.push(combination);
             println!("num_tile_possibilities, result: {:?}", result);
+            general_result.append(&mut result.clone());
         }
-        return result.len() as i32;
+        general_result.sort();
+        general_result.dedup();
+        return general_result.len() as i32;
     }
 
     pub fn rotate(string: String) -> Vec<String> {
@@ -57,7 +62,7 @@ impl Solution {
 
     pub fn helper(combination: &str, tiles: &mut String, result: &mut Vec<String>) -> Vec<String> {
         println!("helper: {:?}, {:?}, {:?}", combination, tiles, result);
-        thread::sleep_ms(1000);
+        // thread::sleep_ms(1000);
 
         if tiles.len() == 0 {
             return result.clone();
@@ -72,9 +77,12 @@ impl Solution {
         }
 
         let new_combination = Solution::append(&mut String::from(combination), &selected);
-        let branch_result =
+        let mut branch_result =
             Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
-        return branch_result;
+        result.append(&mut branch_result);
+        result.sort();
+        result.dedup();
+        return result.clone();
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
