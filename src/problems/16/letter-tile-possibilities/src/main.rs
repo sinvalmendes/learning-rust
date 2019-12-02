@@ -72,7 +72,9 @@ impl Solution {
         }
 
         let new_combination = Solution::append(&mut String::from(combination), &selected);
-        return Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
+        let branch_result =
+            Solution::helper(&new_combination, &mut tiles.clone(), &mut result.clone());
+        return branch_result;
     }
 
     pub fn append(string: &mut String, letter: &String) -> String {
