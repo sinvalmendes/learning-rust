@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 actix-web = "1.0"
-actix-service = "0.4.2"
+actix-service = "2.0.2"
 serde = "1.0.101"
 serde_derive = "1.0.69"
 dotenv = "0.13.0"
